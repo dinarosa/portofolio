@@ -1,0 +1,15 @@
+# Lingkungan Virtual
+venv/
+env/
+
+# File Sistem Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Database Lokal (Kita tidak mengunggah brankas laptop ke awan)
+*.db
+*.sqlite3
+
+# Konfigurasi Rahasia
+.env

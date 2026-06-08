@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dikya Abidullah | Editorial Portfolio</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafafa;
+            color: #1a1a1a;
+        }
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="h-screen overflow-hidden antialiased relative">
+
+    <button onclick="toggleSidebar()" class="fixed top-8 left-8 md:top-12 md:left-12 z-40 p-3 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-gray-200 hover:bg-gray-50 transition-all duration-300 group">
+        <svg class="w-5 h-5 text-gray-800 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+    </button>
+
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300"></div>
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-white border-r border-gray-200 flex flex-col justify-between p-12 z-50 transform -translate-x-full transition-transform duration-500 ease-in-out shadow-2xl">
+        <button onclick="toggleSidebar()" class="absolute top-8 right-8 p-2 text-gray-400 hover:text-black transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+
+        <div class="mt-8">
+            <h1 class="font-serif text-3xl font-bold tracking-tight mb-16 cursor-pointer" onclick="switchTab('beranda')">Dikya.</h1>
+            <nav class="space-y-6 text-lg">
+                <button onclick="switchTab('beranda')" id="nav-beranda" class="nav-btn block text-left w-full text-black font-semibold italic transition-all duration-300">Beranda</button>
+                <button onclick="switchTab('rekam-jejak')" id="nav-rekam-jejak" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-1 transition-all duration-300">Rekam Jejak</button>
+                <button onclick="switchTab('ruang-aksara')" id="nav-ruang-aksara" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-1 transition-all duration-300">Ruang Aksara</button>
+                <button onclick="switchTab('lensa')" id="nav-lensa" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-1 transition-all duration-300">Lensa</button>
+                <button onclick="switchTab('project')" id="nav-project" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-1 transition-all duration-300">Project</button>
+                <button onclick="switchTab('visi')" id="nav-visi" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-1 transition-all duration-300">Visi</button>
+                <button onclick="switchTab('kontak')" id="nav-kontak" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-1 transition-all duration-300">Kontak</button>
+            </nav>
+        </div>
+        
+        <div class="text-xs text-gray-400 font-mono tracking-wider uppercase">
+            &copy; 2026 Abidullah
+        </div>
+    </aside>
+
+    <main class="w-full h-full overflow-y-auto bg-[#fafafa]">
+        <div class="max-w-6xl mx-auto p-8 pt-28 md:p-24 lg:p-32">
+            
+            <section id="beranda" class="tab-content active space-y-20">
+                <div class="flex flex-col-reverse lg:flex-row gap-16 items-center lg:items-start">
+                    <div class="flex-1 space-y-8 mt-8 lg:mt-0">
+                        <span class="text-xs font-mono tracking-widest text-gray-400 uppercase">Pengantar</span>
+                        <h2 class="font-serif text-5xl md:text-7xl font-bold leading-tight text-gray-900">
+                            Menjemput <span class="italic font-normal text-gray-600">Esensi</span> Lewat Analisis dan Narasi.
+                        </h2>
+                        <p id="teks-beranda" class="text-lg text-gray-600 leading-relaxed max-w-2xl font-light">
+                            Sebuah ruang kontemplasi digital yang mempertemukan ketepatan logika data, kedalaman riset ekonomi, dan keindahan bahasa visual. Di sini, setiap gagasan diuji dan setiap perjalanan diabadikan.
+                        </p>
+                    </div>
+                    <div class="w-full max-w-sm lg:w-1/3 shrink-0 group">
+                        <div class="aspect-[3/4] overflow-hidden bg-gray-200 rounded-sm shadow-lg relative">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop" alt="Potret Dikya Abidullah" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-105">
+                            <div class="absolute inset-0 border border-black/10 m-4 z-10 pointer-events-none"></div>
+                        </div>
+                        <p class="mt-6 text-xs font-mono text-gray-500 text-center uppercase tracking-widest">Dikya Abidullah</p>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-200 pt-16 grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl">
+                    <div class="space-y-4">
+                        <h3 class="font-serif text-xl font-semibold">Studi & Pengembangan</h3>
+                        <p class="text-sm text-gray-500 leading-relaxed font-light">Mengembangkan sistem tata kelola keuangan yang inklusif serta metodologi berbasis data yang transparan untuk mendukung keberlanjutan sektor ekonomi strategis di masyarakat.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <h3 class="font-serif text-xl font-semibold">Estetika & Kata</h3>
+                        <p class="text-sm text-gray-500 leading-relaxed font-light">Merekam dinamika kehidupan, pergerakan, dan ruang dalam bentuk untaian kata esai, sajak puitis, serta dokumentasi visual yang berkarakter minimalis.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="rekam-jejak" class="tab-content space-y-16 max-w-4xl pt-8">
+                <header class="max-w-2xl">
+                    <h2 class="font-serif text-4xl md:text-5xl font-bold mb-6">Rekam Jejak.</h2>
+                    <p class="text-gray-500 font-light leading-relaxed">Linimasa perkembangan akademis, pengabdian sosial, dan kecakapan profesional yang membentuk landasan pemikiran serta aksi.</p>
+                </header>
+                
+                <div id="rekam-jejak-container" class="relative border-l border-gray-200 ml-3 md:ml-4 space-y-14 pt-4 pb-4">
+                </div>
+            </section>
+
+            <section id="ruang-aksara" class="tab-content space-y-16 max-w-3xl pt-8">
+                <header>
+                    <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">Ruang Aksara.</h2>
+                    <p class="text-gray-500 font-light">Eksplorasi gagasan lewat bait sajak, dan esai pemikiran kritis.</p>
+                </header>
+                
+                <div id="artikel-grid" class="space-y-20">
+                </div>
+            </section>
+
+            <section id="project" class="tab-content space-y-12 max-w-5xl pt-8">
+                <header>
+                    <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">Project.</h2>
+                    <p class="text-gray-500 font-light">Implementasi rekayasa perangkat lunak dan desain identitas visual.</p>
+                </header>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="project-grid">
+                </div>
+            </section>
+
+            <section id="lensa" class="tab-content space-y-12 pt-8">
+                <header class="max-w-3xl">
+                    <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">Lensa.</h2>
+                    <p class="text-gray-500 font-light">Arsip dokumentasi visual dengan pendekatan komposisi simetris dan pencahayaan natural.</p>
+                </header>
+                
+                <div id="lensa-grid" class="columns-1 md:columns-2 xl:columns-3 gap-8 space-y-8">
+                    <div class="break-inside-avoid group cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1493612276216-ee3925520721?q=80&w=1200&auto=format&fit=crop')">
+                        <div class="overflow-hidden bg-gray-100 rounded-sm">
+                            <img src="https://images.unsplash.com/photo-1493612276216-ee3925520721?q=80&w=600&auto=format&fit=crop" loading="lazy" class="w-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700">
+                        </div>
+                        <p class="mt-4 font-serif text-sm text-gray-600 italic">01. Siluet Jalur Utara</p>
+                    </div>
+                    <div class="break-inside-avoid group cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1512413513134-2e9124213d2f?q=80&w=1200&auto=format&fit=crop')">
+                        <div class="overflow-hidden bg-gray-100 rounded-sm">
+                            <img src="https://images.unsplash.com/photo-1512413513134-2e9124213d2f?q=80&w=600&auto=format&fit=crop" loading="lazy" class="w-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700">
+                        </div>
+                        <p class="mt-4 font-serif text-sm text-gray-600 italic">02. Pembingkaian Jendela Gerbong</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="visi" class="tab-content space-y-16 max-w-4xl pt-8">
+                <header class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-xs font-mono tracking-widest text-gray-400 uppercase">Prinsip Fundamental</span>
+                    <h2 class="font-serif text-4xl md:text-5xl font-bold mt-4 mb-6">Manifesto Digital.</h2>
+                </header>
+                <div class="space-y-16">
+                    <blockquote id="teks-visi" class="font-serif text-3xl md:text-4xl italic text-gray-800 leading-relaxed text-center">
+                        "Teknologi terbaik bukanlah yang paling rumit baris kodenya, melainkan yang paling mampu membawa kemaslahatan nyata bagi barisan manusia yang berdiri di hilir sistemnya."
+                    </blockquote>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-gray-200 pt-16">
+                        <div class="space-y-4">
+                            <span class="text-xs font-mono text-gray-400">01</span>
+                            <h3 class="font-serif text-xl font-bold">Inklusi Finansial</h3>
+                            <p class="text-sm text-gray-500 font-light leading-relaxed">Mendorong terciptanya arsitektur teknologi yang berpihak pada pemerataan akses, memadukan ketangguhan sistem digital dengan prinsip keadilan ekonomi mikro.</p>
+                        </div>
+                        <div class="space-y-4">
+                            <span class="text-xs font-mono text-gray-400">02</span>
+                            <h3 class="font-serif text-xl font-bold">Ketepatan Logika</h3>
+                            <p class="text-sm text-gray-500 font-light leading-relaxed">Membangun infrastruktur data yang terstruktur dan transparan. Integritas basis data adalah fondasi mutlak dari setiap keputusan analitis yang diambil.</p>
+                        </div>
+                        <div class="space-y-4">
+                            <span class="text-xs font-mono text-gray-400">03</span>
+                            <h3 class="font-serif text-xl font-bold">Estetika Simetris</h3>
+                            <p class="text-sm text-gray-500 font-light leading-relaxed">Menyajikan kompleksitas informasi melalui antarmuka yang puitis dan minimalis, memberikan ruang bagi pengguna untuk berpikir tanpa distraksi.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="kontak" class="tab-content space-y-12 max-w-3xl pt-8">
+                <header>
+                    <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">Ruang Temu.</h2>
+                    <p class="text-gray-500 font-light leading-relaxed">Mari berdiskusi mengenai arsitektur sistem, riset ekonomi, atau sekadar bertukar gagasan kreatif.</p>
+                </header>
+                
+                <form id="form-pesan" class="space-y-8">
+                    <div class="space-y-2">
+                        <label class="text-xs font-mono text-gray-500 uppercase tracking-widest">Nama</label>
+                        <input type="text" id="input-nama" class="w-full border-b border-gray-300 bg-transparent py-2 text-gray-900 focus:outline-none focus:border-black transition-colors" placeholder="Masukkan nama Anda" required>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-mono text-gray-500 uppercase tracking-widest">Surel</label>
+                        <input type="email" id="input-email" class="w-full border-b border-gray-300 bg-transparent py-2 text-gray-900 focus:outline-none focus:border-black transition-colors" placeholder="alamat@surel.com" required>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-mono text-gray-500 uppercase tracking-widest">Pesan</label>
+                        <textarea id="input-konten" rows="4" class="w-full border-b border-gray-300 bg-transparent py-2 text-gray-900 focus:outline-none focus:border-black transition-colors resize-none" placeholder="Tuliskan gagasan Anda..." required></textarea>
+                    </div>
+                    <button type="submit" class="font-serif italic text-lg border-b border-black pb-1 hover:text-gray-500 hover:border-gray-500 transition-colors">
+                        Kirim Pesan
+                    </button>
+                    <p id="status-pesan" class="text-sm mt-4 hidden font-mono tracking-wide"></p>
+                </form>
+
+                <div class="space-y-8 border-l border-gray-200 pl-8 md:pl-16">
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-mono text-gray-400 uppercase tracking-widest">Surat Elektronik</h4>
+                        <a href="mailto:sapa@dikya.com" class="block font-serif text-lg hover:text-gray-500 transition-colors">sapa@dikya.com</a>
+                    </div>
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-mono text-gray-400 uppercase tracking-widest">Repositori Kode</h4>
+                        <a href="#" class="block font-serif text-lg hover:text-gray-500 transition-colors">github.com/dikya</a>
+                    </div>
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-mono text-gray-400 uppercase tracking-widest">Jejaring Profesional</h4>
+                        <a href="#" class="block font-serif text-lg hover:text-gray-500 transition-colors">linkedin.com/in/dikya</a>
+                    </div>
+                    <div class="pt-8 mt-8 border-t border-gray-200">
+                        <p class="text-sm font-light text-gray-500 italic">Berbasis di Cirebon, Indonesia.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div id="project-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 sm:p-6">
+                <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeModal()"></div>
+                <div class="relative bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-sm shadow-2xl p-8 transform scale-95 opacity-0 transition-all duration-300" id="modal-content">
+                    <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-black">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                    <div id="modal-body" class="space-y-6 mt-4"></div>
+                </div>
+            </div>
+
+            <div id="lightbox" class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/95 backdrop-blur-md transition-opacity duration-300 opacity-0" onclick="closeLightbox()">
+                <button class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+                <img id="lightbox-img" src="" class="max-w-[90vw] max-h-[90vh] object-contain shadow-2xl transform scale-95 transition-transform duration-500">
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- 1. LOGIKA NAVIGASI & TAMPILAN ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            if (overlay.classList.contains('hidden')) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            } else {
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        function switchTab(tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('text-black', 'font-semibold', 'italic');
+                btn.classList.add('text-gray-400');
+            });
+            
+            const selectedTab = document.getElementById(tabId);
+            if (selectedTab) selectedTab.classList.add('active');
+            
+            const activeBtn = document.getElementById('nav-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-gray-400');
+                activeBtn.classList.add('text-black', 'font-semibold', 'italic');
+            }
+            
+            document.querySelector('main').scrollTop = 0;
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('-translate-x-full')) {
+                toggleSidebar();
+            }
+        }
+
+        function openLightbox(imgSrc) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = imgSrc;
+            lightbox.classList.remove('hidden');
+            lightbox.classList.add('flex');
+            setTimeout(() => {
+                lightbox.classList.remove('opacity-0');
+                lightboxImg.classList.remove('scale-95');
+                lightboxImg.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightbox.classList.add('opacity-0');
+            lightboxImg.classList.remove('scale-100');
+            lightboxImg.classList.add('scale-95');
+            setTimeout(() => {
+                lightbox.classList.add('hidden');
+                lightbox.classList.remove('flex');
+                lightboxImg.src = ''; 
+            }, 300);
+        }
+
+        // Memori statis dipertahankan agar Modal tetap berfungsi meskipun API kosong
+        let projectData = {
+            'modal-backend': {
+                title: 'Infrastruktur API Berkinerja Tinggi',
+                tags: ['FastAPI', 'PostgreSQL', 'Python'],
+                content: '<p class="text-gray-600 font-light leading-relaxed">Arsitektur back-end yang dibangun menggunakan FastAPI untuk menangani proses asinkronus secara optimal. Sistem ini dilengkapi keamanan berbasis Bcrypt dan autentikasi JWT token. Manajemen database relasional menggunakan PostgreSQL dengan sistem migrasi Alembic untuk memastikan konsistensi skema data nasabah atau pengguna.</p>'
+            },
+            'modal-koding': {
+                title: 'Identitas Visual KODING Coffee',
+                tags: ['UI/UX', 'Branding', 'Desain Grafis'],
+                content: '<p class="text-gray-600 font-light leading-relaxed">Proyek perancangan logo dan identitas merek menyeluruh untuk entitas bisnis lokal. Pendekatan desain menggunakan palet warna monokromatik dan tipografi sans-serif untuk merefleksikan perpaduan antara budaya minum kopi modern dengan keakuratan logika pemrograman.</p>'
+            }
+        };
+
+        function openModal(projectId) {
+            const modal = document.getElementById('project-modal');
+            const modalContent = document.getElementById('modal-content');
+            const modalBody = document.getElementById('modal-body');
+            const data = projectData[projectId];
+
+            if(data) {
+                const tagsHtml = data.tags.map(tag => `<span class="text-xs font-mono px-2 py-1 bg-gray-100 text-gray-600 rounded">${tag}</span>`).join('');
+                modalBody.innerHTML = `
+                    <div class="flex flex-wrap gap-2 mb-4">${tagsHtml}</div>
+                    <h3 class="font-serif text-3xl font-bold text-gray-900 mb-6">${data.title}</h3>
+                    ${data.content}
+                `;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    modalContent.classList.remove('opacity-0', 'scale-95');
+                    modalContent.classList.add('opacity-100', 'scale-100');
+                }, 10);
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('project-modal');
+            const modalContent = document.getElementById('modal-content');
+            modalContent.classList.remove('opacity-100', 'scale-100');
+            modalContent.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        // --- 2. INTEGRASI BACK-END CMS (FETCH API CERDAS) ---
+        // Jika data dari API ada, HTML akan diganti. Jika API kosong, HTML asli dipertahankan.
+        const BASE_URL = 'http://127.0.0.1:8000/api/v1';
+
+        async function fetchProfil() {
+            try {
+                const resBeranda = await fetch(`${BASE_URL}/profil/BERANDA`);
+                if (resBeranda.ok) {
+                    const data = await resBeranda.json();
+                    if(data && data.konten) document.getElementById('teks-beranda').textContent = data.konten;
+                }
+                const resVisi = await fetch(`${BASE_URL}/profil/VISI`);
+                if (resVisi.ok) {
+                    const data = await resVisi.json();
+                    if(data && data.konten) document.getElementById('teks-visi').textContent = `"${data.konten}"`;
+                }
+            } catch (error) { console.error("Mode Statis: Gagal memuat profil API", error); }
+        }
+
+        async function fetchRekamJejak() {
+            try {
+                const response = await fetch(`${BASE_URL}/rekam-jejak`);
+                const data = await response.json();
+                if (data && data.length > 0) {
+                    const container = document.getElementById('rekam-jejak-container');
+                    container.innerHTML = ''; 
+                    data.forEach(item => {
+                        container.innerHTML += `
+                            <div class="relative pl-10 md:pl-12 group cursor-default mb-14">
+                                <div class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 bg-white border-2 border-gray-300 rounded-full group-hover:border-black transition-colors duration-300"></div>
+                                <div class="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
+                                    <h3 class="font-serif text-2xl font-bold text-gray-800 group-hover:text-black transition-colors">${item.peran}</h3>
+                                    <span class="text-xs font-mono tracking-widest text-gray-400 mt-2 md:mt-0 uppercase">${item.periode_mulai} — ${item.periode_selesai}</span>
+                                </div>
+                                <p class="text-sm text-gray-500 italic mb-4">${item.institusi}</p>
+                                <p class="text-sm text-gray-600 font-light leading-relaxed max-w-2xl">${item.deskripsi}</p>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (error) { console.error("Mode Statis: Gagal memuat rekam jejak API", error); }
+        }
+
+      async function fetchArtikel() {
+            try {
+                const response = await fetch(`${BASE_URL}/artikel`);
+                const data = await response.json();
+                const container = document.getElementById('artikel-grid');
+                container.innerHTML = '';
+
+                data.forEach(item => {
+                    const date = new Date(item.tanggal_publikasi).toLocaleDateString('id-ID', { year: 'numeric', month: 'long' }).toUpperCase();
+                    
+                    container.innerHTML += `
+                        <article class="border-b border-gray-100 pb-12">
+                            <div class="flex items-center space-x-4 text-xs font-mono text-gray-400 mb-4">
+                                <span>${date}</span><span>•</span><span class="uppercase">${item.kategori}</span>
+                            </div>
+                            <h3 class="font-serif text-3xl font-bold text-gray-900">${item.judul}</h3>
+                            <div class="text-gray-600 font-light leading-loose whitespace-pre-line -mt-4">
+                                ${item.konten.trim()}
+                            </div>
+                        </article>
+                    `;
+                });
+            } catch (error) { console.error("Gagal memuat artikel:", error); }
+        }
+        async function fetchProjects() {
+            try {
+                const response = await fetch(`${BASE_URL}/projects`);
+                const projects = await response.json();
+                if (projects && projects.length > 0) {
+                    const grid = document.getElementById('project-grid');
+                    grid.innerHTML = ''; 
+                    projects.forEach(project => {
+                        const tagsHtml = project.tags.split(',').map(tag => 
+                            `<span class="text-xs font-mono px-2 py-1 bg-gray-100 text-gray-600 rounded">${tag.trim()}</span>`
+                        ).join('');
+
+                        grid.innerHTML += `
+                        <div onclick="openModal('project-${project.id}')" class="border border-gray-200 rounded-sm p-8 bg-white space-y-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+                            <div class="flex flex-wrap gap-2">${tagsHtml}</div>
+                            <h3 class="font-serif text-2xl font-bold group-hover:text-gray-600 transition-colors">${project.judul}</h3>
+                            <p class="text-sm text-gray-500 font-light leading-relaxed line-clamp-3">${project.deskripsi}</p>
+                        </div>
+                        `;
+
+                        projectData[`project-${project.id}`] = {
+                            title: project.judul,
+                            tags: project.tags.split(',').map(t => t.trim()),
+                            content: `<p class="text-gray-600 font-light leading-relaxed whitespace-pre-line">${project.deskripsi}</p>`
+                        };
+                    });
+                }
+            } catch (error) { console.error("Mode Statis: Gagal memuat project API", error); }
+        }
+
+        async function fetchLensa() {
+            try {
+                const response = await fetch(`${BASE_URL}/lensa`);
+                const data = await response.json();
+                if (data && data.length > 0) {
+                    const container = document.getElementById('lensa-grid');
+                    container.innerHTML = '';
+                    data.forEach(item => {
+                        container.innerHTML += `
+                            <div class="break-inside-avoid group cursor-pointer mb-8" onclick="openLightbox('${item.url_gambar}')">
+                                <div class="overflow-hidden bg-gray-100 rounded-sm">
+                                    <img src="${item.url_gambar}" loading="lazy" class="w-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700">
+                                </div>
+                                <p class="mt-4 font-serif text-sm text-gray-600 italic">${item.caption}</p>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (error) { console.error("Mode Statis: Gagal memuat lensa API", error); }
+        }
+
+        // --- 3. LOGIKA FORMULIR KONTAK ---
+        const formPesan = document.getElementById('form-pesan');
+        if (formPesan) {
+            formPesan.addEventListener('submit', async function(e) {
+                e.preventDefault(); 
+                const statusPesan = document.getElementById('status-pesan');
+                const btnSubmit = formPesan.querySelector('button[type="submit"]');
+                
+                const dataPesan = {
+                    nama: document.getElementById('input-nama').value,
+                    email: document.getElementById('input-email').value,
+                    konten: document.getElementById('input-konten').value 
+                };
+
+                btnSubmit.innerText = 'MENGIRIM...';
+                btnSubmit.disabled = true;
+                statusPesan.classList.add('hidden');
+
+                try {
+                    const response = await fetch(`${BASE_URL}/pesan`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dataPesan)
+                    });
+
+                    if (response.ok) {
+                        statusPesan.textContent = "Pesan berhasil terkirim. Terima kasih!";
+                        statusPesan.className = "text-sm mt-4 text-green-600 block font-mono transition-all duration-300";
+                        formPesan.reset(); 
+                    } else {
+                        throw new Error('API menolak data');
+                    }
+                } catch (error) {
+                    statusPesan.textContent = "Gagal mengirim pesan. Pastikan server API menyala.";
+                    statusPesan.className = "text-sm mt-4 text-red-600 block font-mono transition-all duration-300";
+                } finally {
+                    btnSubmit.innerText = 'Kirim Pesan';
+                    btnSubmit.disabled = false;
+                }
+            });
+        }
+
+        // Mengeksekusi penarikan data secara berbarengan saat HTML siap
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchProfil();
+            fetchRekamJejak();
+            fetchArtikel();
+            fetchProjects();
+            fetchLensa();
+        });
+    </script>
+</body>
+</html>

@@ -1,5 +1,7 @@
-from fastapi import FastAPI, Depends, HTTPException
+import os
+from fastapi import FastAPI, Depends, HTTPException, Security, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security.api_key import APIKeyHeader
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -7,7 +9,11 @@ from database import get_db
 import models
 import schemas
 
-app = FastAPI(title="Portfolio Core API", version="2.0.0")
+app = FastAPI(
+    title="Portfolio Core API", 
+    description="Infrastruktur data asinkronus dengan proteksi API Key gembok virtual.",
+    version="2.0.0"
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,16 +23,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ==========================================================================
+# KONFIGURASI KEAMANAN (SATPAM VIRTUAL)
+# ==========================================================================
+API_KEY_NAME = "X-API-Key"
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 
-# ==========================================
+# Mengambil kunci rahasia dari environment variable Render, fallback ke lokal jika di komputer sendiri
+SECRET_API_KEY = os.getenv("PORTFOLIO_API_KEY", "najwahanifah")
+
+async def get_api_key(api_key: str = Security(api_key_header)):
+    if api_key == SECRET_API_KEY:
+        return api_key
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Akses ditolak! Kunci keamanan tidak valid atau tidak disediakan."
+    )
+
+
+# ==========================================================================
 # 1. RUTE PROFIL (Beranda & Visi)
-# ==========================================
+# ==========================================================================
 @app.get("/api/v1/profil/{bagian}", response_model=schemas.ProfilResponse, tags=["Profil"])
 def read_profil(bagian: str, db: Session = Depends(get_db)):
+    # TERBUKA: Publik bisa membaca konten profil
     return db.query(models.Profil).filter(models.Profil.bagian == bagian.upper()).first()
 
 @app.post("/api/v1/profil", response_model=schemas.ProfilResponse, tags=["Profil"])
-def create_profil(profil: schemas.ProfilCreate, db: Session = Depends(get_db)):
+def create_profil(profil: schemas.ProfilCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK: Hanya admin yang bisa membuat profil baru
     db_profil = models.Profil(**profil.model_dump())
     db.add(db_profil)
     db.commit()
@@ -34,7 +59,8 @@ def create_profil(profil: schemas.ProfilCreate, db: Session = Depends(get_db)):
     return db_profil
 
 @app.put("/api/v1/profil/{bagian}", response_model=schemas.ProfilResponse, tags=["Profil"])
-def update_profil(bagian: str, profil_data: schemas.ProfilCreate, db: Session = Depends(get_db)):
+def update_profil(bagian: str, profil_data: schemas.ProfilCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK: Hanya admin yang bisa menyunting profil
     db_profil = db.query(models.Profil).filter(models.Profil.bagian == bagian.upper()).first()
     if not db_profil:
         raise HTTPException(status_code=404, detail="Profil tidak ditemukan")
@@ -49,10 +75,12 @@ def update_profil(bagian: str, profil_data: schemas.ProfilCreate, db: Session = 
 # ==========================================
 @app.get("/api/v1/projects", response_model=List[schemas.ProjectResponse], tags=["Project"])
 def read_projects(db: Session = Depends(get_db)):
+    # TERBUKA: Tampilan website memerlukan akses data proyek
     return db.query(models.Project).all()
 
 @app.post("/api/v1/projects", response_model=schemas.ProjectResponse, tags=["Project"])
-def create_project(project: schemas.ProjectCreate, db: Session = Depends(get_db)):
+def create_project(project: schemas.ProjectCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK
     db_project = models.Project(**project.model_dump())
     db.add(db_project)
     db.commit()
@@ -60,7 +88,8 @@ def create_project(project: schemas.ProjectCreate, db: Session = Depends(get_db)
     return db_project
 
 @app.put("/api/v1/projects/{project_id}", response_model=schemas.ProjectResponse, tags=["Project"])
-def update_project(project_id: int, project_data: schemas.ProjectCreate, db: Session = Depends(get_db)):
+def update_project(project_id: int, project_data: schemas.ProjectCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK
     db_project = db.query(models.Project).filter(models.Project.id == project_id).first()
     if not db_project:
         raise HTTPException(status_code=404, detail="Project tidak ditemukan")
@@ -72,7 +101,8 @@ def update_project(project_id: int, project_data: schemas.ProjectCreate, db: Ses
     return db_project
 
 @app.delete("/api/v1/projects/{project_id}", tags=["Project"])
-def delete_project(project_id: int, db: Session = Depends(get_db)):
+def delete_project(project_id: int, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK
     project = db.query(models.Project).filter(models.Project.id == project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project tidak ditemukan")
@@ -86,10 +116,12 @@ def delete_project(project_id: int, db: Session = Depends(get_db)):
 # ==========================================
 @app.get("/api/v1/artikel", response_model=List[schemas.ArtikelResponse], tags=["Artikel"])
 def read_artikel(db: Session = Depends(get_db)):
+    # TERBUKA
     return db.query(models.Artikel).all()
 
 @app.post("/api/v1/artikel", response_model=schemas.ArtikelResponse, tags=["Artikel"])
-def create_artikel(artikel: schemas.ArtikelCreate, db: Session = Depends(get_db)):
+def create_artikel(artikel: schemas.ArtikelCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK
     db_artikel = models.Artikel(**artikel.model_dump())
     db.add(db_artikel)
     db.commit()
@@ -97,7 +129,8 @@ def create_artikel(artikel: schemas.ArtikelCreate, db: Session = Depends(get_db)
     return db_artikel
 
 @app.put("/api/v1/artikel/{artikel_id}", response_model=schemas.ArtikelResponse, tags=["Artikel"])
-def update_artikel(artikel_id: int, artikel_data: schemas.ArtikelCreate, db: Session = Depends(get_db)):
+def update_artikel(artikel_id: int, artikel_data: schemas.ArtikelCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK
     db_artikel = db.query(models.Artikel).filter(models.Artikel.id == artikel_id).first()
     if not db_artikel:
         raise HTTPException(status_code=404, detail="Artikel tidak ditemukan")
@@ -109,7 +142,8 @@ def update_artikel(artikel_id: int, artikel_data: schemas.ArtikelCreate, db: Ses
     return db_artikel
 
 @app.delete("/api/v1/artikel/{artikel_id}", tags=["Artikel"])
-def delete_artikel(artikel_id: int, db: Session = Depends(get_db)):
+def delete_artikel(artikel_id: int, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK
     artikel = db.query(models.Artikel).filter(models.Artikel.id == artikel_id).first()
     if not artikel:
         raise HTTPException(status_code=404, detail="Artikel tidak ditemukan")
@@ -123,10 +157,12 @@ def delete_artikel(artikel_id: int, db: Session = Depends(get_db)):
 # ==========================================
 @app.get("/api/v1/rekam-jejak", response_model=List[schemas.RekamJejakResponse], tags=["Rekam Jejak"])
 def read_rekam_jejak(db: Session = Depends(get_db)):
+    # TERBUKA
     return db.query(models.RekamJejak).all()
 
 @app.post("/api/v1/rekam-jejak", response_model=schemas.RekamJejakResponse, tags=["Rekam Jejak"])
-def create_rekam_jejak(rekam: schemas.RekamJejakCreate, db: Session = Depends(get_db)):
+def create_rekam_jejak(rekam: schemas.RekamJejakCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK
     db_rekam = models.RekamJejak(**rekam.model_dump())
     db.add(db_rekam)
     db.commit()
@@ -134,7 +170,8 @@ def create_rekam_jejak(rekam: schemas.RekamJejakCreate, db: Session = Depends(ge
     return db_rekam
 
 @app.put("/api/v1/rekam-jejak/{rekam_id}", response_model=schemas.RekamJejakResponse, tags=["Rekam Jejak"])
-def update_rekam_jejak(rekam_id: int, rekam_data: schemas.RekamJejakCreate, db: Session = Depends(get_db)):
+def update_rekam_jejak(rekam_id: int, rekam_data: schemas.RekamJejakCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK
     db_rekam = db.query(models.RekamJejak).filter(models.RekamJejak.id == rekam_id).first()
     if not db_rekam:
         raise HTTPException(status_code=404, detail="Rekam jejak tidak ditemukan")
@@ -148,7 +185,8 @@ def update_rekam_jejak(rekam_id: int, rekam_data: schemas.RekamJejakCreate, db: 
     return db_rekam
 
 @app.delete("/api/v1/rekam-jejak/{rekam_id}", tags=["Rekam Jejak"])
-def delete_rekam_jejak(rekam_id: int, db: Session = Depends(get_db)):
+def delete_rekam_jejak(rekam_id: int, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK
     rekam = db.query(models.RekamJejak).filter(models.RekamJejak.id == rekam_id).first()
     if not rekam:
         raise HTTPException(status_code=404, detail="Data rekam jejak tidak ditemukan")
@@ -162,10 +200,12 @@ def delete_rekam_jejak(rekam_id: int, db: Session = Depends(get_db)):
 # ==========================================
 @app.get("/api/v1/lensa", response_model=List[schemas.LensaResponse], tags=["Lensa"])
 def read_lensa(db: Session = Depends(get_db)):
+    # TERBUKA
     return db.query(models.Lensa).all()
 
 @app.post("/api/v1/lensa", response_model=schemas.LensaResponse, tags=["Lensa"])
-def create_lensa(lensa: schemas.LensaCreate, db: Session = Depends(get_db)):
+def create_lensa(lensa: schemas.LensaCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK
     db_lensa = models.Lensa(**lensa.model_dump())
     db.add(db_lensa)
     db.commit()
@@ -173,7 +213,8 @@ def create_lensa(lensa: schemas.LensaCreate, db: Session = Depends(get_db)):
     return db_lensa
 
 @app.delete("/api/v1/lensa/{lensa_id}", tags=["Lensa"])
-def delete_lensa(lensa_id: int, db: Session = Depends(get_db)):
+def delete_lensa(lensa_id: int, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK
     lensa = db.query(models.Lensa).filter(models.Lensa.id == lensa_id).first()
     if not lensa:
         raise HTTPException(status_code=404, detail="Foto tidak ditemukan")
@@ -186,11 +227,13 @@ def delete_lensa(lensa_id: int, db: Session = Depends(get_db)):
 # 6. RUTE KONTAK (Pesan Masuk)
 # ==========================================
 @app.get("/api/v1/pesan", response_model=List[schemas.PesanResponse], tags=["Kontak"])
-def read_pesan(db: Session = Depends(get_db)):
+def read_pesan(db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK KRITIKAL: Orang luar tidak boleh membaca pesan masuk Anda!
     return db.query(models.Pesan).all()
 
 @app.post("/api/v1/pesan", response_model=schemas.PesanResponse, tags=["Kontak"])
 def create_pesan(pesan: schemas.PesanCreate, db: Session = Depends(get_db)):
+    # TERBUKA: Pengunjung website wajib bisa mengirimkan pesan kontak ke database
     db_pesan = models.Pesan(**pesan.model_dump())
     db.add(db_pesan)
     db.commit()
@@ -198,7 +241,8 @@ def create_pesan(pesan: schemas.PesanCreate, db: Session = Depends(get_db)):
     return db_pesan
 
 @app.delete("/api/v1/pesan/{pesan_id}", tags=["Kontak"])
-def delete_pesan(pesan_id: int, db: Session = Depends(get_db)):
+def delete_pesan(pesan_id: int, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # DIGEMBOK
     pesan = db.query(models.Pesan).filter(models.Pesan.id == pesan_id).first()
     if not pesan:
         raise HTTPException(status_code=404, detail="Pesan tidak ditemukan")

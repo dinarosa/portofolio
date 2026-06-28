@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruang Kendali | CMS Sempurna</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6 transition-all duration-500">
+
+    <!-- LOGIN SECTION -->
+    <div id="login-section" class="w-full max-w-md bg-white p-10 shadow-xl rounded-sm border border-gray-100">
+        <div class="text-center mb-10">
+            <h1 class="font-serif text-3xl font-bold mb-2">Pintu Utama.</h1>
+            <p class="text-xs font-mono text-gray-400 tracking-widest uppercase">Otentikasi Kredensial Admin</p>
+        </div>
+        <form id="login-form" class="space-y-6">
+            <input type="password" id="api-key-input" class="w-full border-b border-gray-300 bg-transparent py-2 text-center text-gray-900 focus:outline-none focus:border-black" placeholder="Masukkan Sandi Server..." required>
+            <button type="submit" class="w-full bg-black text-white font-mono text-sm py-3 hover:bg-gray-800 transition-colors">BUKA AKSES</button>
+        </form>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard-section" class="w-full max-w-6xl bg-white shadow-2xl rounded-sm border border-gray-100 hidden flex flex-col md:flex-row min-h-[85vh]">
+
+        <!-- SIDEBAR -->
+        <div class="w-full md:w-64 bg-gray-50 border-r border-gray-200 p-8 flex flex-col justify-between shrink-0">
+            <div>
+                <h2 class="font-serif text-2xl font-bold mb-8">Ruang Kendali.</h2>
+                <nav class="space-y-4 font-mono text-sm">
+                    <button onclick="switchTab('tab-profil')" id="nav-profil" class="nav-btn block w-full text-left text-black font-bold hover:text-gray-500">PROFIL & TEKS</button>
+                    <button onclick="switchTab('tab-dokumen')" id="nav-dokumen" class="nav-btn block w-full text-left text-gray-400 hover:text-black">TAUTAN DOKUMEN</button>
+                    <button onclick="switchTab('tab-rekam-jejak')" id="nav-rekam-jejak" class="nav-btn block w-full text-left text-gray-400 hover:text-black">REKAM JEJAK</button>
+                    <button onclick="switchTab('tab-artikel')" id="nav-artikel" class="nav-btn block w-full text-left text-gray-400 hover:text-black">RUANG AKSARA</button>
+                    <button onclick="switchTab('tab-project')" id="nav-project" class="nav-btn block w-full text-left text-gray-400 hover:text-black">PROJECT</button>
+                    <button onclick="switchTab('tab-lensa')" id="nav-lensa" class="nav-btn block w-full text-left text-gray-400 hover:text-black">LENSA</button>
+                </nav>
+            </div>
+            <button onclick="logout()" class="text-xs font-mono text-red-500 hover:text-red-700 text-left mt-12 border-t border-gray-200 pt-4">
+                [ KELUAR SISTEM ]
+            </button>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="flex-1 p-8 md:p-12 overflow-y-auto bg-white custom-scroll">
+
+            <!-- ===== TAB: PROFIL & TEKS ===== -->
+            <div id="tab-profil" class="tab-content active space-y-8">
+                <h3 class="font-serif text-3xl font-bold border-b border-gray-100 pb-4">Teks Beranda</h3>
+                <form id="form-profil" onsubmit="return false;" class="space-y-6 max-w-2xl">
+                    <div>
+                        <label class="text-xs font-mono text-gray-500 uppercase">Pilih Elemen Teks</label>
+                        <select id="prof-bagian" class="w-full border-b py-2 focus:outline-none focus:border-black cursor-pointer bg-transparent">
+                            <option value="BERANDA">Teks Pengantar Beranda</option>
+                            <option value="JUDUL_UTAMA">Judul Utama Halaman Depan</option>
+                            <option value="VISI">Teks Manifesto Digital</option>
+                            <option value="SUB_1_JUDUL">Sub 1 - Judul</option>
+                            <option value="SUB_1_TEKS">Sub 1 - Teks Penjelasan</option>
+                            <option value="SUB_2_JUDUL">Sub 2 - Judul</option>
+                            <option value="SUB_2_TEKS">Sub 2 - Teks Penjelasan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-mono text-gray-500 uppercase">Isi Teks Baru</label>
+                        <textarea id="prof-konten" rows="4" class="w-full border p-3 mt-1 rounded-sm focus:outline-none focus:border-black" placeholder="Masukkan narasi baru..." required></textarea>
+                    </div>
+                    <button type="button" id="btn-profil" onclick="simpanProfil()" class="bg-black text-white px-6 py-2 text-sm font-mono hover:bg-gray-800 transition-colors">UBAH DATA</button>
+                    <div id="status-profil" class="hidden text-sm font-mono mt-4 p-3"></div>
+                </form>
+            </div>
+
+            <!-- ===== TAB: TAUTAN DOKUMEN ===== -->
+            <div id="tab-dokumen" class="tab-content space-y-12">
+                <div>
+                    <h3 class="font-serif text-3xl font-bold border-b border-gray-100 pb-4 mb-6">Tombol Dokumen Dinamis</h3>
+                    <div class="bg-blue-50/50 p-4 border border-blue-100 mb-6 max-w-3xl">
+                        <p class="text-xs font-mono text-blue-600 leading-relaxed">Fitur ini memungkinkan Anda merakit tombol dokumen tanpa batas. Beri nama tombol apa saja, masukkan tautan Google Drive, dan tombol akan langsung muncul berjejer di halaman depan.</p>
+                    </div>
+                    <form id="form-dokumen-dinamis" class="space-y-6 max-w-3xl">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="text-xs font-mono text-gray-500 uppercase">Nama Tombol</label>
+                                <input type="text" id="dok-nama" placeholder="Misal: UNDUH PORTOFOLIO" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
+                            </div>
+                            <div>
+                                <label class="text-xs font-mono text-gray-500 uppercase">Tautan (URL)</label>
+                                <input type="url" id="dok-link" placeholder="https://drive.google.com/..." class="w-full border-b py-2 focus:outline-none focus:border-black" required>
+                            </div>
+                        </div>
+                        <button type="submit" id="btn-dok" class="bg-black text-white px-6 py-2 text-sm font-mono hover:bg-gray-800">BUAT TOMBOL BARU</button>
+                    </form>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-sm border border-gray-200">
+                    <h4 class="font-serif text-xl font-bold mb-4">Tombol Aktif Saat Ini</h4>
+                    <div id="list-dokumen" class="space-y-3 max-h-64 overflow-y-auto custom-scroll pr-2 text-sm"></div>
+                </div>
+            </div>
+
+            <!-- ===== TAB: REKAM JEJAK ===== -->
+            <div id="tab-rekam-jejak" class="tab-content space-y-12">
+                <div>
+                    <h3 class="font-serif text-3xl font-bold border-b border-gray-100 pb-4 mb-6">Tambah / Edit Rekam Jejak</h3>
+                    <form onsubmit="submitData(event, '/rekam-jejak', 'btn-rj', 'status-rj', { peran: document.getElementById('rj-peran').value, institusi: document.getElementById('rj-inst').value, periode_mulai: document.getElementById('rj-mulai').value, periode_selesai: document.getElementById('rj-selesai').value, deskripsi: document.getElementById('rj-desk').value }, 'rekam-jejak')">
+                        <div class="grid grid-cols-2 gap-6 max-w-3xl">
+                            <div class="col-span-2 md:col-span-1">
+                                <label class="text-xs font-mono text-gray-500 uppercase">Peran / Jabatan</label>
+                                <input type="text" id="rj-peran" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
+                            </div>
+                            <div class="col-span-2 md:col-span-1">
+                                <label class="text-xs font-mono text-gray-500 uppercase">Institusi</label>
+                                <input type="text" id="rj-inst" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
+                            </div>
+                            <div class="col-span-2 md:col-span-1">
+                                <label class="text-xs font-mono text-gray-500 uppercase">Tahun Mulai</label>
+                                <input type="text" id="rj-mulai" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
+                            </div>
+                            <div class="col-span-2 md:col-span-1">
+                                <label class="text-xs font-mono text-gray-500 uppercase">Tahun Selesai</label>
+                                <input type="text" id="rj-selesai" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-xs font-mono text-gray-500 uppercase">Deskripsi</label>
+                                <textarea id="rj-desk" rows="3" class="w-full border p-3 mt-1 focus:outline-none focus:border-black" required></textarea>
+                            </div>
+                            <div class="col-span-2 flex flex-wrap items-center gap-4">
+                                <button type="submit" id="btn-rj" class="bg-black text-white px-6 py-2 text-sm font-mono hover:bg-gray-800">TAMBAH KE LINIMASA</button>
+                                <button type="button" id="btn-cancel-rj" onclick="cancelEdit('rekam-jejak')" class="hidden bg-gray-200 text-gray-700 px-6 py-2 text-sm font-mono hover:bg-gray-300">BATAL</button>
+                                <div id="status-rj" class="hidden text-sm font-mono mt-4 p-3 w-full"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-sm border border-gray-200">
+                    <h4 class="font-serif text-xl font-bold mb-4">Arsip Rekam Jejak</h4>
+                    <div id="list-rekam-jejak" class="space-y-3 max-h-64 overflow-y-auto custom-scroll pr-2 text-sm"></div>
+                </div>
+            </div>
+
+            <!-- ===== TAB: RUANG AKSARA (ARTIKEL) ===== -->
+            <div id="tab-artikel" class="tab-content space-y-12">
+                <div>
+                    <h3 class="font-serif text-3xl font-bold border-b border-gray-100 pb-4 mb-6">Tulis / Edit Aksara</h3>
+                    <form onsubmit="submitData(event, '/artikel', 'btn-art', 'status-art', { judul: document.getElementById('art-judul').value, kategori: document.getElementById('art-kategori').value, konten: document.getElementById('art-konten').value }, 'artikel')">
+                        <div class="space-y-6 max-w-3xl">
+                            <div>
+                                <label class="text-xs font-mono text-gray-500 uppercase">Judul Tulisan</label>
+                                <input type="text" id="art-judul" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
+                            </div>
+                            <div>
+                                <label class="text-xs font-mono text-gray-500 uppercase">Kategori</label>
+                                <input type="text" id="art-kategori" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="Mis: Esai Pemikiran, Sajak, dll" required>
+                            </div>
+                            <div>
+                                <label class="text-xs font-mono text-gray-500 uppercase">Isi Tulisan</label>
+                                <textarea id="art-konten" rows="8" class="w-full border p-3 mt-1 focus:outline-none focus:border-black" required></textarea>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <button type="submit" id="btn-art" class="bg-black text-white px-6 py-2 text-sm font-mono hover:bg-gray-800">PUBLIKASIKAN TULISAN</button>
+                                <button type="button" id="btn-cancel-art" onclick="cancelEdit('artikel')" class="hidden bg-gray-200 text-gray-700 px-6 py-2 text-sm font-mono hover:bg-gray-300">BATAL</button>
+                                <div id="status-art" class="hidden text-sm font-mono mt-4 p-3 w-full"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-sm border border-gray-200">
+                    <h4 class="font-serif text-xl font-bold mb-4">Arsip Tulisan</h4>
+                    <div id="list-artikel" class="space-y-3 max-h-64 overflow-y-auto custom-scroll pr-2 text-sm"></div>
+                </div>
+            </div>
+
+            <!-- ===== TAB: PROJECT ===== -->
+            <div id="tab-project" class="tab-content space-y-12">
+                <div>
+                    <h3 class="font-serif text-3xl font-bold border-b border-gray-100 pb-4 mb-6">Unggah / Edit Project</h3>
+                    <form onsubmit="submitData(event, '/projects', 'btn-proj', 'status-proj', { judul: document.getElementById('proj-judul').value, deskripsi: document.getElementById('proj-desk').value, tags: document.getElementById('proj-tags').value, url_demo: document.getElementById('proj-demo').value, url_github: document.getElementById('proj-git').value }, 'projects')">
+                        <div class="space-y-6 max-w-3xl">
+                            <div>
+                                <label class="text-xs font-mono text-gray-500 uppercase">Judul Project</label>
+                                <input type="text" id="proj-judul" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
+                            </div>
+                            <div>
+                                <label class="text-xs font-mono text-gray-500 uppercase">Tags (Pisahkan koma)</label>
+                                <input type="text" id="proj-tags" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="Mis: Python, Data Analytics, Fintech" required>
+                            </div>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="col-span-2 md:col-span-1">
+                                    <label class="text-xs font-mono text-gray-500 uppercase">URL Live (Opsional)</label>
+                                    <input type="text" id="proj-demo" class="w-full border-b py-2 focus:outline-none focus:border-black">
+                                </div>
+                                <div class="col-span-2 md:col-span-1">
+                                    <label class="text-xs font-mono text-gray-500 uppercase">URL Repositori (Opsional)</label>
+                                    <input type="text" id="proj-git" class="w-full border-b py-2 focus:outline-none focus:border-black">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs font-mono text-gray-500 uppercase">Deskripsi Detail</label>
+                                <textarea id="proj-desk" rows="4" class="w-full border p-3 mt-1 focus:outline-none focus:border-black" required></textarea>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <button type="submit" id="btn-proj" class="bg-black text-white px-6 py-2 text-sm font-mono hover:bg-gray-800">UNGGAH PROJECT</button>
+                                <button type="button" id="btn-cancel-proj" onclick="cancelEdit('projects')" class="hidden bg-gray-200 text-gray-700 px-6 py-2 text-sm font-mono hover:bg-gray-300">BATAL</button>
+                                <div id="status-proj" class="hidden text-sm font-mono mt-4 p-3 w-full"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-sm border border-gray-200">
+                    <h4 class="font-serif text-xl font-bold mb-4">Arsip Project</h4>
+                    <div id="list-projects" class="space-y-3 max-h-64 overflow-y-auto custom-scroll pr-2 text-sm"></div>
+                </div>
+            </div>
+
+            <!-- ===== TAB: LENSA ===== -->
+            <div id="tab-lensa" class="tab-content space-y-12">
+                <div>
+                    <h3 class="font-serif text-3xl font-bold border-b border-gray-100 pb-4 mb-6">Unggah / Edit Visual</h3>
+                    <div class="bg-blue-50/50 p-4 border border-blue-100 mb-6 max-w-3xl">
+                        <p class="text-xs font-mono text-blue-600 leading-relaxed">Format Tautan:<br>1. Foto: Masukkan link gambar murni.<br>2. Video: Format <span class="font-bold">Link_Thumbnail|Link_Video</span></p>
+                    </div>
+                    <form onsubmit="submitData(event, '/lensa', 'btn-lensa', 'status-lensa', { judul: document.getElementById('len-judul').value, caption: document.getElementById('len-cap').value, url_gambar: document.getElementById('len-url').value }, 'lensa')">
+                        <div class="space-y-6 max-w-3xl">
+                            <div>
+                                <label class="text-xs font-mono text-gray-500 uppercase">Tautan Aset (URL)</label>
+                                <input type="text" id="len-url" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
+                            </div>
+                            <div>
+                                <label class="text-xs font-mono text-gray-500 uppercase">Judul Internal</label>
+                                <input type="text" id="len-judul" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
+                            </div>
+                            <div>
+                                <label class="text-xs font-mono text-gray-500 uppercase">Caption</label>
+                                <textarea id="len-cap" rows="2" class="w-full border p-3 mt-1 focus:outline-none focus:border-black" required></textarea>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <button type="submit" id="btn-lensa" class="bg-black text-white px-6 py-2 text-sm font-mono hover:bg-gray-800">PAJANG DI LENSA</button>
+                                <button type="button" id="btn-cancel-lensa" onclick="cancelEdit('lensa')" class="hidden bg-gray-200 text-gray-700 px-6 py-2 text-sm font-mono hover:bg-gray-300">BATAL</button>
+                                <div id="status-lensa" class="hidden text-sm font-mono mt-4 p-3 w-full"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-sm border border-gray-200">
+                    <h4 class="font-serif text-xl font-bold mb-4">Arsip Visual</h4>
+                    <div id="list-lensa" class="space-y-3 max-h-64 overflow-y-auto custom-scroll pr-2 text-sm"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
+        const loginSection = document.getElementById('login-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+        const dataCache = {};
+        const editState = {};
+
+        window.onload = () => {
+            if (sessionStorage.getItem('api_key')) showDashboard();
+        };
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            sessionStorage.setItem('api_key', document.getElementById('api-key-input').value);
+            showDashboard();
+        });
+
+        function logout() {
+            sessionStorage.removeItem('api_key');
+            document.getElementById('api-key-input').value = '';
+            dashboardSection.classList.add('hidden');
+            loginSection.classList.remove('hidden');
+            for (let key in editState) delete editState[key];
+            for (let key in dataCache) delete dataCache[key];
+        }
+
+        function showDashboard() {
+            loginSection.classList.add('hidden');
+            dashboardSection.classList.remove('hidden');
+            loadAllData();
+            loadDynamicDocuments();
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-black', 'font-bold');
+                btn.classList.add('text-gray-400');
+            });
+            document.getElementById(tabId).classList.add('active');
+            const navId = 'nav-' + tabId.replace('tab-', '');
+            const activeNav = document.getElementById(navId);
+            if (activeNav) {
+                activeNav.classList.remove('text-gray-400');
+                activeNav.classList.add('text-black', 'font-bold');
+            }
+        }
+
+        // DOKUMEN DINAMIS
+        let arrayDokumen = [];
+
+        async function loadDynamicDocuments() {
+            const container = document.getElementById('list-dokumen');
+            try {
+                const res = await fetch(`${BASE_URL}/profil/DOKUMEN_BEBAS`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.konten) {
+                        arrayDokumen = JSON.parse(data.konten);
+                    } else if (Array.isArray(data)) {
+                        arrayDokumen = data;
+                    }
+                }
+            } catch (e) {
+                arrayDokumen = [];
+            }
+            renderDocuments();
+        }
+
+        function renderDocuments() {
+            const container = document.getElementById('list-dokumen');
+            if (arrayDokumen.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 italic">Belum ada tombol dokumen.</p>';
+                return;
+            }
+            container.innerHTML = arrayDokumen.map((doc, i) => `
+                <div class="flex items-center justify-between p-3 bg-white border border-gray-100 shadow-sm">
+                    <div>
+                        <p class="font-bold text-gray-800">${doc.nama}</p>
+                        <p class="text-xs text-blue-500 font-mono truncate max-w-xs">${doc.link}</p>
+                    </div>
+                    <button onclick="deleteDocument(${i})" class="text-xs font-mono bg-red-50 text-red-600 px-3 py-1 border border-red-100 hover:bg-red-500 hover:text-white transition-colors rounded-sm shrink-0 ml-4">
+                        HAPUS
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        async function saveDynamicDocuments() {
+            const apiKey = sessionStorage.getItem('api_key');
+            const btn = document.getElementById('btn-dok');
+            btn.innerText = 'MEMPROSES...';
+            btn.disabled = true;
+            try {
+                const bagian = 'DOKUMEN_BEBAS';
+                const checkRes = await fetch(`${BASE_URL}/profil/${bagian}`);
+                const sudahAda = checkRes.ok && (await checkRes.json()) !== null;
+
+                const url = sudahAda ? `${BASE_URL}/profil/${bagian}` : `${BASE_URL}/profil`;
+                const method = sudahAda ? 'PUT' : 'POST';
+
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+                    body: JSON.stringify({ bagian: bagian, konten: JSON.stringify(arrayDokumen) })
+                });
+                if (!res.ok) throw new Error('Gagal menyimpan');
+                renderDocuments();
+            } catch (e) {
+                alert('Gagal menyimpan tombol ke server.');
+            } finally {
+                btn.innerText = 'BUAT TOMBOL BARU';
+                btn.disabled = false;
+            }
+        }
+
+        document.getElementById('form-dokumen-dinamis').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nama = document.getElementById('dok-nama').value.trim();
+            const link = document.getElementById('dok-link').value.trim();
+            if (!nama || !link) return;
+            arrayDokumen.push({ nama, link });
+            await saveDynamicDocuments();
+            e.target.reset();
+        });
+
+        async function deleteDocument(index) {
+            if (!confirm('Yakin ingin menghapus tombol ini?')) return;
+            arrayDokumen.splice(index, 1);
+            await saveDynamicDocuments();
+        }
+
+        // FUNGSI SIMPAN PROFIL (POST/PUT otomatis)
+        async function simpanProfil() {
+            const btn = document.getElementById('btn-profil');
+            const statusBox = document.getElementById('status-profil');
+            const apiKey = sessionStorage.getItem('api_key');
+            const bagian = document.getElementById('prof-bagian').value;
+            const konten = document.getElementById('prof-konten').value;
+
+            btn.innerText = 'MENYIMPAN...';
+            btn.disabled = true;
+            statusBox.classList.add('hidden');
+
+            try {
+                const checkRes = await fetch(`${BASE_URL}/profil/${bagian}`);
+                const sudahAda = checkRes.ok && (await checkRes.json()) !== null;
+
+                const url = sudahAda ? `${BASE_URL}/profil/${bagian}` : `${BASE_URL}/profil`;
+                const method = sudahAda ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': apiKey
+                    },
+                    body: JSON.stringify({ bagian: bagian, konten: konten })
+                });
+
+                if (response.ok) {
+                    statusBox.textContent = '✅ Data profil berhasil diperbarui.';
+                    statusBox.className = "text-sm font-mono mt-4 p-3 bg-green-50 text-green-700 border border-green-200 block";
+                    document.getElementById('prof-konten').value = '';
+                } else if (response.status === 401 || response.status === 403) {
+                    throw new Error('Sandi Server tidak valid');
+                } else {
+                    const errorData = await response.json().catch(() => null);
+                    throw new Error(errorData?.detail || 'Gagal menyimpan');
+                }
+            } catch (error) {
+                statusBox.textContent = `⚠ Gagal: ${error.message}`;
+                statusBox.className = "text-sm font-mono mt-4 p-3 bg-red-50 text-red-700 border border-red-200 block";
+                if (error.message.includes('Sandi Server')) logout();
+            } finally {
+                btn.innerText = 'UBAH DATA';
+                btn.disabled = false;
+            }
+        }
+
+        // STANDAR CRUD
+        async function submitData(e, endpoint, btnId, statusId, payloadObj, listTypeToReload) {
+            e.preventDefault();
+            const btn = document.getElementById(btnId);
+            const statusBox = document.getElementById(statusId);
+            const apiKey = sessionStorage.getItem('api_key');
+
+            const editId = listTypeToReload ? editState[listTypeToReload] : null;
+            const isEdit = Boolean(editId);
+
+            btn.innerText = isEdit ? 'MENYIMPAN PERUBAHAN...' : 'MEMPROSES...';
+            btn.disabled = true;
+            statusBox.classList.add('hidden');
+
+            try {
+                let url = BASE_URL + endpoint;
+                let method = 'POST';
+                if (isEdit) {
+                    url = `${BASE_URL}/${listTypeToReload}/${editId}`;
+                    method = 'PUT';
+                }
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+                    body: JSON.stringify(payloadObj)
+                });
+
+                if (response.ok) {
+                    statusBox.textContent = isEdit ? '✓ Data berhasil diperbarui.' : '✓ Sukses! Data tersimpan.';
+                    statusBox.className = "text-sm font-mono mt-4 p-3 bg-green-50 text-green-700 border border-green-200 block";
+                    e.target.reset();
+                    if (listTypeToReload) {
+                        cancelEdit(listTypeToReload);
+                        fetchListData(listTypeToReload);
+                    }
+                } else if (response.status === 401 || response.status === 403) {
+                    throw new Error('Sandi Server tidak valid.');
+                } else {
+                    throw new Error('Kesalahan Database.');
+                }
+            } catch (error) {
+                statusBox.textContent = `⚠ Gagal: ${error.message}`;
+                statusBox.className = "text-sm font-mono mt-4 p-3 bg-red-50 text-red-700 border border-red-200 block";
+                if (error.message.includes('Sandi Server')) logout();
+            } finally {
+                btn.innerText = isEdit ? 'SIMPAN PERUBAHAN' : getDefaultButtonText(listTypeToReload, btnId);
+                btn.disabled = false;
+            }
+        }
+
+        function getDefaultButtonText(type, btnId) {
+            const defaultTexts = {
+                'rekam-jejak': 'TAMBAH KE LINIMASA',
+                'artikel': 'PUBLIKASIKAN TULISAN',
+                'projects': 'UNGGAH PROJECT',
+                'lensa': 'PAJANG DI LENSA'
+            };
+            return defaultTexts[type] || 'UBAH DATA';
+        }
+
+        function loadAllData() {
+            ['rekam-jejak', 'artikel', 'projects', 'lensa'].forEach(fetchListData);
+        }
+
+        async function fetchListData(type) {
+            const container = document.getElementById(`list-${type}`);
+            if (!container) return;
+            container.innerHTML = '<p class="text-gray-400 animate-pulse">Menarik arsip data...</p>';
+
+            try {
+                const res = await fetch(`${BASE_URL}/${type}`);
+                const data = await res.json();
+                dataCache[type] = data;
+
+                if (data && data.length > 0) {
+                    container.innerHTML = data.map(item => {
+                        let label = item.judul || item.peran || item.nama || 'Tanpa Judul';
+                        let sub = item.kategori || item.institusi || item.tags || '';
+                        return `
+                        <div class="flex items-center justify-between p-3 bg-white border border-gray-100 shadow-sm hover:border-gray-300 transition-colors">
+                            <div class="flex-1">
+                                <p class="font-bold text-gray-800">${label}</p>
+                                ${sub ? `<p class="text-xs text-gray-500 font-mono">${sub}</p>` : ''}
+                            </div>
+                            <div class="flex gap-2 ml-4">
+                                <button onclick="editItem('${type}', ${item.id})" class="text-xs font-mono bg-blue-50 text-blue-600 px-3 py-1 border border-blue-100 hover:bg-blue-500 hover:text-white transition-colors rounded-sm">
+                                    EDIT
+                                </button>
+                                <button onclick="deleteData('${type}', ${item.id})" class="text-xs font-mono bg-red-50 text-red-600 px-3 py-1 border border-red-100 hover:bg-red-500 hover:text-white transition-colors rounded-sm">
+                                    HAPUS
+                                </button>
+                            </div>
+                        </div>`;
+                    }).join('');
+                } else {
+                    container.innerHTML = '<p class="text-gray-400 italic">Belum ada arsip yang tersimpan.</p>';
+                }
+            } catch (e) {
+                container.innerHTML = '<p class="text-red-400">Gagal terhubung ke database.</p>';
+            }
+        }
+
+        function editItem(type, id) {
+            const item = dataCache[type]?.find(d => d.id == id);
+            if (!item) return;
+            editState[type] = id;
+
+            const statusIds = {
+                'rekam-jejak': 'status-rj',
+                'artikel': 'status-art',
+                'projects': 'status-proj',
+                'lensa': 'status-lensa'
+            };
+            const statusEl = document.getElementById(statusIds[type]);
+            if (statusEl) statusEl.classList.add('hidden');
+
+            switch (type) {
+                case 'rekam-jejak':
+                    document.getElementById('rj-peran').value = item.peran || '';
+                    document.getElementById('rj-inst').value = item.institusi || '';
+                    document.getElementById('rj-mulai').value = item.periode_mulai || '';
+                    document.getElementById('rj-selesai').value = item.periode_selesai || '';
+                    document.getElementById('rj-desk').value = item.deskripsi || '';
+                    document.getElementById('btn-rj').innerText = 'SIMPAN PERUBAHAN';
+                    document.getElementById('btn-cancel-rj').classList.remove('hidden');
+                    break;
+
+                case 'artikel':
+                    document.getElementById('art-judul').value = item.judul || '';
+                    document.getElementById('art-kategori').value = item.kategori || '';
+                    document.getElementById('art-konten').value = item.konten || '';
+                    document.getElementById('btn-art').innerText = 'SIMPAN PERUBAHAN';
+                    document.getElementById('btn-cancel-art').classList.remove('hidden');
+                    break;
+
+                case 'projects':
+                    document.getElementById('proj-judul').value = item.judul || '';
+                    document.getElementById('proj-desk').value = item.deskripsi || '';
+                    document.getElementById('proj-tags').value = item.tags || '';
+                    document.getElementById('proj-demo').value = item.url_demo || '';
+                    document.getElementById('proj-git').value = item.url_github || '';
+                    document.getElementById('btn-proj').innerText = 'SIMPAN PERUBAHAN';
+                    document.getElementById('btn-cancel-proj').classList.remove('hidden');
+                    break;
+
+                case 'lensa':
+                    document.getElementById('len-url').value = item.url_gambar || '';
+                    document.getElementById('len-judul').value = item.judul || '';
+                    document.getElementById('len-cap').value = item.caption || '';
+                    document.getElementById('btn-lensa').innerText = 'SIMPAN PERUBAHAN';
+                    document.getElementById('btn-cancel-lensa').classList.remove('hidden');
+                    break;
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelEdit(type) {
+            const fields = {
+                'rekam-jejak': ['rj-peran', 'rj-inst', 'rj-mulai', 'rj-selesai', 'rj-desk'],
+                'artikel': ['art-judul', 'art-kategori', 'art-konten'],
+                'projects': ['proj-judul', 'proj-desk', 'proj-tags', 'proj-demo', 'proj-git'],
+                'lensa': ['len-url', 'len-judul', 'len-cap']
+            };
+            if (fields[type]) {
+                fields[type].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = '';
+                });
+            }
+
+            delete editState[type];
+
+            const btnIds = {
+                'rekam-jejak': 'btn-rj',
+                'artikel': 'btn-art',
+                'projects': 'btn-proj',
+                'lensa': 'btn-lensa'
+            };
+            const cancelIds = {
+                'rekam-jejak': 'btn-cancel-rj',
+                'artikel': 'btn-cancel-art',
+                'projects': 'btn-cancel-proj',
+                'lensa': 'btn-cancel-lensa'
+            };
+            const defaultTexts = {
+                'rekam-jejak': 'TAMBAH KE LINIMASA',
+                'artikel': 'PUBLIKASIKAN TULISAN',
+                'projects': 'UNGGAH PROJECT',
+                'lensa': 'PAJANG DI LENSA'
+            };
+
+            const btn = document.getElementById(btnIds[type]);
+            if (btn) btn.innerText = defaultTexts[type] || btn.innerText;
+
+            const cancelBtn = document.getElementById(cancelIds[type]);
+            if (cancelBtn) cancelBtn.classList.add('hidden');
+
+            const statusIds = {
+                'rekam-jejak': 'status-rj',
+                'artikel': 'status-art',
+                'projects': 'status-proj',
+                'lensa': 'status-lensa'
+            };
+            const statusEl = document.getElementById(statusIds[type]);
+            if (statusEl) statusEl.classList.add('hidden');
+        }
+
+        async function deleteData(type, id) {
+            if (!confirm('Tindakan ini permanen. Anda yakin ingin menghapus arsip ini?')) return;
+
+            const apiKey = sessionStorage.getItem('api_key');
+            try {
+                const res = await fetch(`${BASE_URL}/${type}/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'x-api-key': apiKey }
+                });
+                if (res.ok) {
+                    if (editState[type] === id) cancelEdit(type);
+                    fetchListData(type);
+                } else if (res.status === 401 || res.status === 403) {
+                    alert('Sandi Server tidak valid. Silakan login ulang.');
+                    logout();
+                } else {
+                    alert('Gagal menghapus data dari server.');
+                }
+            } catch (e) {
+                alert('Terjadi kesalahan jaringan.');
+            }
+        }
+    </script>
+</body>
+</html>

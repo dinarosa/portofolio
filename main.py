@@ -1,4 +1,15 @@
 import os
+import secrets
+from dotenv import load_dotenv
+
+# Memuat brankas .env
+load_dotenv()
+
+# Kunci server (wajib ada, jika tidak ada beri peringatan)
+SERVER_PASSWORD = os.getenv("SERVER_PASSWORD")
+if not SERVER_PASSWORD:
+    raise RuntimeError("SERVER_PASSWORD tidak ditemukan di file .env! Aplikasi tidak dapat berjalan.")
+
 from fastapi import FastAPI, Depends, HTTPException, Security, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security.api_key import APIKeyHeader
@@ -10,11 +21,14 @@ import models
 import schemas
 
 app = FastAPI(
-    title="Portfolio Core API", 
+    title="Portfolio Core API",
     description="Infrastruktur data asinkronus dengan proteksi API Key gembok virtual.",
     version="2.0.0"
 )
 
+# ==========================================================================
+# CORS – Izinkan semua asal (sesuaikan di produksi)
+# ==========================================================================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -24,21 +38,30 @@ app.add_middleware(
 )
 
 # ==========================================================================
-# KONFIGURASI KEAMANAN (SATPAM VIRTUAL)
+# KEAMANAN – API Key (SATPAM VIRTUAL)
 # ==========================================================================
 API_KEY_NAME = "X-API-Key"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 
-# Mengambil kunci rahasia dari environment variable Render, fallback ke lokal jika di komputer sendiri
-SECRET_API_KEY = os.getenv("PORTFOLIO_API_KEY", "najwahanifah")
-
 async def get_api_key(api_key: str = Security(api_key_header)):
-    if api_key == SECRET_API_KEY:
+    """
+    Memeriksa API Key yang dikirim melalui header X-API-Key.
+    Menggunakan perbandingan aman (timing-attack safe).
+    """
+    if api_key and secrets.compare_digest(api_key, SERVER_PASSWORD):
         return api_key
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
         detail="Akses ditolak! Kunci keamanan tidak valid atau tidak disediakan."
     )
+
+
+# ==========================================================================
+# ROOT – Pengecekan status API
+# ==========================================================================
+@app.get("/", tags=["Root"])
+def root():
+    return {"status": "online", "message": "Portfolio Core API v2.0.0 siap digunakan."}
 
 
 # ==========================================================================
@@ -49,9 +72,9 @@ def read_profil(bagian: str, db: Session = Depends(get_db)):
     # TERBUKA: Publik bisa membaca konten profil
     return db.query(models.Profil).filter(models.Profil.bagian == bagian.upper()).first()
 
-@app.post("/api/v1/profil", response_model=schemas.ProfilResponse, tags=["Profil"])
+@app.post("/api/v1/profil", response_model=schemas.ProfilResponse, status_code=201, tags=["Profil"])
 def create_profil(profil: schemas.ProfilCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
-    # DIGEMBOK: Hanya admin yang bisa membuat profil baru
+    # DIGEMBOK
     db_profil = models.Profil(**profil.model_dump())
     db.add(db_profil)
     db.commit()
@@ -60,7 +83,7 @@ def create_profil(profil: schemas.ProfilCreate, db: Session = Depends(get_db), a
 
 @app.put("/api/v1/profil/{bagian}", response_model=schemas.ProfilResponse, tags=["Profil"])
 def update_profil(bagian: str, profil_data: schemas.ProfilCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
-    # DIGEMBOK: Hanya admin yang bisa menyunting profil
+    # DIGEMBOK
     db_profil = db.query(models.Profil).filter(models.Profil.bagian == bagian.upper()).first()
     if not db_profil:
         raise HTTPException(status_code=404, detail="Profil tidak ditemukan")
@@ -75,10 +98,10 @@ def update_profil(bagian: str, profil_data: schemas.ProfilCreate, db: Session = 
 # ==========================================
 @app.get("/api/v1/projects", response_model=List[schemas.ProjectResponse], tags=["Project"])
 def read_projects(db: Session = Depends(get_db)):
-    # TERBUKA: Tampilan website memerlukan akses data proyek
+    # TERBUKA
     return db.query(models.Project).all()
 
-@app.post("/api/v1/projects", response_model=schemas.ProjectResponse, tags=["Project"])
+@app.post("/api/v1/projects", response_model=schemas.ProjectResponse, status_code=201, tags=["Project"])
 def create_project(project: schemas.ProjectCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
     # DIGEMBOK
     db_project = models.Project(**project.model_dump())
@@ -119,7 +142,7 @@ def read_artikel(db: Session = Depends(get_db)):
     # TERBUKA
     return db.query(models.Artikel).all()
 
-@app.post("/api/v1/artikel", response_model=schemas.ArtikelResponse, tags=["Artikel"])
+@app.post("/api/v1/artikel", response_model=schemas.ArtikelResponse, status_code=201, tags=["Artikel"])
 def create_artikel(artikel: schemas.ArtikelCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
     # DIGEMBOK
     db_artikel = models.Artikel(**artikel.model_dump())
@@ -160,7 +183,7 @@ def read_rekam_jejak(db: Session = Depends(get_db)):
     # TERBUKA
     return db.query(models.RekamJejak).all()
 
-@app.post("/api/v1/rekam-jejak", response_model=schemas.RekamJejakResponse, tags=["Rekam Jejak"])
+@app.post("/api/v1/rekam-jejak", response_model=schemas.RekamJejakResponse, status_code=201, tags=["Rekam Jejak"])
 def create_rekam_jejak(rekam: schemas.RekamJejakCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
     # DIGEMBOK
     db_rekam = models.RekamJejak(**rekam.model_dump())
@@ -203,7 +226,7 @@ def read_lensa(db: Session = Depends(get_db)):
     # TERBUKA
     return db.query(models.Lensa).all()
 
-@app.post("/api/v1/lensa", response_model=schemas.LensaResponse, tags=["Lensa"])
+@app.post("/api/v1/lensa", response_model=schemas.LensaResponse, status_code=201, tags=["Lensa"])
 def create_lensa(lensa: schemas.LensaCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
     # DIGEMBOK
     db_lensa = models.Lensa(**lensa.model_dump())
@@ -228,12 +251,12 @@ def delete_lensa(lensa_id: int, db: Session = Depends(get_db), api_key: str = De
 # ==========================================
 @app.get("/api/v1/pesan", response_model=List[schemas.PesanResponse], tags=["Kontak"])
 def read_pesan(db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
-    # DIGEMBOK KRITIKAL: Orang luar tidak boleh membaca pesan masuk Anda!
+    # DIGEMBOK KRITIKAL
     return db.query(models.Pesan).all()
 
-@app.post("/api/v1/pesan", response_model=schemas.PesanResponse, tags=["Kontak"])
+@app.post("/api/v1/pesan", response_model=schemas.PesanResponse, status_code=201, tags=["Kontak"])
 def create_pesan(pesan: schemas.PesanCreate, db: Session = Depends(get_db)):
-    # TERBUKA: Pengunjung website wajib bisa mengirimkan pesan kontak ke database
+    # TERBUKA: Pengunjung bisa mengirim pesan
     db_pesan = models.Pesan(**pesan.model_dump())
     db.add(db_pesan)
     db.commit()

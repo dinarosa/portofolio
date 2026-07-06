@@ -1,52 +1,59 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dikya Abidullah | Ruang Kontemplasi Digital</title>
-
+    <link rel="icon" type="image/jpg" href="logowebsite.jpg">
+    <meta name="google-site-verification" content="N1BteJbnLY2gA0on_RLTeccSgAOIurflLHoFfWZp-fM" />
     <meta property="og:title" content="Dikya Abidullah | Portofolio" />
     <meta property="og:description" content="Sebuah ruang kontemplasi digital yang mempertemukan ketepatan logika data, kedalaman riset ekonomi, dan keindahan bahasa visual." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://devaabidya.site/" />
-    <meta property="og:image" content="https://devaabidya.site/thumbnail.jpg" />
-    <meta property="og:site_name" content="Dikya Abidullah" />
-    
+    <meta property="og:image" content="https://devaabidya.site/thumbnail.jpeg" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Dikya Abidullah | Portofolio" />
     <meta name="twitter:description" content="Sebuah ruang kontemplasi digital yang mempertemukan ketepatan logika data, kedalaman riset ekonomi, dan keindahan bahasa visual." />
-    <meta name="twitter:image" content="https://devaabidya.site/thumbnail.jpg" />
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dikya Abidullah | Portfolio</title>
+    <meta name="twitter:image" content="https://devaabidya.site/thumbnail.jpeg" />
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #fafafa;
             color: #1a1a1a;
+            scroll-behavior: smooth;
         }
-        .font-serif {
-            font-family: 'Playfair Display', serif;
-        }
+        .font-serif { font-family: 'Playfair Display', serif; }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
         
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .tab-content.active { display: block; animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* KHUSUS EFEK VIDEO DI LENSA */
+        #scroll-progress {
+            position: fixed; top: 0; left: 0; height: 3px; background: black; z-index: 100; transition: width 0.1s ease;
+        }
+
+        #back-to-top {
+            position: fixed; bottom: 2rem; right: 2rem; z-index: 50; opacity: 0; transform: translateY(20px);
+            transition: all 0.3s ease; pointer-events: none;
+        }
+        #back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+        .reveal {
+            opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
         .video-link { position: relative; display: block; }
         .video-link::after {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -54,21 +61,68 @@
             opacity: 0; transition: opacity 0.4s ease; z-index: 1;
         }
         .video-link:hover::after { opacity: 1; }
-
         .play-button {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1);
-            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            color: #ffffff; width: 65px; height: 65px; display: flex; align-items: center; justify-content: center;
-            border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 22px; z-index: 2;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            transform: scale(0.9);
+            background: transparent;
+            color: #ffffff;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            z-index: 2;
+            opacity: 0;
+            transition: all 0.3s ease;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            pointer-events: none;
         }
         .video-link:hover .play-button {
-            transform: translate(-50%, -50%) scale(1.15); background: rgba(255, 255, 255, 0.95);
-            color: #1a1a1a; box-shadow: 0 10px 25px rgba(255, 255, 255, 0.4); border-color: transparent;
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .nav-btn.active-page::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: black;
+            transition: width 0.3s ease;
+        }
+        .filter-btn {
+            padding: 6px 18px;
+            border-radius: 9999px;
+            border: 1px solid #d1d5db;
+            background: transparent;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            font-family: monospace;
+            color: #6b7280;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .filter-btn:hover {
+            border-color: #9ca3af;
+            color: #1f2937;
+            background: #f9fafb;
+        }
+        .filter-btn.active {
+            background: #111827;
+            color: #ffffff;
+            border-color: #111827;
         }
     </style>
 </head>
 <body class="h-[100dvh] overflow-hidden antialiased relative">
+
+    <div id="scroll-progress" style="width: 0%;"></div>
 
     <button onclick="toggleSidebar()" class="fixed top-8 left-8 md:top-12 md:left-12 z-40 p-3 bg-white/80 backdrop-blur-md rounded-full shadow-md border border-gray-200 hover:bg-white transition-all duration-300 group">
         <svg class="w-5 h-5 text-gray-800 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -84,7 +138,7 @@
         <div class="mt-8">
             <h1 class="font-serif text-3xl font-bold tracking-tight mb-16 cursor-pointer hover:text-gray-500 transition-colors" onclick="switchTab('beranda')">Dikya.</h1>
             <nav class="space-y-6 text-lg">
-                <button onclick="switchTab('beranda')" id="nav-beranda" class="nav-btn block text-left w-full text-black font-semibold italic transition-all duration-300">Beranda</button>
+                <button onclick="switchTab('beranda')" id="nav-beranda" class="nav-btn active-page block text-left w-full text-black font-semibold italic transition-all duration-300">Beranda</button>
                 <button onclick="switchTab('rekam-jejak')" id="nav-rekam-jejak" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-2 transition-all duration-300">Rekam Jejak</button>
                 <button onclick="switchTab('ruang-aksara')" id="nav-ruang-aksara" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-2 transition-all duration-300">Ruang Aksara</button>
                 <button onclick="switchTab('lensa')" id="nav-lensa" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-2 transition-all duration-300">Lensa</button>
@@ -99,21 +153,21 @@
         </div>
     </aside>
 
-    <main class="w-full h-full overflow-y-auto bg-[#fafafa]">
+    <main class="w-full h-full overflow-y-auto bg-[#fafafa]" id="main-content">
         <div class="max-w-6xl mx-auto p-8 pt-28 pb-48 md:pb-24 md:p-24 lg:p-32">
             
             <section id="beranda" class="tab-content active space-y-20">
                 <div class="flex flex-col-reverse lg:flex-row gap-16 items-center lg:items-start">
                     <div class="flex-1 space-y-8 mt-8 lg:mt-0">
                         <span class="text-xs font-mono tracking-widest text-gray-400 uppercase">Pengantar</span>
-                        <h2 class="font-serif text-5xl md:text-7xl font-bold leading-tight text-gray-900">
+                        <h2 id="judul-utama" class="font-serif text-5xl md:text-7xl font-bold leading-tight text-gray-900 reveal">
                             Menjemput <span class="italic font-normal text-gray-600">Esensi</span> Lewat Analisis dan Narasi.
                         </h2>
                         <p id="teks-beranda" class="text-lg text-gray-600 leading-relaxed max-w-2xl font-light animate-pulse bg-gray-200/60 rounded h-20 w-full">
                             Sebuah ruang kontemplasi digital yang mempertemukan ketepatan logika data, kedalaman riset ekonomi, dan keindahan bahasa visual. Di sini, setiap gagasan diuji dan setiap perjalanan diabadikan.
                         </p>
                     </div>
-                    <div class="w-full max-w-sm lg:w-1/3 shrink-0 group">
+                    <div class="w-full max-w-sm lg:w-1/3 shrink-0 group reveal">
                         <div class="aspect-[3/4] overflow-hidden bg-gray-200 rounded-sm shadow-lg relative">
                             <img src="https://res.cloudinary.com/dqwwt03vy/image/upload/q_auto/f_auto/v1780933663/IMG_20260608_224602_sma7qd.png" alt="Potret Dikya Abidullah" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-105">
                             <div class="absolute inset-0 border border-black/10 m-4 z-10 pointer-events-none"></div>
@@ -123,103 +177,83 @@
                 </div>
                 
                 <div class="border-t border-gray-200 pt-16 grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl">
-                    <div class="space-y-4">
-                        <h3 class="font-serif text-xl font-semibold">Studi & Pengembangan</h3>
-                        <p class="text-sm text-gray-500 leading-relaxed font-light">Mengembangkan sistem tata kelola keuangan yang inklusif serta metodologi berbasis data yang transparan untuk mendukung keberlanjutan sektor ekonomi strategis di masyarakat.</p>
+                    <div class="space-y-4 reveal">
+                        <h3 id="sub-1-judul" class="font-serif text-xl font-semibold">Studi & Pengembangan</h3>
+                        <p id="sub-1-teks" class="text-sm text-gray-500 leading-relaxed font-light">Mengembangkan sistem tata kelola keuangan yang inklusif serta metodologi berbasis data yang transparan untuk mendukung keberlanjutan sektor ekonomi strategis di masyarakat.</p>
                     </div>
-                    <div class="space-y-4">
-                        <h3 class="font-serif text-xl font-semibold">Estetika & Kata</h3>
-                        <p class="text-sm text-gray-500 leading-relaxed font-light">Merekam dinamika kehidupan, pergerakan, dan ruang dalam bentuk untaian kata esai, sajak puitis, serta dokumentasi visual yang berkarakter minimalis.</p>
+                    <div class="space-y-4 reveal">
+                        <h3 id="sub-2-judul" class="font-serif text-xl font-semibold">Estetika & Kata</h3>
+                        <p id="sub-2-teks" class="text-sm text-gray-500 leading-relaxed font-light">Merekam dinamika kehidupan, pergerakan, dan ruang dalam bentuk untaian kata esai, sajak puitis, serta dokumentasi visual yang berkarakter minimalis.</p>
                     </div>
+                </div>
+                
+                <div id="wadah-dokumen" class="flex flex-wrap gap-4 mt-6 reveal">
+                    <!-- Tombol dokumen akan muncul di sini -->
                 </div>
             </section>
 
             <section id="rekam-jejak" class="tab-content space-y-16 max-w-4xl pt-8">
-                <header class="max-w-2xl">
+                <header class="max-w-2xl reveal">
                     <h2 class="font-serif text-4xl md:text-5xl font-bold mb-6">Rekam Jejak.</h2>
                     <p class="text-gray-500 font-light leading-relaxed">Linimasa perkembangan akademis, pengabdian sosial, dan kecakapan profesional yang membentuk landasan pemikiran serta aksi.</p>
                 </header>
-              <div id="rekam-jejak-container" class="relative border-l border-gray-200 ml-3 md:ml-4 space-y-14 pt-4 pb-4">
-                    <div class="skeleton-loader relative pl-10 md:pl-12 animate-pulse space-y-3">
-                        <div class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 bg-gray-200 rounded-full"></div>
-                        <div class="h-6 bg-gray-200 rounded w-1/3"></div>
-                        <div class="h-4 bg-gray-100 rounded w-1/4"></div>
-                        <div class="h-12 bg-gray-100/60 rounded w-3/4"></div>
-                    </div>
+                <div id="rekam-jejak-container" class="relative border-l border-gray-200 ml-3 md:ml-4 space-y-14 pt-4 pb-4">
+                    <!-- Skeleton loader -->
                 </div>
             </section>
 
             <section id="ruang-aksara" class="tab-content space-y-16 max-w-3xl pt-8">
-                <header>
+                <header class="reveal">
                     <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">Ruang Aksara.</h2>
                     <p class="text-gray-500 font-light">Eksplorasi gagasan lewat bait sajak, dan esai pemikiran kritis.</p>
                 </header>
+
+                <div id="filter-kategori" class="flex flex-wrap gap-3 reveal">
+                </div>
+
                 <div id="artikel-grid" class="space-y-20">
-                    <div class="skeleton-loader animate-pulse space-y-4 border-b border-gray-100 pb-12">
-                        <div class="h-3 bg-gray-200 rounded w-1/4"></div>
-                        <div class="h-8 bg-gray-200 rounded w-2/3"></div>
-                        <div class="h-24 bg-gray-100/60 rounded w-full"></div>
-                    </div>
                 </div>
             </section>
 
             <section id="project" class="tab-content space-y-12 max-w-5xl pt-8">
-                <header>
+                <header class="reveal">
                     <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">Project.</h2>
                     <p class="text-gray-500 font-light">Implementasi rekayasa perangkat lunak dan desain identitas visual.</p>
                 </header>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="project-grid">
-                    <div class="skeleton-loader animate-pulse border border-gray-100 p-8 space-y-4 rounded-sm bg-white/40">
-                        <div class="h-4 bg-gray-200 rounded w-1/3"></div>
-                        <div class="h-6 bg-gray-200 rounded w-1/2"></div>
-                        <div class="h-12 bg-gray-100/60 rounded w-full"></div>
-                    </div>
-                    <div class="skeleton-loader animate-pulse border border-gray-100 p-8 space-y-4 rounded-sm bg-white/40">
-                        <div class="h-4 bg-gray-200 rounded w-1/4"></div>
-                        <div class="h-6 bg-gray-200 rounded w-2/3"></div>
-                        <div class="h-12 bg-gray-100/60 rounded w-full"></div>
-                    </div>
                 </div>
             </section>
 
             <section id="lensa" class="tab-content space-y-12 pt-8">
-                <header class="max-w-3xl">
+                <header class="max-w-3xl reveal">
                     <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">Lensa.</h2>
                     <p class="text-gray-500 font-light">Arsip dokumentasi visual dengan pendekatan komposisi simetris dan pencahayaan natural.</p>
                 </header>
                 <div id="lensa-grid" class="columns-1 md:columns-2 xl:columns-3 gap-8 space-y-8">
-                    <div class="skeleton-loader animate-pulse space-y-3 break-inside-avoid">
-                        <div class="aspect-[4/3] bg-gray-200 rounded-sm"></div>
-                        <div class="h-4 bg-gray-100 rounded w-1/2 mx-auto"></div>
-                    </div>
-                    <div class="skeleton-loader animate-pulse space-y-3 break-inside-avoid hidden md:block">
-                        <div class="aspect-[3/4] bg-gray-200 rounded-sm"></div>
-                        <div class="h-4 bg-gray-100 rounded w-2/3 mx-auto"></div>
-                    </div>
                 </div>
             </section>
 
             <section id="visi" class="tab-content space-y-16 max-w-4xl pt-8">
-                <header class="text-center max-w-2xl mx-auto mb-16">
+                <header class="text-center max-w-2xl mx-auto mb-16 reveal">
                     <span class="text-xs font-mono tracking-widest text-gray-400 uppercase">Prinsip Fundamental</span>
                     <h2 class="font-serif text-4xl md:text-5xl font-bold mt-4 mb-6">Manifesto Digital.</h2>
                 </header>
                 <div class="space-y-16">
-                    <blockquote id="teks-visi" class="font-serif text-3xl md:text-4xl italic text-gray-800 leading-relaxed text-center">
+                    <blockquote id="teks-visi" class="font-serif text-3xl md:text-4xl italic text-gray-800 leading-relaxed text-center reveal">
                         "Teknologi terbaik bukanlah yang paling rumit baris kodenya, melainkan yang paling mampu membawa kemaslahatan nyata bagi barisan manusia yang berdiri di hilir sistemnya."
                     </blockquote>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-gray-200 pt-16">
-                        <div class="space-y-4">
+                        <div class="space-y-4 reveal">
                             <span class="text-xs font-mono text-gray-400">01</span>
                             <h3 class="font-serif text-xl font-bold">Inklusi Finansial</h3>
                             <p class="text-sm text-gray-500 font-light leading-relaxed">Mendorong terciptanya arsitektur teknologi yang berpihak pada pemerataan akses, memadukan ketangguhan sistem digital dengan prinsip keadilan ekonomi mikro.</p>
                         </div>
-                        <div class="space-y-4">
+                        <div class="space-y-4 reveal">
                             <span class="text-xs font-mono text-gray-400">02</span>
                             <h3 class="font-serif text-xl font-bold">Ketepatan Logika</h3>
                             <p class="text-sm text-gray-500 font-light leading-relaxed">Membangun infrastruktur data yang terstruktur dan transparan. Integritas basis data adalah fondasi mutlak dari setiap keputusan analitis yang diambil.</p>
                         </div>
-                        <div class="space-y-4">
+                        <div class="space-y-4 reveal">
                             <span class="text-xs font-mono text-gray-400">03</span>
                             <h3 class="font-serif text-xl font-bold">Estetika Simetris</h3>
                             <p class="text-sm text-gray-500 font-light leading-relaxed">Menyajikan kompleksitas informasi melalui antarmuka yang puitis dan minimalis, memberikan ruang bagi pengguna untuk berpikir tanpa distraksi.</p>
@@ -229,12 +263,12 @@
             </section>
 
             <section id="kontak" class="tab-content space-y-12 max-w-3xl pt-8">
-                <header>
+                <header class="reveal">
                     <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">Ruang Temu.</h2>
                     <p class="text-gray-500 font-light leading-relaxed">Mari berdiskusi mengenai arsitektur sistem, riset ekonomi, atau sekadar bertukar gagasan kreatif.</p>
                 </header>
                 
-                <form id="form-pesan" class="space-y-8">
+                <form id="form-pesan" class="space-y-8 reveal">
                     <div class="space-y-2">
                         <label class="text-xs font-mono text-gray-500 uppercase tracking-widest">Nama</label>
                         <input type="text" id="input-nama" class="w-full border-b border-gray-300 bg-transparent py-2 text-gray-900 focus:outline-none focus:border-black transition-colors" placeholder="Masukkan nama Anda" required>
@@ -253,7 +287,7 @@
                     <p id="status-pesan" class="text-sm mt-4 hidden font-mono tracking-wide"></p>
                 </form>
 
-                <div class="space-y-8 border-l border-gray-200 pl-8 md:pl-16 mt-16">
+                <div class="space-y-8 border-l border-gray-200 pl-8 md:pl-16 mt-16 reveal">
                     <div class="space-y-2">
                         <h4 class="text-xs font-mono text-gray-400 uppercase tracking-widest">Surat Elektronik</h4>
                         <a href="mailto:dikyaabidullah1234@gmail.com" class="block font-serif text-lg hover:text-gray-500 transition-colors">dikyaabidullah1234@gmail.com</a>
@@ -289,11 +323,14 @@
                 <img id="lightbox-img" src="" class="max-w-[90vw] max-h-[90vh] object-contain shadow-2xl transform scale-95 transition-transform duration-500">
             </div>
 
+            <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top: 0, behavior: 'smooth'})" class="p-3 bg-white/80 backdrop-blur-md rounded-full shadow-md border border-gray-200 hover:bg-white transition-all duration-300">
+                <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+            </button>
         </div>
     </main>
 
     <script>
-        // --- 1. LOGIKA NAVIGASI ---
+        // Navigasi
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
@@ -308,25 +345,23 @@
         }
 
         function switchTab(tabId) {
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => content.classList.remove('active'));
-            
-            const buttons = document.querySelectorAll('.nav-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('text-black', 'font-semibold', 'italic');
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-black', 'font-semibold', 'italic', 'active-page');
                 btn.classList.add('text-gray-400');
             });
-            
             const selectedTab = document.getElementById(tabId);
-            if (selectedTab) selectedTab.classList.add('active');
-            
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+                const reveals = selectedTab.querySelectorAll('.reveal');
+                reveals.forEach(el => observer.observe(el));
+            }
             const activeBtn = document.getElementById('nav-' + tabId);
             if (activeBtn) {
                 activeBtn.classList.remove('text-gray-400');
-                activeBtn.classList.add('text-black', 'font-semibold', 'italic');
+                activeBtn.classList.add('text-black', 'font-semibold', 'italic', 'active-page');
             }
-            
-            document.querySelector('main').scrollTop = 0;
+            document.getElementById('main-content').scrollTop = 0;
             const sidebar = document.getElementById('sidebar');
             if (!sidebar.classList.contains('-translate-x-full')) {
                 toggleSidebar();
@@ -366,7 +401,6 @@
             const modalContent = document.getElementById('modal-content');
             const modalBody = document.getElementById('modal-body');
             const data = projectData[projectId];
-
             if(data) {
                 const tagsHtml = data.tags.map(tag => `<span class="text-xs font-mono px-2 py-1 bg-gray-100 text-gray-600 rounded">${tag}</span>`).join('');
                 modalBody.innerHTML = `
@@ -394,29 +428,67 @@
             }, 300);
         }
 
-        // --- 2. INTEGRASI BACK-END API & RENDER DESAIN ORISINAL ---
         const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
 
+        // Ambil teks profil (pakai path parameter /profil/{bagian})
         async function fetchProfil() {
             try {
-                const resBeranda = await fetch(`${BASE_URL}/profil/BERANDA`);
-                if (resBeranda.ok) {
-                    const data = await resBeranda.json();
-                    if(data && data.konten) {
-                        const teksBeranda = document.getElementById('teks-beranda');
-                        teksBeranda.classList.remove('animate-pulse', 'bg-gray-200/60', 'h-20', 'w-full');
-                        teksBeranda.textContent = data.konten;
+                const daftarTeks = [
+                    { kode: 'JUDUL_UTAMA', id: 'judul-utama' },
+                    { kode: 'BERANDA', id: 'teks-beranda' },
+                    { kode: 'SUB_1_JUDUL', id: 'sub-1-judul' },
+                    { kode: 'SUB_1_TEKS', id: 'sub-1-teks' },
+                    { kode: 'SUB_2_JUDUL', id: 'sub-2-judul' },
+                    { kode: 'SUB_2_TEKS', id: 'sub-2-teks' },
+                    { kode: 'VISI', id: 'teks-visi' }
+                ];
+
+                for (const item of daftarTeks) {
+                    const res = await fetch(`${BASE_URL}/profil/${item.kode}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.konten) {
+                            const elemen = document.getElementById(item.id);
+                            if (elemen) {
+                                if (item.kode === 'VISI') {
+                                    elemen.textContent = `"${data.konten}"`;
+                                } else if (item.kode === 'BERANDA') {
+                                    elemen.classList.remove('animate-pulse', 'bg-gray-200/60', 'h-20', 'w-full');
+                                    elemen.textContent = data.konten;
+                                } else if (item.kode === 'JUDUL_UTAMA') {
+                                    elemen.innerHTML = data.konten; 
+                                } else {
+                                    elemen.textContent = data.konten;
+                                }
+                            }
+                        }
                     }
                 }
-                const resVisi = await fetch(`${BASE_URL}/profil/VISI`);
-                if (resVisi.ok) {
-                    const data = await resVisi.json();
-                    if(data && data.konten) document.getElementById('teks-visi').textContent = `"${data.konten}"`;
+
+                // Tombol dokumen dinamis
+                const wadah = document.getElementById('wadah-dokumen');
+                if (wadah) {
+                    try {
+                        const resDok = await fetch(`${BASE_URL}/profil/DOKUMEN_BEBAS`);
+                        if (resDok.ok) {
+                            const dataDok = await resDok.json();
+                            if (dataDok && dataDok.konten) {
+                                const listDokumen = JSON.parse(dataDok.konten);
+                                wadah.innerHTML = listDokumen.map(item => `
+                                    <a href="${item.link}" target="_blank" class="inline-block px-6 py-3 border border-black text-xs font-mono hover:bg-black hover:text-white transition-all duration-300">
+                                        ${item.nama} ↗
+                                    </a>
+                                `).join('');
+                            }
+                        } else {
+                            wadah.innerHTML = '';
+                        }
+                    } catch (e) {
+                        wadah.innerHTML = '';
+                    }
                 }
             } catch (error) { 
                 console.error("Gagal memuat profil API", error);
-                document.getElementById('teks-beranda').className = "text-lg text-gray-600 leading-relaxed max-w-2xl font-light";
-                document.getElementById('teks-beranda').textContent = "Sebuah ruang kontemplasi digital yang mempertemukan ketepatan logika data, kedalaman riset ekonomi, dan keindahan bahasa visual.";
             }
         }
 
@@ -426,88 +498,98 @@
                 const data = await response.json();
                 const container = document.getElementById('rekam-jejak-container');
                 container.innerHTML = ''; 
-
                 if (data && data.length > 0) {
                     data.forEach(item => {
-                        container.innerHTML += `
-                            <div class="relative pl-10 md:pl-12 group cursor-default mb-14 transition-all duration-300 hover:translate-x-2">
-                                <div class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 bg-white border-2 border-gray-300 rounded-full group-hover:border-black group-hover:scale-150 group-hover:shadow-[0_0_0_4px_rgba(0,0,0,0.1)] transition-all duration-300"></div>
-                                <div class="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
-                                    <h3 class="font-serif text-2xl font-bold text-gray-800 group-hover:text-black transition-colors">${item.peran}</h3>
-                                    <span class="text-xs font-mono tracking-widest text-gray-400 mt-2 md:mt-0 uppercase">${item.periode_mulai} — ${item.periode_selesai}</span>
-                                </div>
-                                <p class="text-sm text-gray-500 italic mb-4">${item.institusi}</p>
-                                <p class="text-sm text-gray-600 font-light leading-relaxed max-w-2xl">${item.deskripsi}</p>
+                        const div = document.createElement('div');
+                        div.className = "relative pl-10 md:pl-12 group cursor-default mb-14 transition-all duration-300 hover:translate-x-2 reveal";
+                        div.innerHTML = `
+                            <div class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 bg-white border-2 border-gray-300 rounded-full group-hover:border-black group-hover:scale-150 group-hover:shadow-[0_0_0_4px_rgba(0,0,0,0.1)] transition-all duration-300"></div>
+                            <div class="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
+                                <h3 class="font-serif text-2xl font-bold text-gray-800 group-hover:text-black transition-colors">${item.peran}</h3>
+                                <span class="text-xs font-mono tracking-widest text-gray-400 mt-2 md:mt-0 uppercase">${item.periode_mulai} — ${item.periode_selesai}</span>
                             </div>
+                            <p class="text-sm text-gray-500 italic mb-4">${item.institusi}</p>
+                            <p class="text-sm text-gray-600 font-light leading-relaxed max-w-2xl">${item.deskripsi}</p>
                         `;
+                        container.appendChild(div);
+                        observer.observe(div);
                     });
                 } else {
-                    container.innerHTML = `<div class="py-4 text-sm text-gray-400 font-light italic">Catatan pengalaman sedang diselaraskan dengan arsip fisik.</div>`;
+                    container.innerHTML = `<div class="py-4 text-sm text-gray-400 font-light italic reveal">Catatan pengalaman sedang diselaraskan dengan arsip fisik.</div>`;
+                    observer.observe(container.querySelector('.reveal'));
                 }
             } catch (error) { console.error("Gagal memuat rekam jejak API", error); }
         }
+
+        let allArticles = [];
 
         async function fetchArtikel() {
             try {
                 const response = await fetch(`${BASE_URL}/artikel`);
                 const data = await response.json();
-                const container = document.getElementById('artikel-grid');
-                container.innerHTML = '';
-
-                if (data && data.length > 0) {
-                    data.forEach(item => {
-                        const date = new Date(item.tanggal_publikasi).toLocaleDateString('id-ID', { year: 'numeric', month: 'long' }).toUpperCase();
-                        container.innerHTML += `
-                            <article class="border-b border-gray-100 pb-12">
-                                <div class="flex items-center space-x-4 text-xs font-mono text-gray-400 mb-2">
-                                    <span>${date}</span><span>•</span><span class="uppercase">${item.kategori}</span>
-                                </div>
-                                <h3 class="font-serif text-3xl font-bold text-gray-900 mb-1">${item.judul}</h3>
-                                <div class="text-gray-600 font-light leading-relaxed whitespace-pre-line -mt-1">
-                                    ${item.konten.trim()}
-                                </div>
-                            </article>
-                        `;
-                    });
-                } else {
-                    container.innerHTML = `<div class="py-12 border-b border-gray-100 text-center"><p class="font-serif text-lg italic text-gray-400">"Belum ada catatan yang dibagikan ke ruang publik saat ini."</p></div>`;
-                }
-            } catch (error) { console.error("Gagal memuat artikel:", error); }
+                allArticles = data;
+                buildCategoryFilters(data);
+                renderArticles(data);
+            } catch (error) {
+                console.error("Gagal memuat artikel:", error);
+                document.getElementById('artikel-grid').innerHTML = 
+                    `<div class="py-12 text-center reveal"><p class="font-serif text-lg italic text-gray-400">"Gagal memuat arsip tulisan."</p></div>`;
+            }
         }
 
-        async function fetchProjects() {
-            try {
-                const response = await fetch(`${BASE_URL}/projects`);
-                const projects = await response.json();
-                const grid = document.getElementById('project-grid');
-                grid.innerHTML = ''; 
+        function buildCategoryFilters(articles) {
+            const container = document.getElementById('filter-kategori');
+            if (!container) return;
+            const categories = [...new Set(articles.map(a => a.kategori).filter(Boolean))];
+            categories.sort((a, b) => a.localeCompare(b));
+            container.innerHTML = `
+                <button class="filter-btn active" data-category="all">Semua</button>
+                ${categories.map(cat => `<button class="filter-btn" data-category="${cat}">${cat}</button>`).join('')}
+            `;
+            container.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const selected = this.dataset.category;
+                    if (selected === 'all') {
+                        renderArticles(allArticles);
+                    } else {
+                        renderArticles(allArticles.filter(a => a.kategori === selected));
+                    }
+                });
+            });
+        }
 
-                if (projects && projects.length > 0) {
-                    grid.className = "grid grid-cols-1 md:grid-cols-2 gap-8";
-                    projects.forEach(project => {
-                        const tagsHtml = project.tags.split(',').map(tag => 
-                            `<span class="text-xs font-mono px-2 py-1 bg-gray-100 text-gray-600 rounded">${tag.trim()}</span>`
-                        ).join('');
-
-                        grid.innerHTML += `
-                        <div onclick="openModal('project-${project.id}')" class="border border-gray-200 rounded-sm p-8 bg-white space-y-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
-                            <div class="flex flex-wrap gap-2">${tagsHtml}</div>
-                            <h3 class="font-serif text-2xl font-bold group-hover:text-gray-600 transition-colors">${project.judul}</h3>
-                            <p class="text-sm text-gray-500 font-light leading-relaxed line-clamp-3">${project.deskripsi}</p>
-                        </div>
-                        `;
-
-                        projectData[`project-${project.id}`] = {
-                            title: project.judul,
-                            tags: project.tags.split(',').map(t => t.trim()),
-                            content: `<p class="text-gray-600 font-light leading-relaxed whitespace-pre-line">${project.deskripsi}</p>`
-                        };
-                    });
-                } else {
-                    grid.className = "block";
-                    grid.innerHTML = `<div class="border border-dashed border-gray-200 rounded-sm p-12 text-center bg-white/50"><p class="text-sm text-gray-400 font-light">Implementasi sistem dan dokumentasi teknis sedang dipersiapkan.</p></div>`;
-                }
-            } catch (error) { console.error("Gagal memuat project API", error); }
+        function renderArticles(articles) {
+            const container = document.getElementById('artikel-grid');
+            container.innerHTML = '';
+            if (articles.length === 0) {
+                container.innerHTML = `<div class="py-12 text-center reveal"><p class="font-serif text-lg italic text-gray-400">"Tidak ada tulisan dalam kategori ini."</p></div>`;
+                return;
+            }
+            articles.forEach(item => {
+                const pubDate = new Date(item.tanggal_publikasi);
+                const monthNames = [
+                    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                ];
+                const formattedDate = `${pubDate.getDate()} ${monthNames[pubDate.getMonth()]} ${pubDate.getFullYear()}`;
+                const article = document.createElement('article');
+                article.className = "border-b-2 border-gray-200 pb-16 reveal";
+                article.innerHTML = `
+                    <div class="flex items-center space-x-3 text-xs font-mono text-gray-400 mb-3">
+                        <span class="uppercase tracking-wider">${item.kategori}</span>
+                        <span>•</span>
+                        <span>${formattedDate}</span>
+                    </div>
+                    <h3 class="font-serif text-3xl font-bold text-gray-900">${item.judul}</h3>
+                    <div class="text-gray-600 font-light leading-normal whitespace-pre-line mt-3">
+                        ${item.konten.trim()}
+                    </div>
+                `;
+                container.appendChild(article);
+                observer.observe(article);
+            });
         }
 
         async function fetchLensa() {
@@ -516,70 +598,101 @@
                 const data = await response.json();
                 const container = document.getElementById('lensa-grid');
                 container.innerHTML = '';
-                
                 if (data && data.length > 0) {
                     container.className = "columns-1 md:columns-2 xl:columns-3 gap-8 space-y-8";
                     data.forEach(item => {
-                        let kontenHTML = "";
-                        // Logika orisinal split video, DENGAN style orisinal + tombol Kaca dan Atribut ALT dinamis (PR 15)
+                        const wrapper = document.createElement('div');
+                        wrapper.className = "break-inside-avoid group cursor-pointer mb-8 reveal";
                         if (item.url_gambar.includes('|')) {
                             const pecah = item.url_gambar.split('|');
-                            const thumbnail = pecah[0];
-                            const linkVideo = pecah[1];
-                            
-                            kontenHTML = `
-                                <div class="break-inside-avoid group cursor-pointer mb-8">
-                                    <a href="${linkVideo}" target="_blank" class="video-link rounded-sm overflow-hidden block bg-gray-100">
-                                        <img src="${thumbnail}" alt="${item.caption}" loading="lazy" class="w-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700">
-                                        <div class="play-button">▶</div>
-                                    </a>
-                                    <p class="mt-4 font-serif text-sm text-gray-600 italic">${item.caption}</p>
-                                </div>
+                            wrapper.innerHTML = `
+                                <a href="${pecah[1]}" target="_blank" class="video-link rounded-sm overflow-hidden block bg-gray-100">
+                                    <img src="${pecah[0]}" alt="${item.caption}" loading="lazy" class="w-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700">
+                                    <div class="play-button">▶</div>
+                                </a>
+                                <p class="mt-4 font-serif text-sm text-gray-600 italic">${item.caption}</p>
                             `;
                         } else {
-                            kontenHTML = `
-                                <div class="break-inside-avoid group cursor-pointer mb-8" onclick="openLightbox('${item.url_gambar}')">
-                                    <div class="overflow-hidden bg-gray-100 rounded-sm">
-                                        <img src="${item.url_gambar}" alt="${item.caption}" loading="lazy" class="w-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700">
-                                    </div>
-                                    <p class="mt-4 font-serif text-sm text-gray-600 italic">${item.caption}</p>
+                            wrapper.onclick = () => openLightbox(item.url_gambar);
+                            wrapper.innerHTML = `
+                                <div class="overflow-hidden bg-gray-100 rounded-sm">
+                                    <img src="${item.url_gambar}" alt="${item.caption}" loading="lazy" class="w-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700">
                                 </div>
+                                <p class="mt-4 font-serif text-sm text-gray-600 italic">${item.caption}</p>
                             `;
                         }
-                        container.innerHTML += kontenHTML;
+                        container.appendChild(wrapper);
+                        observer.observe(wrapper);
                     });
                 } else {
                     container.className = "block text-center py-8";
-                    container.innerHTML = `<p class="font-serif text-sm text-gray-400 italic">Arsip dokumentasi visual belum dibuka untuk publik.</p>`;
+                    container.innerHTML = `<p class="font-serif text-sm text-gray-400 italic reveal">Arsip dokumentasi visual belum dibuka untuk publik.</p>`;
+                    observer.observe(container.querySelector('.reveal'));
                 }
             } catch (error) { console.error("Gagal memuat lensa API", error); }
         }
 
-        // --- 3. LOGIKA FORMULIR KONTAK ---
+        async function fetchProjects() {
+            try {
+                const response = await fetch(`${BASE_URL}/projects`);
+                const projects = await response.json();
+                const grid = document.getElementById('project-grid');
+                grid.innerHTML = '';
+                if (projects && projects.length > 0) {
+                    grid.className = "grid grid-cols-1 md:grid-cols-2 gap-8";
+                    projects.forEach(project => {
+                        const tagsHtml = project.tags.split(',').map(tag =>
+                            `<span class="text-xs font-mono px-2 py-1 bg-gray-100 text-gray-600 rounded">${tag.trim()}</span>`
+                        ).join('');
+                        const card = document.createElement('div');
+                        card.className = "border border-gray-200 rounded-sm p-8 bg-white space-y-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group reveal";
+                        card.onclick = () => openModal(`project-${project.id}`);
+                        card.innerHTML = `
+                            <div class="flex flex-wrap gap-2">${tagsHtml}</div>
+                            <h3 class="font-serif text-2xl font-bold group-hover:text-gray-600 transition-colors">${project.judul}</h3>
+                            <p class="text-sm text-gray-500 font-light leading-relaxed line-clamp-3">${project.deskripsi}</p>
+                        `;
+                        grid.appendChild(card);
+                        observer.observe(card);
+                        projectData[`project-${project.id}`] = {
+                            title: project.judul,
+                            tags: project.tags.split(',').map(t => t.trim()),
+                            content: `<p class="text-gray-600 font-light leading-relaxed whitespace-pre-line">${project.deskripsi}</p>`
+                        };
+                    });
+                } else {
+                    grid.className = "block";
+                    grid.innerHTML = `<div class="border border-dashed border-gray-200 rounded-sm p-12 text-center bg-white/50 reveal"><p class="text-sm text-gray-400 font-light">Implementasi sistem dan dokumentasi teknis sedang dipersiapkan.</p></div>`;
+                    observer.observe(grid.querySelector('.reveal'));
+                }
+            } catch (error) {
+                console.error("Gagal memuat project API", error);
+                const grid = document.getElementById('project-grid');
+                grid.className = "block";
+                grid.innerHTML = `<div class="py-12 text-center reveal"><p class="text-sm text-red-400">Gagal memuat data project.</p></div>`;
+            }
+        }
+
         const formPesan = document.getElementById('form-pesan');
         if (formPesan) {
             formPesan.addEventListener('submit', async function(e) {
                 e.preventDefault(); 
                 const statusPesan = document.getElementById('status-pesan');
                 const btnSubmit = formPesan.querySelector('button[type="submit"]');
-                
                 const dataPesan = {
                     nama: document.getElementById('input-nama').value,
                     email: document.getElementById('input-email').value,
                     konten: document.getElementById('input-konten').value 
                 };
-
                 btnSubmit.innerText = 'MENGIRIM...';
                 btnSubmit.disabled = true;
                 statusPesan.classList.add('hidden');
-
                 try {
                     const response = await fetch(`${BASE_URL}/pesan`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(dataPesan)
                     });
-
                     if (response.ok) {
                         statusPesan.textContent = "Pesan berhasil terkirim. Terima kasih!";
                         statusPesan.className = "text-sm mt-4 text-green-600 block font-mono transition-all duration-300";
@@ -597,7 +710,33 @@
             });
         }
 
-        // --- 4. EKSEKUSI PENARIKAN DATA ---
+        const mainContent = document.getElementById('main-content');
+        const progressBar = document.getElementById('scroll-progress');
+        const backToTopBtn = document.getElementById('back-to-top');
+        mainContent.addEventListener('scroll', () => {
+            const scrollTop = mainContent.scrollTop;
+            const scrollHeight = mainContent.scrollHeight - mainContent.clientHeight;
+            const progress = (scrollTop / scrollHeight) * 100;
+            progressBar.style.width = progress + '%';
+            if (scrollTop > 400) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
         document.addEventListener('DOMContentLoaded', () => {
             switchTab('beranda'); 
             fetchProfil();

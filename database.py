@@ -1,18 +1,20 @@
+import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
-# 1. Mengubah alamat brankas dari SQLite lokal ke PostgreSQL Cloud
-SQLALCHEMY_DATABASE_URL = "postgresql://neondb_owner:***REDACTED***@ep-autumn-smoke-aos048rl-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+load_dotenv()
 
-# 2. Membuat mesin koneksi (connect_args untuk SQLite dihapus karena tidak didukung oleh Postgres)
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not SQLALCHEMY_DATABASE_URL:
+    raise ValueError("DATABASE_URL tidak ditemukan. Pastikan file .env ada dan berisi URL.")
+
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
-
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 Base = declarative_base()
 
-# Fungsi jembatan session database
 def get_db():
     db = SessionLocal()
     try:

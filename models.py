@@ -2,24 +2,24 @@ from sqlalchemy import Column, Integer, String, Text, DateTime
 from datetime import datetime
 from database import Base
 
-# 1. TABEL PROFIL (Menyimpan teks statis untuk Beranda & Visi)
+# 1. TABEL PROFIL
 class Profil(Base):
     __tablename__ = "profil"
     id = Column(Integer, primary_key=True, index=True)
-    bagian = Column(String, unique=True, index=True) # Misal: "BERANDA" atau "VISI"
+    bagian = Column(String, unique=True, index=True)
     konten = Column(Text)
 
-# 2. TABEL REKAM JEJAK (Pengalaman profesional & akademis)
+# 2. TABEL REKAM JEJAK
 class RekamJejak(Base):
     __tablename__ = "rekam_jejak"
     id = Column(Integer, primary_key=True, index=True)
-    peran = Column(String) # Misal: "Pengajar" atau "Administrator"
+    peran = Column(String)
     institusi = Column(String)
     periode_mulai = Column(String)
     periode_selesai = Column(String)
     deskripsi = Column(Text)
 
-# 3. TABEL ARTIKEL (Ruang Aksara)
+# 3. TABEL ARTIKEL
 class Artikel(Base):
     __tablename__ = "artikel"
     id = Column(Integer, primary_key=True, index=True)
@@ -28,22 +28,25 @@ class Artikel(Base):
     konten = Column(Text)
     tanggal_publikasi = Column(DateTime, default=datetime.utcnow)
 
-# 4. TABEL LENSA (Galeri Fotografi)
+# 4. TABEL LENSA (Bug #5 Fixed)
 class Lensa(Base):
     __tablename__ = "lensa"
     id = Column(Integer, primary_key=True, index=True)
-    url_gambar = Column(String) # Menyimpan jalur gambar, misal: "/images/kereta-airlangga.jpg"
+    url_gambar = Column(String)
     caption = Column(String)
 
-# 5. TABEL PROJECT (Portofolio Teknis)
+# 5. TABEL PROJECT (Fitur #17 Added)
 class Project(Base):
     __tablename__ = "projects"
     id = Column(Integer, primary_key=True, index=True)
     judul = Column(String, index=True)
     tags = Column(String)
     deskripsi = Column(Text)
+    status_pengerjaan = Column(String, default="Complete") # Complete / In Progress / Coming Soon
+    url_demo = Column(String, nullable=True)     # <--- Tambahkan ini
+    url_github = Column(String, nullable=True)
 
-# 6. TABEL PESAN (Formulir Kontak)
+# 6. TABEL PESAN (Bug #6 Data Aligned)
 class Pesan(Base):
     __tablename__ = "pesan"
     id = Column(Integer, primary_key=True, index=True)
@@ -51,3 +54,11 @@ class Pesan(Base):
     email = Column(String)
     konten = Column(Text)
     tanggal_dikirim = Column(DateTime, default=datetime.utcnow)
+
+ # 7. TABEL DOKUMEN (Menyelesaikan Bug #1 - Tautan Dinamis)
+class Dokumen(Base):
+    __tablename__ = "dokumen"
+    id = Column(Integer, primary_key=True, index=True)
+    nama_dokumen = Column(String, unique=True, index=True) # Misal: "Resume", "CV", "Portofolio_PDF"
+    url_tautan = Column(String)
+    terakhir_diperbarui = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

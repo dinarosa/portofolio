@@ -182,16 +182,35 @@
             <div id="tab-project" class="tab-content space-y-12">
                 <div>
                     <h3 class="font-serif text-3xl font-bold border-b border-gray-100 pb-4 mb-6">Unggah / Edit Project</h3>
-                    <form onsubmit="submitData(event, '/projects', 'btn-proj', 'status-proj', { judul: document.getElementById('proj-judul').value, deskripsi: document.getElementById('proj-desk').value, tags: document.getElementById('proj-tags').value, url_demo: document.getElementById('proj-demo').value, url_github: document.getElementById('proj-git').value }, 'projects')">
+                    <form onsubmit="submitData(event, '/projects', 'btn-proj', 'status-proj', { 
+                        judul: document.getElementById('proj-judul').value, 
+                        deskripsi: document.getElementById('proj-desk').value, 
+                        tags: document.getElementById('proj-tags').value, 
+                        status_pengerjaan: document.getElementById('proj-status').value,
+                        url_demo: document.getElementById('proj-demo').value, 
+                        url_github: document.getElementById('proj-git').value 
+                    }, 'projects')">
                         <div class="space-y-6 max-w-3xl">
                             <div>
                                 <label class="text-xs font-mono text-gray-500 uppercase">Judul Project</label>
                                 <input type="text" id="proj-judul" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
                             </div>
-                            <div>
-                                <label class="text-xs font-mono text-gray-500 uppercase">Tags (Pisahkan koma)</label>
-                                <input type="text" id="proj-tags" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="Mis: Python, Data Analytics, Fintech" required>
+                            
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="col-span-2 md:col-span-1">
+                                    <label class="text-xs font-mono text-gray-500 uppercase">Tags (Pisahkan koma)</label>
+                                    <input type="text" id="proj-tags" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="Mis: Python, Data Analytics" required>
+                                </div>
+                                <div class="col-span-2 md:col-span-1">
+                                    <label class="text-xs font-mono text-gray-500 uppercase">Status Project</label>
+                                    <select id="proj-status" class="w-full border-b py-2 bg-white focus:outline-none focus:border-black" required>
+                                        <option value="Complete">Complete</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Coming Soon">Coming Soon</option>
+                                    </select>
+                                </div>
                             </div>
+
                             <div class="grid grid-cols-2 gap-6">
                                 <div class="col-span-2 md:col-span-1">
                                     <label class="text-xs font-mono text-gray-500 uppercase">URL Live (Opsional)</label>
@@ -202,10 +221,12 @@
                                     <input type="text" id="proj-git" class="w-full border-b py-2 focus:outline-none focus:border-black">
                                 </div>
                             </div>
+
                             <div>
                                 <label class="text-xs font-mono text-gray-500 uppercase">Deskripsi Detail</label>
                                 <textarea id="proj-desk" rows="4" class="w-full border p-3 mt-1 focus:outline-none focus:border-black" required></textarea>
                             </div>
+
                             <div class="flex flex-wrap items-center gap-4">
                                 <button type="submit" id="btn-proj" class="bg-black text-white px-6 py-2 text-sm font-mono hover:bg-gray-800">UNGGAH PROJECT</button>
                                 <button type="button" id="btn-cancel-proj" onclick="cancelEdit('projects')" class="hidden bg-gray-200 text-gray-700 px-6 py-2 text-sm font-mono hover:bg-gray-300">BATAL</button>
@@ -225,21 +246,17 @@
                 <div>
                     <h3 class="font-serif text-3xl font-bold border-b border-gray-100 pb-4 mb-6">Unggah / Edit Visual</h3>
                     <div class="bg-blue-50/50 p-4 border border-blue-100 mb-6 max-w-3xl">
-                        <p class="text-xs font-mono text-blue-600 leading-relaxed">Format Tautan:<br>1. Foto: Masukkan link gambar murni.<br>2. Video: Format <span class="font-bold">Link_Thumbnail|Link_Video</span></p>
+                        <p class="text-xs font-mono text-blue-600 leading-relaxed">Hanya membutuhkan Tautan Gambar dan Caption.</p>
                     </div>
-                    <form onsubmit="submitData(event, '/lensa', 'btn-lensa', 'status-lensa', { judul: document.getElementById('len-judul').value, caption: document.getElementById('len-cap').value, url_gambar: document.getElementById('len-url').value }, 'lensa')">
+                    <form onsubmit="submitData(event, '/lensa', 'btn-lensa', 'status-lensa', { caption: document.getElementById('len-cap').value, url_gambar: document.getElementById('len-url').value }, 'lensa')">
                         <div class="space-y-6 max-w-3xl">
                             <div>
                                 <label class="text-xs font-mono text-gray-500 uppercase">Tautan Aset (URL)</label>
                                 <input type="text" id="len-url" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
                             </div>
                             <div>
-                                <label class="text-xs font-mono text-gray-500 uppercase">Judul Internal</label>
-                                <input type="text" id="len-judul" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
-                            </div>
-                            <div>
                                 <label class="text-xs font-mono text-gray-500 uppercase">Caption</label>
-                                <textarea id="len-cap" rows="2" class="w-full border p-3 mt-1 focus:outline-none focus:border-black" required></textarea>
+                                <textarea id="len-cap" rows="3" class="w-full border p-3 mt-1 focus:outline-none focus:border-black" required></textarea>
                             </div>
                             <div class="flex flex-wrap items-center gap-4">
                                 <button type="submit" id="btn-lensa" class="bg-black text-white px-6 py-2 text-sm font-mono hover:bg-gray-800">PAJANG DI LENSA</button>
@@ -389,7 +406,7 @@
             await saveDynamicDocuments();
         }
 
-        // FUNGSI SIMPAN PROFIL (POST/PUT otomatis)
+        // FUNGSI SIMPAN PROFIL
         async function simpanProfil() {
             const btn = document.getElementById('btn-profil');
             const statusBox = document.getElementById('status-profil');
@@ -514,7 +531,7 @@
 
                 if (data && data.length > 0) {
                     container.innerHTML = data.map(item => {
-                        let label = item.judul || item.peran || item.nama || 'Tanpa Judul';
+                        let label = item.judul || item.peran || item.nama || item.caption || 'Tanpa Judul';
                         let sub = item.kategori || item.institusi || item.tags || '';
                         return `
                         <div class="flex items-center justify-between p-3 bg-white border border-gray-100 shadow-sm hover:border-gray-300 transition-colors">
@@ -579,13 +596,13 @@
                     document.getElementById('proj-tags').value = item.tags || '';
                     document.getElementById('proj-demo').value = item.url_demo || '';
                     document.getElementById('proj-git').value = item.url_github || '';
+                    document.getElementById('proj-status').value = item.status_pengerjaan || 'Complete';
                     document.getElementById('btn-proj').innerText = 'SIMPAN PERUBAHAN';
                     document.getElementById('btn-cancel-proj').classList.remove('hidden');
                     break;
 
                 case 'lensa':
                     document.getElementById('len-url').value = item.url_gambar || '';
-                    document.getElementById('len-judul').value = item.judul || '';
                     document.getElementById('len-cap').value = item.caption || '';
                     document.getElementById('btn-lensa').innerText = 'SIMPAN PERUBAHAN';
                     document.getElementById('btn-cancel-lensa').classList.remove('hidden');
@@ -599,13 +616,21 @@
             const fields = {
                 'rekam-jejak': ['rj-peran', 'rj-inst', 'rj-mulai', 'rj-selesai', 'rj-desk'],
                 'artikel': ['art-judul', 'art-kategori', 'art-konten'],
-                'projects': ['proj-judul', 'proj-desk', 'proj-tags', 'proj-demo', 'proj-git'],
-                'lensa': ['len-url', 'len-judul', 'len-cap']
+                'projects': ['proj-judul', 'proj-desk', 'proj-tags', 'proj-demo', 'proj-git', 'proj-status'],
+                'lensa': ['len-url', 'len-cap']
             };
+            
             if (fields[type]) {
                 fields[type].forEach(id => {
                     const el = document.getElementById(id);
-                    if (el) el.value = '';
+                    if (el) {
+                        // Reset status ke nilai default saat batal edit
+                        if (id === 'proj-status') {
+                            el.value = 'Complete';
+                        } else {
+                            el.value = '';
+                        }
+                    }
                 });
             }
 

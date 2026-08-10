@@ -1,6 +1,7 @@
 import sys
 import os
 from logging.config import fileConfig
+from dotenv import load_dotenv  # <-- Impor dotenv ditambahkan di sini
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
@@ -13,12 +14,20 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database import Base
 import models
 
+# 3. BUKA BRANKAS .ENV DI AWAL
+load_dotenv()
+
 config = context.config
+
+# 4. MASUKKAN URL KE ALEMBIC (Sebelum migrasi berjalan)
+database_url = os.getenv("DATABASE_URL")
+if database_url:
+    config.set_main_option("sqlalchemy.url", database_url)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# 3. Kunci metadata (Akar masalah yang kita perbaiki)
+# 5. Kunci metadata
 target_metadata = Base.metadata
 
 def run_migrations_offline() -> None:

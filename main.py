@@ -174,38 +174,21 @@ def delete_project(project_id: int, db: Session = Depends(get_db), api_key: str 
 # ==========================================
 # 3. RUTE ARTIKEL (Ruang Aksara)
 # ==========================================
-@app.get("/api/v1/artikel", response_model=List[schemas.ArtikelResponse], tags=["Artikel"])
-def read_artikel(db: Session = Depends(get_db)):
-    return db.query(models.Artikel).all()
-
-@app.post("/api/v1/artikel", response_model=schemas.ArtikelResponse, status_code=201, tags=["Artikel"])
-def create_artikel(artikel: schemas.ArtikelCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
-    db_artikel = models.Artikel(**artikel.model_dump())
-    db.add(db_artikel)
-    db.commit()
-    db.refresh(db_artikel)
-    return db_artikel
-
-@app.put("/api/v1/artikel/{artikel_id}", response_model=schemas.ArtikelResponse, tags=["Artikel"])
+@app.put("/api/v1/artikel/{artikel_id}", response_model=schemas.ArtikelResponse)
 def update_artikel(artikel_id: int, artikel_data: schemas.ArtikelCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
     db_artikel = db.query(models.Artikel).filter(models.Artikel.id == artikel_id).first()
-    if not db_artikel:
-        raise HTTPException(status_code=404, detail="Artikel tidak ditemukan")
+    if not db_artikel: raise HTTPException(status_code=404, detail="Artikel tidak ditemukan")
+    
     db_artikel.kategori = artikel_data.kategori
     db_artikel.judul = artikel_data.judul
+    db_artikel.slug = artikel_data.slug
+    db_artikel.url_gambar = artikel_data.url_gambar
+    db_artikel.ringkasan = artikel_data.ringkasan
     db_artikel.konten = artikel_data.konten
+    
     db.commit()
     db.refresh(db_artikel)
     return db_artikel
-
-@app.delete("/api/v1/artikel/{artikel_id}", tags=["Artikel"])
-def delete_artikel(artikel_id: int, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
-    artikel = db.query(models.Artikel).filter(models.Artikel.id == artikel_id).first()
-    if not artikel:
-        raise HTTPException(status_code=404, detail="Artikel tidak ditemukan")
-    db.delete(artikel)
-    db.commit()
-    return {"message": f"Artikel dengan ID {artikel_id} berhasil dihapus"}
 
 
 # ==========================================

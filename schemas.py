@@ -36,11 +36,18 @@ class RekamJejakResponse(RekamJejakBase):
     id: int
     class Config: from_attributes = True
 
+# Pastikan ada: from typing import Optional (di bagian paling atas file jika belum ada)
+
 class ArtikelBase(BaseModel):
     kategori: str
     judul: str
+    slug: Optional[str] = None
+    url_gambar: Optional[str] = None
+    ringkasan: Optional[str] = None
     konten: str
+
 class ArtikelCreate(ArtikelBase): pass
+
 class ArtikelResponse(ArtikelBase):
     id: int
     tanggal_publikasi: datetime
@@ -51,6 +58,16 @@ class LensaBase(BaseModel):
     deskripsi: Optional[str] = None
     url_gambar: str  # Pastikan nama field ini sama persis di seluruh file
     kategori: Optional[str] = "Fotografi"
+    
+class LensaCreate(LensaBase): pass
+class LensaResponse(LensaBase):
+    id: int
+    class Config: from_attributes = True
+
+class LensaBase(BaseModel):
+    url_gambar: str
+    caption: Optional[str] = None
+
 class LensaCreate(LensaBase): pass
 class LensaResponse(LensaBase):
     id: int

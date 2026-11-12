@@ -25,6 +25,9 @@ class Artikel(Base):
     id = Column(Integer, primary_key=True, index=True)
     kategori = Column(String)
     judul = Column(String, index=True)
+    slug = Column(String, unique=True, index=True, nullable=True)  # URL spesifik artikel
+    url_gambar = Column(String, nullable=True)                     # Foto kover/thumbnail
+    ringkasan = Column(String, nullable=True)                      # Teks preview singkat
     konten = Column(Text)
     tanggal_publikasi = Column(DateTime, default=datetime.utcnow)
 

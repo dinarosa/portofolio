@@ -14,3 +14,8 @@ __pycache__/
 # Konfigurasi
 .env
 
+# File sementara & backup
+migrate_lensa.py
+migrate_v2.py
+fix_db.py
+backup_*.json

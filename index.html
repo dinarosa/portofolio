@@ -3,33 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dikya Abidullah | Ruang Kontemplasi Digital</title>
+    <title>Dikya Abidullah | Sintesa</title>
     <link rel="icon" type="image/jpg" href="logowebsite.jpg">
     <meta name="google-site-verification" content="N1BteJbnLY2gA0on_RLTeccSgAOIurflLHoFfWZp-fM" />
-    <meta property="og:title" content="Dikya Abidullah | Portofolio" />
-    <meta property="og:description" content="Sebuah ruang kontemplasi digital yang mempertemukan ketepatan logika data, kedalaman riset ekonomi, dan keindahan bahasa visual." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://devaabidya.site/" />
-    <meta property="og:image" content="https://devaabidya.site/thumbnail.jpeg" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Dikya Abidullah | Portofolio" />
-    <meta name="twitter:description" content="Sebuah ruang kontemplasi digital yang mempertemukan ketepatan logika data, kedalaman riset ekonomi, dan keindahan bahasa visual." />
-    <meta name="twitter:image" content="https://devaabidya.site/thumbnail.jpeg" />
+    <meta property="og:title" content="Dikya Abidullah | Sintesa" />
+    <meta property="og:description" content="Sebuah sintesa yang mempertemukan ketepatan logika data, kedalaman riset ekonomi, dan keindahan bahasa visual." />
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --bg-primary: #F5F7FA;
+            --bg-secondary: #E9EFF5;
+            --text-primary: #263B50;
+            --text-secondary: #394653;
+            --text-muted: #748292;
+            --accent: #3B5F82;
+            --accent-hover: #2E4F70;
+            --border-color: #DFE5EB;
+            --viewer-bg: #17191D;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #fafafa;
-            color: #1a1a1a;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             scroll-behavior: smooth;
+            position: relative;
         }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url('https://res.cloudinary.com/dqwwt03vy/image/upload/v1794550306/belakang_hjs7qb.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0.05; 
+            z-index: -1;
+            pointer-events: none;
+        }
+
         .font-serif { font-family: 'Playfair Display', serif; }
+        .font-magazine { font-family: 'Lora', serif; }
+        
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -40,7 +63,7 @@
         }
 
         #scroll-progress {
-            position: fixed; top: 0; left: 0; height: 3px; background: black; z-index: 100; transition: width 0.1s ease;
+            position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 100; transition: width 0.1s ease;
         }
 
         #back-to-top {
@@ -54,69 +77,165 @@
         }
         .reveal.visible { opacity: 1; transform: translateY(0); }
 
-        .video-link { position: relative; display: block; }
-        .video-link::after {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,0.5) 100%);
-            opacity: 0; transition: opacity 0.4s ease; z-index: 1;
+        .nav-btn.active-page::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px;
+            background: var(--accent); transition: width 0.3s ease;
         }
-        .video-link:hover::after { opacity: 1; }
-        .play-button {
-            position: absolute;
-            bottom: 16px;
-            right: 16px;
-            transform: scale(0.9);
-            background: transparent;
-            color: #ffffff;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            z-index: 2;
-            opacity: 0;
-            transition: all 0.3s ease;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.5);
-            pointer-events: none;
+        
+        .filter-btn {
+            padding: 6px 18px; border-radius: 9999px; border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.8); font-size: 0.75rem;
+            letter-spacing: 0.05em; font-family: monospace; color: var(--text-muted);
+            transition: all 0.2s ease; cursor: pointer; backdrop-filter: blur(4px);
         }
-        .video-link:hover .play-button {
-            transform: scale(1);
-            opacity: 1;
-            pointer-events: auto;
+        .filter-btn:hover { border-color: var(--accent); color: var(--accent); background: #ffffff; }
+        .filter-btn.active { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+
+        /* --- EDITORIAL HEADERS --- */
+        .section-header {
+            width: 100%;
+            text-align: center;
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+        @media (min-width: 768px) {
+            .section-header h2 { font-size: 3.5rem; }
+        }
+        .section-header p {
+            color: var(--text-secondary);
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
-        .nav-btn.active-page::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
+        /* --- THE NEW YORKER LAYOUT --- */
+        .ny-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        @media (min-width: 1024px) {
+            .ny-layout {
+                grid-template-columns: 2.5fr 5fr 2.5fr;
+                gap: 2rem;
+            }
+            /* Garis pemisah vertikal antar kolom */
+            .ny-col-left { border-right: 1px solid var(--border-color); padding-right: 2rem; }
+            .ny-col-center { border-right: 1px solid var(--border-color); padding-right: 2rem; }
+        }
+
+        /* --- PROJECT STYLES --- */
+        .project-featured {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 2px solid var(--text-primary);
+            padding-bottom: 3rem;
+            margin-bottom: 4rem;
+        }
+        @media (min-width: 768px) {
+            .project-featured { flex-direction: row; gap: 3rem; align-items: center; }
+            .project-featured-image { width: 60%; }
+            .project-featured-content { width: 40%; }
+        }
+        .project-featured-image img {
             width: 100%;
-            height: 2px;
-            background: black;
-            transition: width 0.3s ease;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-radius: 4px;
         }
-        .filter-btn {
-            padding: 6px 18px;
-            border-radius: 9999px;
-            border: 1px solid #d1d5db;
-            background: transparent;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-            font-family: monospace;
-            color: #6b7280;
-            transition: all 0.2s ease;
+        .project-number {
+            font-family: 'Inter', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--border-color);
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+        .project-grid-card {
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .project-grid-card img {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            margin-bottom: 1.25rem;
+        }
+
+        /* --- LENSA STYLES --- */
+        .lensa-masonry {
+            column-count: 1;
+            column-gap: 1.5rem;
+        }
+        @media (min-width: 768px) { .lensa-masonry { column-count: 2; } }
+        @media (min-width: 1024px) { .lensa-masonry { column-count: 3; } }
+
+        .lensa-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
-        .filter-btn:hover {
-            border-color: #9ca3af;
-            color: #1f2937;
-            background: #f9fafb;
+        .lensa-item img {
+            width: 100%;
+            display: block;
+            transition: transform 0.7s ease;
         }
-        .filter-btn.active {
-            background: #111827;
-            color: #ffffff;
-            border-color: #111827;
+        .lensa-item:hover img {
+            transform: scale(1.03);
+        }
+        .lensa-item-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(23,25,29,0.8) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.5rem;
+        }
+        .lensa-item:hover .lensa-item-overlay { opacity: 1; }
+
+        /* --- VIEWER (LIGHTBOX) --- */
+        #image-viewer { background-color: var(--viewer-bg); }
+        .viewer-content { display: flex; flex-direction: column; height: 100vh; }
+        @media (min-width: 1024px) {
+            .viewer-content { flex-direction: row; }
+            .viewer-image-container { width: 75%; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+            .viewer-sidebar { width: 25%; padding: 3rem; border-left: 1px solid rgba(255,255,255,0.1); }
+        }
+
+        /* --- ARTICLE READING PAGE --- */
+        .article-body {
+            font-family: 'Lora', serif;
+            font-size: 18px;
+            line-height: 1.85;
+            color: var(--text-secondary);
+        }
+        .article-body p { margin-bottom: 1.5rem; }
+        .article-body p:first-of-type::first-letter {
+            float: left;
+            font-size: 3.5rem;
+            line-height: 0.8;
+            padding-right: 0.5rem;
+            padding-top: 0.4rem;
+            font-family: 'Playfair Display', serif;
+            color: var(--accent);
+            font-weight: bold;
         }
     </style>
 </head>
@@ -124,293 +243,362 @@
 
     <div id="scroll-progress" style="width: 0%;"></div>
 
-    <button onclick="toggleSidebar()" class="fixed top-8 left-8 md:top-12 md:left-12 z-40 p-3 bg-white/80 backdrop-blur-md rounded-full shadow-md border border-gray-200 hover:bg-white transition-all duration-300 group">
-        <svg class="w-5 h-5 text-gray-800 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+    <!-- Nav Bar Horizontal (Desktop) -->
+    <nav class="hidden md:flex fixed top-0 left-0 right-0 z-40 bg-[#F5F7FA]/90 backdrop-blur-md border-b border-[#DFE5EB]">
+        <div class="max-w-[1200px] mx-auto w-full px-8 lg:px-12 py-5 flex items-center justify-between">
+            <button onclick="navigateTo('/beranda')" class="font-serif text-2xl font-bold tracking-tight text-[#263B50] hover:text-[#3B5F82] transition-colors">
+                Sintesa.
+            </button>
+            <div class="flex items-center gap-7 text-sm">
+                <button onclick="navigateTo('/beranda')" data-tab="beranda" class="nav-btn active-page relative text-[#3B5F82] font-semibold transition-all duration-300">Beranda</button>
+                <button onclick="navigateTo('/jejak')"    data-tab="jejak"    class="nav-btn relative text-[#748292] hover:text-[#3B5F82] transition-all duration-300">Jejak</button>
+                <button onclick="navigateTo('/artikel')"  data-tab="artikel"  class="nav-btn relative text-[#748292] hover:text-[#3B5F82] transition-all duration-300">Artikel</button>
+                <button onclick="navigateTo('/project')"  data-tab="project"  class="nav-btn relative text-[#748292] hover:text-[#3B5F82] transition-all duration-300">Project</button>
+                <button onclick="navigateTo('/lensa')"    data-tab="lensa"    class="nav-btn relative text-[#748292] hover:text-[#3B5F82] transition-all duration-300">Lensa</button>
+                <button onclick="navigateTo('/kontak')"   data-tab="kontak"   class="nav-btn relative text-[#748292] hover:text-[#3B5F82] transition-all duration-300">Kontak</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hamburger (Mobile saja) -->
+    <button id="hamburger-btn" onclick="toggleSidebar()" class="md:hidden fixed top-6 left-6 z-40 p-3 bg-[#F5F7FA]/90 backdrop-blur-md rounded-full shadow-md border border-[#DFE5EB] hover:bg-white transition-all duration-300 group">
+        <svg class="w-5 h-5 text-[#3B5F82] group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
     </button>
 
-    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300"></div>
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-[#263B50]/40 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300"></div>
 
-    <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-white/95 backdrop-blur-xl border-r border-gray-200 flex flex-col justify-between p-12 z-50 transform -translate-x-full transition-transform duration-500 ease-in-out shadow-2xl">
-        <button onclick="toggleSidebar()" class="absolute top-8 right-8 p-2 text-gray-400 hover:text-black transition-colors">
+    <aside id="sidebar" class="md:hidden fixed inset-y-0 left-0 w-72 bg-[#F5F7FA]/95 backdrop-blur-xl border-r border-[#DFE5EB] flex flex-col justify-between p-12 z-50 transform -translate-x-full transition-transform duration-500 ease-in-out shadow-2xl">
+        <button onclick="toggleSidebar()" class="absolute top-8 right-8 p-2 text-[#748292] hover:text-[#3B5F82] transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
-
         <div class="mt-8">
-            <h1 class="font-serif text-3xl font-bold tracking-tight mb-16 cursor-pointer hover:text-gray-500 transition-colors" onclick="switchTab('beranda')">Dikya.</h1>
+            <h1 class="font-serif text-3xl font-bold tracking-tight mb-16 cursor-pointer text-[#263B50] hover:text-[#3B5F82] transition-colors" onclick="navigateTo('/beranda')">Sintesa.</h1>
             <nav class="space-y-6 text-lg">
-                <button onclick="switchTab('beranda')" id="nav-beranda" class="nav-btn active-page block text-left w-full text-black font-semibold italic transition-all duration-300">Beranda</button>
-                <button onclick="switchTab('rekam-jejak')" id="nav-rekam-jejak" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-2 transition-all duration-300">Rekam Jejak</button>
-                <button onclick="switchTab('ruang-aksara')" id="nav-ruang-aksara" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-2 transition-all duration-300">Ruang Aksara</button>
-                <button onclick="switchTab('lensa')" id="nav-lensa" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-2 transition-all duration-300">Lensa</button>
-                <button onclick="switchTab('project')" id="nav-project" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-2 transition-all duration-300">Project</button>
-                <button onclick="switchTab('visi')" id="nav-visi" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-2 transition-all duration-300">Visi</button>
-                <button onclick="switchTab('kontak')" id="nav-kontak" class="nav-btn block text-left w-full text-gray-400 hover:text-black hover:translate-x-2 transition-all duration-300">Kontak</button>
+                <button onclick="navigateTo('/beranda')" data-tab="beranda" class="nav-btn active-page block text-left w-full text-[#3B5F82] font-semibold transition-all duration-300">Beranda</button>
+                <button onclick="navigateTo('/jejak')"    data-tab="jejak"    class="nav-btn block text-left w-full text-[#748292] hover:text-[#3B5F82] hover:translate-x-2 transition-all duration-300">Jejak</button>
+                <button onclick="navigateTo('/artikel')"  data-tab="artikel"  class="nav-btn block text-left w-full text-[#748292] hover:text-[#3B5F82] hover:translate-x-2 transition-all duration-300">Artikel</button>
+                <button onclick="navigateTo('/project')"  data-tab="project"  class="nav-btn block text-left w-full text-[#748292] hover:text-[#3B5F82] hover:translate-x-2 transition-all duration-300">Project</button>
+                <button onclick="navigateTo('/lensa')"    data-tab="lensa"    class="nav-btn block text-left w-full text-[#748292] hover:text-[#3B5F82] hover:translate-x-2 transition-all duration-300">Lensa</button>
+                <button onclick="navigateTo('/kontak')"   data-tab="kontak"   class="nav-btn block text-left w-full text-[#748292] hover:text-[#3B5F82] hover:translate-x-2 transition-all duration-300">Kontak</button>
             </nav>
         </div>
-        
-        <div class="text-xs text-gray-400 font-mono tracking-wider uppercase">
+        <div class="text-xs text-[#748292] font-mono tracking-wider uppercase">
             &copy; 2026 Abidullah
         </div>
     </aside>
 
-    <main class="w-full h-full overflow-y-auto bg-[#fafafa]" id="main-content">
-        <div class="max-w-6xl mx-auto p-8 pt-28 pb-48 md:pb-24 md:p-24 lg:p-32">
+    <main class="w-full h-full overflow-y-auto bg-transparent" id="main-content">
+        <div class="max-w-[1200px] mx-auto px-6 pt-28 pb-48 md:pt-36 md:px-8 md:pb-24 lg:px-12 lg:pb-24">
             
-            <section id="beranda" class="tab-content active space-y-20">
-                <div class="flex flex-col-reverse lg:flex-row gap-16 items-center lg:items-start">
-                    <div class="flex-1 space-y-8 mt-8 lg:mt-0">
-                        <span class="text-xs font-mono tracking-widest text-gray-400 uppercase">Pengantar</span>
-                        <h2 id="judul-utama" class="font-serif text-5xl md:text-7xl font-bold leading-tight text-gray-900 reveal">
-                            Menjemput <span class="italic font-normal text-gray-600">Esensi</span> Lewat Analisis dan Narasi.
+            <!-- BERANDA -->
+            <section id="beranda" class="tab-content space-y-16 md:space-y-20">
+                <div class="flex flex-col-reverse lg:flex-row gap-12 lg:gap-16 items-center lg:items-start">
+                    <div class="flex-1 space-y-6 md:space-y-8 mt-4 lg:mt-0 bg-white/60 md:bg-transparent p-6 md:p-0 rounded-lg backdrop-blur-sm md:backdrop-blur-none">
+                        <span class="text-xs font-mono tracking-widest text-[#3B5F82] uppercase font-semibold">Pengantar</span>
+                        <h2 id="judul-utama" class="font-serif text-4xl md:text-6xl lg:text-7xl font-bold leading-tight text-[#263B50] reveal">
+                            Menjemput <span class="italic font-normal text-[#3B5F82]">Esensi</span> Lewat Analisis dan Narasi.
                         </h2>
-                        <p id="teks-beranda" class="text-lg text-gray-600 leading-relaxed max-w-2xl font-light animate-pulse bg-gray-200/60 rounded h-20 w-full">
-                            Sebuah ruang kontemplasi digital yang mempertemukan ketepatan logika data, kedalaman riset ekonomi, dan keindahan bahasa visual. Di sini, setiap gagasan diuji dan setiap perjalanan diabadikan.
+                        <p id="teks-beranda" class="text-base md:text-lg text-[#394653] leading-relaxed max-w-2xl font-light">
+                            Sebuah sintesa yang mempertemukan ketepatan logika data, kedalaman riset ekonomi, dan keindahan bahasa visual. Di sini, setiap gagasan diuji dan setiap perjalanan diabadikan.
                         </p>
                     </div>
-                    <div class="w-full max-w-sm lg:w-1/3 shrink-0 group reveal">
-                        <div class="aspect-[3/4] overflow-hidden bg-gray-200 rounded-sm shadow-lg relative">
-                            <img src="https://res.cloudinary.com/dqwwt03vy/image/upload/q_auto/f_auto/v1780933663/IMG_20260608_224602_sma7qd.png" alt="Potret Dikya Abidullah" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-105">
+                    <div class="w-full max-w-sm lg:w-1/3 shrink-0 group reveal mx-auto lg:mx-0">
+                        <div class="aspect-[3/4] overflow-hidden bg-gray-200 rounded-sm shadow-xl relative border border-white/50">
+                            <img src="https://res.cloudinary.com/dqwwt03vy/image/upload/q_auto/f_auto/v1780933663/IMG_20260608_224602_sma7qd.png" alt="Potret Dikya Abidullah" class="w-full h-full object-cover transition-all duration-700 transform group-hover:scale-105">
                             <div class="absolute inset-0 border border-black/10 m-4 z-10 pointer-events-none"></div>
                         </div>
-                        <p class="mt-6 text-xs font-mono text-gray-500 text-center uppercase tracking-widest">Dikya Abidullah</p>
+                        <p class="mt-6 text-xs font-mono text-[#748292] text-center uppercase tracking-widest bg-white/60 backdrop-blur-sm py-1 rounded">Dikya Abidullah</p>
                     </div>
                 </div>
                 
-                <div class="border-t border-gray-200 pt-16 grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl">
-                    <div class="space-y-4 reveal">
-                        <h3 id="sub-1-judul" class="font-serif text-xl font-semibold">Studi & Pengembangan</h3>
-                        <p id="sub-1-teks" class="text-sm text-gray-500 leading-relaxed font-light">Mengembangkan sistem tata kelola keuangan yang inklusif serta metodologi berbasis data yang transparan untuk mendukung keberlanjutan sektor ekonomi strategis di masyarakat.</p>
+                <div class="border-t border-[#DFE5EB] pt-16 grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl">
+                    <div class="space-y-4 reveal bg-white/60 p-6 rounded-lg backdrop-blur-sm">
+                        <h3 id="sub-1-judul" class="font-serif text-xl font-semibold text-[#263B50]">Studi & Pengembangan</h3>
+                        <p id="sub-1-teks" class="text-sm text-[#394653] leading-relaxed font-light">Mengembangkan sistem tata kelola keuangan yang inklusif serta metodologi berbasis data yang transparan untuk mendukung keberlanjutan sektor ekonomi strategis di masyarakat.</p>
                     </div>
-                    <div class="space-y-4 reveal">
-                        <h3 id="sub-2-judul" class="font-serif text-xl font-semibold">Estetika & Kata</h3>
-                        <p id="sub-2-teks" class="text-sm text-gray-500 leading-relaxed font-light">Merekam dinamika kehidupan, pergerakan, dan ruang dalam bentuk untaian kata esai, sajak puitis, serta dokumentasi visual yang berkarakter minimalis.</p>
+                    <div class="space-y-4 reveal bg-white/60 p-6 rounded-lg backdrop-blur-sm">
+                        <h3 id="sub-2-judul" class="font-serif text-xl font-semibold text-[#263B50]">Estetika & Kata</h3>
+                        <p id="sub-2-teks" class="text-sm text-[#394653] leading-relaxed font-light">Merekam dinamika kehidupan, pergerakan, dan ruang dalam bentuk untaian kata esai, sajak puitis, serta dokumentasi visual yang berkarakter minimalis.</p>
                     </div>
                 </div>
                 
                 <div id="wadah-dokumen" class="flex flex-wrap gap-4 mt-6 reveal">
-                    <!-- Tombol dokumen akan muncul di sini -->
+                    <!-- Tombol dokumen muncul di sini -->
                 </div>
             </section>
 
-            <section id="rekam-jejak" class="tab-content space-y-16 max-w-4xl pt-8">
-                <header class="max-w-2xl reveal">
-                    <h2 class="font-serif text-4xl md:text-5xl font-bold mb-6">Rekam Jejak.</h2>
-                    <p class="text-gray-500 font-light leading-relaxed">Linimasa perkembangan akademis, pengabdian sosial, dan kecakapan profesional yang membentuk landasan pemikiran serta aksi.</p>
+            <!-- JEJAK -->
+            <section id="jejak" class="tab-content space-y-16 max-w-4xl mx-auto">
+                <header class="section-header reveal">
+                    <h2>Jejak.</h2>
+                    <p>Linimasa perkembangan akademis, pengabdian sosial, dan kecakapan profesional yang membentuk landasan pemikiran serta aksi.</p>
                 </header>
-                <div id="rekam-jejak-container" class="relative border-l border-gray-200 ml-3 md:ml-4 space-y-14 pt-4 pb-4">
-                    <!-- Skeleton loader -->
+                <div id="jejak-container" class="relative border-l border-[#3B5F82]/30 ml-3 md:ml-4 space-y-14 pt-4 pb-4">
+                    <!-- Skeleton & data disuntikkan di sini -->
                 </div>
             </section>
 
-            <section id="ruang-aksara" class="tab-content space-y-16 max-w-3xl pt-8">
-                <header class="reveal">
-                    <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">Ruang Aksara.</h2>
-                    <p class="text-gray-500 font-light">Eksplorasi gagasan lewat bait sajak, dan esai pemikiran kritis.</p>
+            <!-- ARTIKEL (THE NEW YORKER LAYOUT) -->
+            <section id="artikel" class="tab-content">
+                <header class="section-header reveal">
+                    <h2>Artikel.</h2>
+                    <p>Ruang gagasan, pengetahuan, dan perubahan. Membaca realitas. Memahami kehidupan.</p>
                 </header>
 
-                <div id="filter-kategori" class="flex flex-wrap gap-3 reveal">
+                <div id="filter-kategori" class="flex flex-wrap justify-center gap-3 reveal mb-12">
                 </div>
 
-                <div id="artikel-grid" class="space-y-20">
-                </div>
-            </section>
-
-            <section id="project" class="tab-content space-y-12 max-w-5xl pt-8">
-                <header class="reveal">
-                    <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">Project.</h2>
-                    <p class="text-gray-500 font-light">Implementasi rekayasa perangkat lunak dan desain identitas visual.</p>
-                </header>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="project-grid">
+                <!-- Wadah Utama Layout New Yorker -->
+                <div id="artikel-grid" class="w-full">
+                    <!-- Dirender oleh JS -->
                 </div>
             </section>
 
-            <section id="lensa" class="tab-content space-y-12 pt-8">
-                <header class="max-w-3xl reveal">
-                    <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">Lensa.</h2>
-                    <p class="text-gray-500 font-light">Arsip dokumentasi visual dengan pendekatan komposisi simetris dan pencahayaan natural.</p>
-                </header>
-                <div id="lensa-grid" class="columns-1 md:columns-2 xl:columns-3 gap-8 space-y-8">
+            <!-- HALAMAN BACA ARTIKEL (PAGE SENDIRI) -->
+            <section id="halaman-artikel" class="tab-content max-w-4xl mx-auto">
+                <div class="mb-8">
+                    <button onclick="navigateTo('/artikel')" class="text-sm font-mono text-[#3B5F82] hover:text-[#263B50] flex items-center gap-2 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        Kembali ke Daftar Artikel
+                    </button>
+                </div>
+                <div id="halaman-artikel-body" class="w-full">
+                    <!-- Isi artikel penuh dimuat di sini -->
                 </div>
             </section>
 
-            <section id="visi" class="tab-content space-y-16 max-w-4xl pt-8">
-                <header class="text-center max-w-2xl mx-auto mb-16 reveal">
-                    <span class="text-xs font-mono tracking-widest text-gray-400 uppercase">Prinsip Fundamental</span>
-                    <h2 class="font-serif text-4xl md:text-5xl font-bold mt-4 mb-6">Manifesto Digital.</h2>
-                </header>
-                <div class="space-y-16">
-                    <blockquote id="teks-visi" class="font-serif text-3xl md:text-4xl italic text-gray-800 leading-relaxed text-center reveal">
-                        "Teknologi terbaik bukanlah yang paling rumit baris kodenya, melainkan yang paling mampu membawa kemaslahatan nyata bagi barisan manusia yang berdiri di hilir sistemnya."
-                    </blockquote>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-gray-200 pt-16">
-                        <div class="space-y-4 reveal">
-                            <span class="text-xs font-mono text-gray-400">01</span>
-                            <h3 class="font-serif text-xl font-bold">Inklusi Finansial</h3>
-                            <p class="text-sm text-gray-500 font-light leading-relaxed">Mendorong terciptanya arsitektur teknologi yang berpihak pada pemerataan akses, memadukan ketangguhan sistem digital dengan prinsip keadilan ekonomi mikro.</p>
-                        </div>
-                        <div class="space-y-4 reveal">
-                            <span class="text-xs font-mono text-gray-400">02</span>
-                            <h3 class="font-serif text-xl font-bold">Ketepatan Logika</h3>
-                            <p class="text-sm text-gray-500 font-light leading-relaxed">Membangun infrastruktur data yang terstruktur dan transparan. Integritas basis data adalah fondasi mutlak dari setiap keputusan analitis yang diambil.</p>
-                        </div>
-                        <div class="space-y-4 reveal">
-                            <span class="text-xs font-mono text-gray-400">03</span>
-                            <h3 class="font-serif text-xl font-bold">Estetika Simetris</h3>
-                            <p class="text-sm text-gray-500 font-light leading-relaxed">Menyajikan kompleksitas informasi melalui antarmuka yang puitis dan minimalis, memberikan ruang bagi pengguna untuk berpikir tanpa distraksi.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="kontak" class="tab-content space-y-12 max-w-3xl pt-8">
-                <header class="reveal">
-                    <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">Ruang Temu.</h2>
-                    <p class="text-gray-500 font-light leading-relaxed">Mari berdiskusi mengenai arsitektur sistem, riset ekonomi, atau sekadar bertukar gagasan kreatif.</p>
+            <!-- PROJECT -->
+            <section id="project" class="tab-content space-y-12">
+                <header class="section-header reveal">
+                    <h2>Projects.</h2>
+                    <p>Ideas into Action. Ruang untuk gagasan yang tumbuh menjadi gerakan, pengetahuan, dan perubahan yang terukur.</p>
                 </header>
                 
-                <form id="form-pesan" class="space-y-8 reveal">
-                    <div class="space-y-2">
-                        <label class="text-xs font-mono text-gray-500 uppercase tracking-widest">Nama</label>
-                        <input type="text" id="input-nama" class="w-full border-b border-gray-300 bg-transparent py-2 text-gray-900 focus:outline-none focus:border-black transition-colors" placeholder="Masukkan nama Anda" required>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-mono text-gray-500 uppercase tracking-widest">Surel</label>
-                        <input type="email" id="input-email" class="w-full border-b border-gray-300 bg-transparent py-2 text-gray-900 focus:outline-none focus:border-black transition-colors" placeholder="alamat@surel.com" required>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-mono text-gray-500 uppercase tracking-widest">Pesan</label>
-                        <textarea id="input-konten" rows="4" class="w-full border-b border-gray-300 bg-transparent py-2 text-gray-900 focus:outline-none focus:border-black transition-colors resize-none" placeholder="Tuliskan gagasan Anda..." required></textarea>
-                    </div>
-                    <button type="submit" class="font-serif italic text-lg border-b border-black pb-1 hover:text-gray-500 hover:border-gray-500 transition-colors">
-                        Kirim Pesan
-                    </button>
-                    <p id="status-pesan" class="text-sm mt-4 hidden font-mono tracking-wide"></p>
-                </form>
+                <div id="filter-project" class="flex flex-wrap justify-center gap-3 reveal mb-12">
+                </div>
 
-                <div class="space-y-8 border-l border-gray-200 pl-8 md:pl-16 mt-16 reveal">
+                <div id="project-grid" class="space-y-16">
+                </div>
+            </section>
+
+            <!-- LENSA -->
+            <section id="lensa" class="tab-content space-y-12">
+                <header class="section-header reveal">
+                    <h2>Lensa.</h2>
+                    <p>Melihat dunia dari sudut yang berbeda. Sebuah ruang untuk merekam realitas, manusia, kebudayaan, dan berbagai cerita kehidupan.</p>
+                </header>
+                
+                <div id="filter-lensa" class="flex flex-wrap justify-center gap-3 reveal mb-8"></div>
+                <div id="lensa-grid" class="lensa-masonry">
+                </div>
+            </section>
+
+            <!-- KONTAK -->
+            <section id="kontak" class="tab-content space-y-12 max-w-3xl mx-auto">
+                <header class="section-header reveal">
+                    <h2>Ruang Temu.</h2>
+                    <p>Terhubung melalui surel atau jejaring profesional untuk berdiskusi mengenai arsitektur sistem, riset, atau gagasan kreatif.</p>
+                </header>
+
+                <div class="space-y-8 border-l-2 border-[#3B5F82] pl-8 md:pl-16 mt-16 reveal bg-white/70 p-8 md:p-12 rounded-r-lg backdrop-blur-sm border-[#DFE5EB]">
                     <div class="space-y-2">
-                        <h4 class="text-xs font-mono text-gray-400 uppercase tracking-widest">Surat Elektronik</h4>
-                        <a href="mailto:dikyaabidullah1234@gmail.com" class="block font-serif text-lg hover:text-gray-500 transition-colors">dikyaabidullah1234@gmail.com</a>
+                        <h4 class="text-xs font-mono text-[#3B5F82] uppercase tracking-widest font-semibold">Surat Elektronik</h4>
+                        <a href="mailto:dikyaabidullah1234@gmail.com" class="block font-serif text-xl text-[#263B50] hover:text-[#3B5F82] transition-colors">dikyaabidullah1234@gmail.com</a>
                     </div>
                     <div class="space-y-2">
-                        <h4 class="text-xs font-mono text-gray-400 uppercase tracking-widest">Jejaring Profesional</h4>
-                        <a href="https://www.linkedin.com/in/dikyaabidullah" target="_blank" class="block font-serif text-lg hover:text-gray-500 transition-colors">linkedin.com/in/dikyaabidullah</a>
+                        <h4 class="text-xs font-mono text-[#3B5F82] uppercase tracking-widest font-semibold">Jejaring Profesional</h4>
+                        <a href="https://www.linkedin.com/in/dikyaabidullah" target="_blank" class="block font-serif text-xl text-[#263B50] hover:text-[#3B5F82] transition-colors">linkedin.com/in/dikyaabidullah</a>
                     </div>
-                    <div class="pt-8 mt-8 border-t border-gray-200">
-                        <p class="text-sm font-light text-gray-500 italic">Berbasis di Cirebon, Indonesia.</p>
+                    <div class="pt-8 mt-8 border-t border-[#DFE5EB]">
+                        <p class="text-sm font-light text-[#748292] italic">Berbasis di Cirebon, Indonesia.</p>
                     </div>
                 </div>
             </section>
 
+            <!-- Modal Project -->
             <div id="project-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 sm:p-6">
-                <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeModal()"></div>
-                <div class="relative bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-sm shadow-2xl p-8 transform scale-95 opacity-0 transition-all duration-300" id="modal-content">
-                    <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-black">
+                <div class="absolute inset-0 bg-[#263B50]/60 backdrop-blur-sm" onclick="closeModal()"></div>
+                <div class="relative bg-[#F5F7FA] w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-lg shadow-2xl p-8 md:p-12 transform scale-95 opacity-0 transition-all duration-300" id="modal-content">
+                    <button onclick="closeModal()" class="absolute top-6 right-6 text-[#748292] hover:text-[#3B5F82]">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
-                    <div id="modal-body" class="space-y-6 mt-4"></div>
+                    <div id="modal-body" class="mt-4"></div>
                 </div>
             </div>
 
-            <div id="lightbox" class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/95 backdrop-blur-md transition-opacity duration-300 opacity-0" onclick="closeLightbox()">
-                <button class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-                <img id="lightbox-img" src="" class="max-w-[90vw] max-h-[90vh] object-contain shadow-2xl transform scale-95 transition-transform duration-500">
+            <!-- Image Viewer (Lensa Fullscreen) -->
+            <div id="image-viewer" class="fixed inset-0 z-[70] hidden opacity-0 transition-opacity duration-300">
+                <div class="viewer-content">
+                    <button onclick="closeViewer()" class="absolute top-6 right-6 z-50 text-white/50 hover:text-white transition-colors bg-black/20 p-2 rounded-full backdrop-blur-md">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+
+                    <div class="viewer-image-container relative">
+                        <button onclick="navigateViewer(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors bg-black/20 p-3 rounded-full backdrop-blur-md">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        </button>
+                        
+                        <img id="viewer-img" src="" class="max-w-full max-h-[85vh] object-contain shadow-2xl">
+
+                        <button onclick="navigateViewer(1)" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors bg-black/20 p-3 rounded-full backdrop-blur-md">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                    </div>
+
+                    <div class="viewer-sidebar flex flex-col justify-center text-white">
+                        <span id="viewer-category" class="text-xs font-mono uppercase tracking-widest text-gray-400 mb-2">Category</span>
+                        <h3 id="viewer-title" class="font-serif text-3xl font-bold mb-4">Title</h3>
+                        <div id="viewer-date" class="text-sm text-gray-400 font-mono mb-6">Date</div>
+                        <p id="viewer-caption" class="text-sm text-gray-300 font-light leading-relaxed mb-8">Caption</p>
+                        <div class="text-xs text-gray-500 font-mono flex justify-between border-t border-gray-700 pt-4">
+                            <span id="viewer-index">1 / 1</span>
+                            <span>Gunakan panah kiri/kanan</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top: 0, behavior: 'smooth'})" class="p-3 bg-white/80 backdrop-blur-md rounded-full shadow-md border border-gray-200 hover:bg-white transition-all duration-300">
-                <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+            <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top: 0, behavior: 'smooth'})" class="p-3 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-[#DFE5EB] hover:bg-white transition-all duration-300">
+                <svg class="w-5 h-5 text-[#3B5F82]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
             </button>
         </div>
     </main>
 
     <script>
-        // Navigasi
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
+            const hamburger = document.getElementById('hamburger-btn');
+            
             sidebar.classList.toggle('-translate-x-full');
+            
             if (overlay.classList.contains('hidden')) {
                 overlay.classList.remove('hidden');
                 setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                if (hamburger) hamburger.classList.add('opacity-0', 'pointer-events-none');
             } else {
                 overlay.classList.add('opacity-0');
                 setTimeout(() => overlay.classList.add('hidden'), 300);
+                if (hamburger) hamburger.classList.remove('opacity-0', 'pointer-events-none');
             }
         }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-black', 'font-semibold', 'italic', 'active-page');
-                btn.classList.add('text-gray-400');
+                btn.classList.remove('text-[#3B5F82]', 'font-semibold', 'active-page');
+                btn.classList.add('text-[#748292]');
+                
+                const targetTab = tabId === 'halaman-artikel' ? 'artikel' : tabId;
+
+                if (btn.dataset.tab === targetTab) {
+                    btn.classList.remove('text-[#748292]');
+                    btn.classList.add('text-[#3B5F82]', 'font-semibold', 'active-page');
+                }
             });
+
             const selectedTab = document.getElementById(tabId);
             if (selectedTab) {
                 selectedTab.classList.add('active');
                 const reveals = selectedTab.querySelectorAll('.reveal');
                 reveals.forEach(el => observer.observe(el));
             }
-            const activeBtn = document.getElementById('nav-' + tabId);
-            if (activeBtn) {
-                activeBtn.classList.remove('text-gray-400');
-                activeBtn.classList.add('text-black', 'font-semibold', 'italic', 'active-page');
-            }
+            
             document.getElementById('main-content').scrollTop = 0;
-            const sidebar = document.getElementById('sidebar');
-            if (!sidebar.classList.contains('-translate-x-full')) {
-                toggleSidebar();
+            
+            if (window.innerWidth < 768) {
+                const sidebar = document.getElementById('sidebar');
+                if (!sidebar.classList.contains('-translate-x-full')) {
+                    toggleSidebar();
+                }
             }
         }
 
-        function openLightbox(imgSrc) {
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            lightboxImg.src = imgSrc;
-            lightbox.classList.remove('hidden');
-            lightbox.classList.add('flex');
-            setTimeout(() => {
-                lightbox.classList.remove('opacity-0');
-                lightboxImg.classList.remove('scale-95');
-                lightboxImg.classList.add('scale-100');
-            }, 10);
+        // ==========================================
+        // ROUTING SISTEM
+        // ==========================================
+        function navigateTo(path) {
+            if (window.location.pathname !== path) {
+                history.pushState(null, '', path);
+                handleRouting();
+            }
         }
 
-        function closeLightbox() {
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            lightbox.classList.add('opacity-0');
-            lightboxImg.classList.remove('scale-100');
-            lightboxImg.classList.add('scale-95');
-            setTimeout(() => {
-                lightbox.classList.add('hidden');
-                lightbox.classList.remove('flex');
-                lightboxImg.src = ''; 
-            }, 300);
+        function handleRouting() {
+            const path = window.location.pathname;
+            
+            if (path.startsWith('/artikel/')) {
+                const slug = path.replace('/artikel/', '');
+                switchTab('halaman-artikel');
+                renderHalamanArtikel(slug);
+            } 
+            else if (path === '/artikel') {
+                switchTab('artikel');
+            }
+            else if (path === '/project') {
+                switchTab('project');
+            }
+            else if (path === '/lensa') {
+                switchTab('lensa');
+            }
+            else if (path === '/jejak') {
+                switchTab('jejak');
+            }
+            else if (path === '/kontak') {
+                switchTab('kontak');
+            }
+            else {
+                switchTab('beranda');
+            }
         }
+        window.addEventListener('popstate', handleRouting);
 
         let projectData = {}; 
+        function renderStatusBadge(status) {
+            const s = (status || 'Complete').toLowerCase().trim();
+            const map = {
+                'complete':     { label: 'Selesai',     cls: 'bg-[#E9EFF5] text-[#3B5F82] border-[#3B5F82]/20' },
+                'in progress':  { label: 'Dikerjakan',  cls: 'bg-amber-50 text-amber-700 border-amber-200' },
+                'coming soon':  { label: 'Segera',      cls: 'bg-gray-100 text-gray-500 border-gray-200' }
+            };
+            const m = map[s] || map['complete'];
+            return `<span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border rounded-full ${m.cls}">${m.label}</span>`;
+        }
 
-        function openModal(projectId) {
+        function openProjectModal(projectId) {
             const modal = document.getElementById('project-modal');
             const modalContent = document.getElementById('modal-content');
             const modalBody = document.getElementById('modal-body');
             const data = projectData[projectId];
-            if(data) {
-                const tagsHtml = data.tags.map(tag => `<span class="text-xs font-mono px-2 py-1 bg-gray-100 text-gray-600 rounded">${tag}</span>`).join('');
-                modalBody.innerHTML = `
-                    <div class="flex flex-wrap gap-2 mb-4">${tagsHtml}</div>
-                    <h3 class="font-serif text-3xl font-bold text-gray-900 mb-6">${data.title}</h3>
-                    ${data.content}
-                `;
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                setTimeout(() => {
-                    modalContent.classList.remove('opacity-0', 'scale-95');
-                    modalContent.classList.add('opacity-100', 'scale-100');
-                }, 10);
-            }
+            if (!data) return;
+
+            const tagsHtml = data.tags.map(tag => `<span class="text-xs font-mono px-2 py-1 bg-white text-[#3B5F82] rounded border border-[#DFE5EB]">${tag}</span>`).join('');
+            
+            modalBody.innerHTML = `
+                <div class="text-xs font-mono text-[#3B5F82] uppercase tracking-widest mb-4">${data.number}</div>
+                <h3 class="font-serif text-3xl md:text-4xl font-bold text-[#263B50] mb-6 leading-tight">${data.title}</h3>
+                <div class="flex flex-wrap items-center gap-2 mb-8">
+                    ${tagsHtml}
+                    ${renderStatusBadge(data.status)}
+                </div>
+                
+                <div class="mb-8 border-y border-[#DFE5EB] py-6">
+                    <h4 class="text-sm font-semibold text-[#263B50] mb-2 uppercase font-mono">About the Project</h4>
+                    <p class="text-[#394653] font-light leading-relaxed font-magazine text-lg">${data.deskripsi}</p>
+                </div>
+                
+                ${data.links.length ? `<div class="mb-8">
+                    <h4 class="text-sm font-semibold text-[#263B50] mb-3 uppercase font-mono">Links & Resources</h4>
+                    <div class="flex flex-wrap gap-3">${data.links.join('')}</div>
+                </div>` : ''}
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modalContent.classList.remove('opacity-0', 'scale-95');
+                modalContent.classList.add('opacity-100', 'scale-100');
+            }, 10);
         }
 
         function closeModal() {
@@ -422,11 +610,114 @@
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             }, 300);
+            if (location.pathname.startsWith('/project/')) {
+                navigateTo('/project');
+            }
         }
 
-        const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
+       // const BASE_URL = 'http://127.0.0.1:8000/api/v1';  
+        // Ubah dari http://127.0.0.1:8000/api/v1
+const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1'; 
 
-        // Ambil teks profil (pakai path parameter /profil/{bagian})
+        // ==========================================
+        // FUNGSI SKELETON DAN ERROR HANDLING
+        // ==========================================
+        function showSkeleton(containerId, type) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            if (type === 'artikel') {
+                container.className = "ny-layout";
+                container.innerHTML = `
+                    <!-- Kolom Kiri Skeleton -->
+                    <div class="ny-col-left animate-pulse space-y-8 hidden lg:block">
+                        ${Array(2).fill(0).map(() => `
+                            <div>
+                                <div class="aspect-[3/2] bg-gray-200 w-full mb-4"></div>
+                                <div class="h-3 bg-gray-200 rounded w-1/3 mb-2"></div>
+                                <div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+                                <div class="h-3 bg-gray-200 rounded w-full"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <!-- Kolom Tengah Skeleton -->
+                    <div class="ny-col-center animate-pulse">
+                        <div class="aspect-[16/9] bg-gray-200 w-full mb-6"></div>
+                        <div class="h-3 bg-gray-200 rounded w-1/4 mb-4"></div>
+                        <div class="h-12 bg-gray-200 rounded w-3/4 mb-4"></div>
+                        <div class="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                        <div class="h-4 bg-gray-200 rounded w-5/6 mb-6"></div>
+                        <div class="h-3 bg-gray-200 rounded w-1/4"></div>
+                    </div>
+                    <!-- Kolom Kanan Skeleton -->
+                    <div class="ny-col-right animate-pulse space-y-8 hidden lg:block">
+                        ${Array(4).fill(0).map(() => `
+                            <div class="flex gap-4 border-b border-gray-200 pb-6">
+                                <div class="flex-1">
+                                    <div class="h-5 bg-gray-200 rounded w-full mb-2"></div>
+                                    <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                                </div>
+                                <div class="w-20 h-20 bg-gray-200 shrink-0"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (type === 'project') {
+                container.className = "space-y-16";
+                container.innerHTML = `
+                    <div class="project-featured animate-pulse">
+                        <div class="project-featured-image bg-gray-200 h-80 md:h-96 rounded-sm mb-6 md:mb-0 w-full aspect-[16/9]"></div>
+                        <div class="project-featured-content space-y-4">
+                            <div class="h-12 bg-gray-200 rounded w-1/4 mb-4"></div>
+                            <div class="h-8 bg-gray-200 rounded w-3/4"></div>
+                            <div class="h-4 bg-gray-200 rounded w-full"></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                         ${Array(3).fill(0).map(() => `
+                            <div class="animate-pulse border-t border-gray-200 pt-6">
+                                <div class="h-10 bg-gray-200 rounded w-1/4 mb-4"></div>
+                                <div class="aspect-[4/3] bg-gray-200 rounded-sm mb-4"></div>
+                                <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (type === 'lensa') {
+                container.className = "lensa-masonry";
+                container.innerHTML = Array(6).fill(0).map((_, i) => `
+                    <div class="lensa-item animate-pulse mb-6">
+                        <div class="bg-gray-200 w-full" style="aspect-ratio: ${i % 3 === 0 ? '3/4' : (i % 2 === 0 ? '1/1' : '4/3')};"></div>
+                        <div class="mt-3 h-3 bg-gray-200 w-2/3"></div>
+                    </div>
+                `).join('');
+            } else if (type === 'jejak') {
+                container.innerHTML = Array(3).fill(0).map(() => `
+                    <div class="relative pl-10 md:pl-12 mb-14 animate-pulse bg-white/50 p-4 rounded-lg">
+                        <div class="absolute -left-[5px] top-5 w-2.5 h-2.5 bg-gray-300 rounded-full"></div>
+                        <div class="h-3 bg-gray-200 rounded w-1/3 mb-3"></div>
+                        <div class="h-5 bg-gray-200 rounded w-2/3 mb-2"></div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderErrorUI(containerId, message, retryFn) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.className = "block w-full";
+            container.innerHTML = `
+                <div class="border border-dashed border-[#DFE5EB] rounded-lg p-12 text-center bg-white/60 reveal backdrop-blur-sm max-w-xl mx-auto">
+                    <p class="font-serif text-lg italic text-[#263B50] mb-2">${message}</p>
+                    <p class="text-xs font-mono text-[#748292]">Pastikan Backend berjalan dan data di database tidak kosong (NULL).</p>
+                    <button onclick="${retryFn}" class="mt-6 px-6 py-2 border border-[#3B5F82] text-[#3B5F82] text-xs font-mono hover:bg-[#3B5F82] hover:text-white transition-all rounded">Coba Lagi</button>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // FETCH DATA DARI API
+        // ==========================================
         async function fetchProfil() {
             try {
                 const daftarTeks = [
@@ -435,49 +726,46 @@
                     { kode: 'SUB_1_JUDUL', id: 'sub-1-judul' },
                     { kode: 'SUB_1_TEKS', id: 'sub-1-teks' },
                     { kode: 'SUB_2_JUDUL', id: 'sub-2-judul' },
-                    { kode: 'SUB_2_TEKS', id: 'sub-2-teks' },
-                    { kode: 'VISI', id: 'teks-visi' }
+                    { kode: 'SUB_2_TEKS', id: 'sub-2-teks' }
                 ];
 
                 for (const item of daftarTeks) {
-                    const res = await fetch(`${BASE_URL}/profil/${item.kode}`);
-                    if (res.ok) {
-                        const data = await res.json();
-                        if (data && data.konten) {
-                            const elemen = document.getElementById(item.id);
-                            if (elemen) {
-                                if (item.kode === 'VISI') {
-                                    elemen.textContent = `"${data.konten}"`;
-                                } else if (item.kode === 'BERANDA') {
-                                    elemen.classList.remove('animate-pulse', 'bg-gray-200/60', 'h-20', 'w-full');
-                                    elemen.textContent = data.konten;
-                                } else if (item.kode === 'JUDUL_UTAMA') {
-                                    elemen.innerHTML = data.konten; 
-                                } else {
-                                    elemen.textContent = data.konten;
+                    try {
+                        const res = await fetch(`${BASE_URL}/profil/${item.kode}`);
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (data && data.konten) {
+                                const elemen = document.getElementById(item.id);
+                                if (elemen) {
+                                    if (item.kode === 'JUDUL_UTAMA') {
+                                        elemen.innerHTML = data.konten; 
+                                    } else {
+                                        elemen.textContent = data.konten;
+                                    }
                                 }
                             }
                         }
+                    } catch (err) {
+                        console.warn(`Gagal memuat profil ${item.kode}`, err);
                     }
                 }
 
-                // Tombol dokumen dinamis
                 const wadah = document.getElementById('wadah-dokumen');
                 if (wadah) {
                     try {
-                        const resDok = await fetch(`${BASE_URL}/profil/DOKUMEN_BEBAS`);
+                        const resDok = await fetch(`${BASE_URL}/dokumen`);
                         if (resDok.ok) {
-                            const dataDok = await resDok.json();
-                            if (dataDok && dataDok.konten) {
-                                const listDokumen = JSON.parse(dataDok.konten);
+                            const listDokumen = await resDok.json();
+                            if (Array.isArray(listDokumen) && listDokumen.length > 0) {
                                 wadah.innerHTML = listDokumen.map(item => `
-                                    <a href="${item.link}" target="_blank" class="inline-block px-6 py-3 border border-black text-xs font-mono hover:bg-black hover:text-white transition-all duration-300">
-                                        ${item.nama} ↗
+                                    <a href="${item.url_tautan}" target="_blank"
+                                    class="inline-block px-6 py-3 border border-[#3B5F82] text-[#3B5F82] text-xs font-mono hover:bg-[#3B5F82] hover:text-white transition-all duration-300 bg-white/50 backdrop-blur-sm">
+                                        ${item.nama_dokumen} ↗
                                     </a>
                                 `).join('');
+                            } else {
+                                wadah.innerHTML = '';
                             }
-                        } else {
-                            wadah.innerHTML = '';
                         }
                     } catch (e) {
                         wadah.innerHTML = '';
@@ -488,224 +776,652 @@
             }
         }
 
-        async function fetchRekamJejak() {
+        async function fetchJejak() {
+            showSkeleton('jejak-container', 'jejak');
             try {
                 const response = await fetch(`${BASE_URL}/rekam-jejak`);
+                if (!response.ok) throw new Error("API Error");
                 const data = await response.json();
-                const container = document.getElementById('rekam-jejak-container');
+                const container = document.getElementById('jejak-container');
                 container.innerHTML = ''; 
+                
                 if (data && data.length > 0) {
-                    data.forEach(item => {
+                    const sortedData = [...data].sort((a, b) => {
+                        const getYear = (str) => {
+                            if (!str) return 0;
+                            const s = str.toString().toLowerCase();
+                            if (s.includes('sekarang') || s.includes('now') || s.includes('present')) return 9999;
+                            const match = s.match(/\d{4}/);
+                            return match ? parseInt(match[0]) : 0;
+                        };
+                        return getYear(b.periode_selesai) - getYear(a.periode_selesai);
+                    });
+
+                    sortedData.forEach(item => {
                         const div = document.createElement('div');
-                        div.className = "relative pl-10 md:pl-12 group cursor-default mb-14 transition-all duration-300 hover:translate-x-2 reveal";
+                        div.className = "relative pl-10 md:pl-12 group cursor-default mb-14 transition-all duration-300 hover:translate-x-2 reveal bg-white/40 p-6 rounded-r-lg backdrop-blur-sm";
                         div.innerHTML = `
-                            <div class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 bg-white border-2 border-gray-300 rounded-full group-hover:border-black group-hover:scale-150 group-hover:shadow-[0_0_0_4px_rgba(0,0,0,0.1)] transition-all duration-300"></div>
+                            <div class="absolute -left-[5px] top-8 w-2.5 h-2.5 bg-white border-2 border-[#3B5F82] rounded-full group-hover:scale-150 group-hover:shadow-[0_0_0_4px_rgba(59,95,130,0.2)] transition-all duration-300"></div>
                             <div class="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
-                                <h3 class="font-serif text-2xl font-bold text-gray-800 group-hover:text-black transition-colors">${item.peran}</h3>
-                                <span class="text-xs font-mono tracking-widest text-gray-400 mt-2 md:mt-0 uppercase">${item.periode_mulai} — ${item.periode_selesai}</span>
+                                <h3 class="font-serif text-2xl font-bold text-[#263B50] group-hover:text-[#3B5F82] transition-colors">${item.peran}</h3>
+                                <span class="text-xs font-mono tracking-widest text-[#3B5F82] mt-2 md:mt-0 uppercase bg-[#E9EFF5] px-2 py-1 rounded">${item.periode_mulai} — ${item.periode_selesai}</span>
                             </div>
-                            <p class="text-sm text-gray-500 italic mb-4">${item.institusi}</p>
-                            <p class="text-sm text-gray-600 font-light leading-relaxed max-w-2xl">${item.deskripsi}</p>
+                            <p class="text-sm text-[#394653] font-semibold italic mb-4">${item.institusi}</p>
+                            <p class="text-sm text-[#394653] font-light leading-relaxed max-w-2xl">${item.deskripsi}</p>
                         `;
                         container.appendChild(div);
                         observer.observe(div);
                     });
                 } else {
-                    container.innerHTML = `<div class="py-4 text-sm text-gray-400 font-light italic reveal">Catatan pengalaman sedang diselaraskan dengan arsip fisik.</div>`;
+                    container.innerHTML = `<div class="py-4 text-sm text-[#748292] font-light italic reveal bg-white/50 p-4 rounded">Catatan pengalaman sedang diselaraskan dengan arsip fisik.</div>`;
                     observer.observe(container.querySelector('.reveal'));
                 }
-            } catch (error) { console.error("Gagal memuat rekam jejak API", error); }
+            } catch (error) { 
+                console.error("Gagal memuat jejak API", error); 
+                renderErrorUI('jejak-container', 'Gagal memuat jejak.', 'fetchJejak()');
+            }
         }
 
         let allArticles = [];
+        let selectedCategories = new Set();
 
         async function fetchArtikel() {
+            showSkeleton('artikel-grid', 'artikel');
             try {
                 const response = await fetch(`${BASE_URL}/artikel`);
+                if (!response.ok) throw new Error("API Error");
                 const data = await response.json();
-                allArticles = data;
-                buildCategoryFilters(data);
-                renderArticles(data);
+                allArticles = Array.isArray(data) ? data : [];
+                buildArtikelIndex(allArticles);
+                buildCategoryFilters(allArticles);
+                renderArticles(allArticles);
             } catch (error) {
                 console.error("Gagal memuat artikel:", error);
-                document.getElementById('artikel-grid').innerHTML = 
-                    `<div class="py-12 text-center reveal"><p class="font-serif text-lg italic text-gray-400">"Gagal memuat arsip tulisan."</p></div>`;
+                renderErrorUI('artikel-grid', 'Gagal memuat arsip artikel.', 'fetchArtikel()');
             }
         }
 
         function buildCategoryFilters(articles) {
             const container = document.getElementById('filter-kategori');
             if (!container) return;
-            const categories = [...new Set(articles.map(a => a.kategori).filter(Boolean))];
-            categories.sort((a, b) => a.localeCompare(b));
+            const categories = [...new Set(articles.map(a => a.kategori).filter(Boolean))].sort();
+            
             container.innerHTML = `
-                <button class="filter-btn active" data-category="all">Semua</button>
+                <button class="filter-btn active" data-category="all">Semua Artikel</button>
                 ${categories.map(cat => `<button class="filter-btn" data-category="${cat}">${cat}</button>`).join('')}
             `;
+            
             container.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.addEventListener('click', function () {
-                    container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    const selected = this.dataset.category;
-                    if (selected === 'all') {
+                    const cat = this.dataset.category;
+                    
+                    if (cat === 'all') {
+                        selectedCategories.clear();
+                        container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        renderArticles(allArticles);
+                        return;
+                    }
+                    
+                    container.querySelector('[data-category="all"]').classList.remove('active');
+                    
+                    if (selectedCategories.has(cat)) {
+                        selectedCategories.delete(cat);
+                        this.classList.remove('active');
+                    } else {
+                        selectedCategories.add(cat);
+                        this.classList.add('active');
+                    }
+                    
+                    if (selectedCategories.size === 0) {
+                        container.querySelector('[data-category="all"]').classList.add('active');
                         renderArticles(allArticles);
                     } else {
-                        renderArticles(allArticles.filter(a => a.kategori === selected));
+                        renderArticles(allArticles.filter(a => selectedCategories.has(a.kategori)));
                     }
                 });
             });
         }
 
+        // ==========================================
+        // RENDER ARTIKEL LAYOUT THE NEW YORKER
+        // ==========================================
         function renderArticles(articles) {
             const container = document.getElementById('artikel-grid');
             container.innerHTML = '';
+            
             if (articles.length === 0) {
-                container.innerHTML = `<div class="py-12 text-center reveal"><p class="font-serif text-lg italic text-gray-400">"Tidak ada tulisan dalam kategori ini."</p></div>`;
+                container.className = "w-full";
+                container.innerHTML = `<div class="py-12 text-center reveal bg-white/60 rounded-lg backdrop-blur-sm"><p class="font-serif text-lg italic text-[#748292]">"Tidak ada artikel dalam kategori ini."</p></div>`;
                 return;
             }
-            articles.forEach(item => {
-                const pubDate = new Date(item.tanggal_publikasi);
-                const monthNames = [
-                    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-                ];
-                const formattedDate = `${pubDate.getDate()} ${monthNames[pubDate.getMonth()]} ${pubDate.getFullYear()}`;
-                const article = document.createElement('article');
-                article.className = "border-b-2 border-gray-200 pb-16 reveal";
-                article.innerHTML = `
-                    <div class="flex items-center space-x-3 text-xs font-mono text-gray-400 mb-3">
-                        <span class="uppercase tracking-wider">${item.kategori}</span>
-                        <span>•</span>
-                        <span>${formattedDate}</span>
-                    </div>
-                    <h3 class="font-serif text-3xl font-bold text-gray-900">${item.judul}</h3>
-                    <div class="text-gray-600 font-light leading-normal whitespace-pre-line mt-3">
-                        ${item.konten.trim()}
-                    </div>
+
+            container.className = "ny-layout";
+
+            // Distribusi Artikel:
+            // Main Feature: Artikel ke-0
+            // Left Column: Artikel ke-1, ke-2
+            // Center Secondary: Artikel ke-3
+            // Right Column: Artikel ke-4 ke atas
+            
+            const mainFeature = articles[0];
+            const leftFeatures = articles.slice(1, 3);
+            const centerSecondary = articles.length > 3 ? articles[3] : null;
+            const rightList = articles.slice(4);
+
+            // Helper Format Tanggal
+            const fmtDate = (dStr) => {
+                const d = new Date(dStr);
+                const b = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+                return `${d.getDate()} ${b[d.getMonth()]} ${d.getFullYear()}`;
+            };
+
+            // Helper HTML
+            const buildLeftCard = (item) => {
+                const slug = item.slug || `artikel-${item.id}`;
+                const img = item.url_gambar ? `<img src="${item.url_gambar}" alt="${item.judul}" class="w-full aspect-[3/2] object-cover mb-4 border border-[#DFE5EB]">` : '';
+                return `
+                    <article class="group cursor-pointer reveal" onclick="navigateTo('/artikel/${slug}')">
+                        ${img}
+                        <div class="text-[10px] font-mono text-[#3B5F82] uppercase tracking-wider mb-2 font-bold">${item.kategori}</div>
+                        <h3 class="font-serif text-xl font-bold leading-tight mb-2 group-hover:text-[#3B5F82] transition-colors">${item.judul}</h3>
+                        <p class="text-sm text-[#394653] font-light line-clamp-3 mb-4">${item.ringkasan || item.konten.substring(0, 100)+'...'}</p>
+                        <div class="text-xs font-mono text-[#748292]">By Dikya Abidullah</div>
+                    </article>
                 `;
-                container.appendChild(article);
-                observer.observe(article);
+            };
+
+            const buildRightCard = (item) => {
+                const slug = item.slug || `artikel-${item.id}`;
+                const img = item.url_gambar ? `<img src="${item.url_gambar}" alt="${item.judul}" class="w-16 h-16 object-cover shrink-0 border border-[#DFE5EB]">` : '';
+                return `
+                    <article class="group cursor-pointer reveal flex gap-4 border-b border-[#DFE5EB] pb-6 last:border-0" onclick="navigateTo('/artikel/${slug}')">
+                        <div class="flex-1">
+                            <h4 class="font-serif text-base font-bold leading-tight mb-2 group-hover:text-[#3B5F82] transition-colors">${item.judul}</h4>
+                            <div class="text-[11px] font-mono text-[#748292]">By Dikya Abidullah</div>
+                        </div>
+                        ${img}
+                    </article>
+                `;
+            };
+
+            // HTML Kolom Kiri
+            const leftHtml = leftFeatures.length > 0 ? `
+                <div class="ny-col-left space-y-10 hidden lg:block">
+                    ${leftFeatures.map(buildLeftCard).join('')}
+                </div>
+            ` : `<div class="ny-col-left hidden lg:block"></div>`;
+
+            // HTML Kolom Tengah
+            const mainSlug = mainFeature.slug || `artikel-${mainFeature.id}`;
+            const mainImg = mainFeature.url_gambar ? `<img src="${mainFeature.url_gambar}" alt="${mainFeature.judul}" class="w-full aspect-[16/9] object-cover mb-6 border border-[#DFE5EB]">` : '';
+            
+            let secondaryHtml = '';
+            if (centerSecondary) {
+                const secSlug = centerSecondary.slug || `artikel-${centerSecondary.id}`;
+                const secImg = centerSecondary.url_gambar ? `<img src="${centerSecondary.url_gambar}" alt="${centerSecondary.judul}" class="w-full aspect-[4/3] object-cover border border-[#DFE5EB]">` : '';
+                secondaryHtml = `
+                    <article class="group cursor-pointer reveal flex flex-col md:flex-row gap-6 pt-10 border-t border-[#DFE5EB] mt-10" onclick="navigateTo('/artikel/${secSlug}')">
+                        <div class="flex-1 order-2 md:order-1">
+                            <div class="text-[10px] font-mono text-[#3B5F82] uppercase tracking-wider mb-2 font-bold">${centerSecondary.kategori}</div>
+                            <h3 class="font-serif text-2xl font-bold leading-tight mb-3 group-hover:text-[#3B5F82] transition-colors">${centerSecondary.judul}</h3>
+                            <p class="text-sm text-[#394653] font-light line-clamp-3 mb-4">${centerSecondary.ringkasan || centerSecondary.konten.substring(0, 120)+'...'}</p>
+                            <div class="text-xs font-mono text-[#748292]">By Dikya Abidullah</div>
+                        </div>
+                        <div class="w-full md:w-2/5 shrink-0 order-1 md:order-2">${secImg}</div>
+                    </article>
+                `;
+            }
+
+            const centerHtml = `
+                <div class="ny-col-center space-y-8">
+                    <!-- Headline Utama -->
+                    <article class="group cursor-pointer reveal" onclick="navigateTo('/artikel/${mainSlug}')">
+                        ${mainImg}
+                        <div class="text-xs font-mono text-[#3B5F82] uppercase tracking-wider mb-3 font-bold">${mainFeature.kategori}</div>
+                        <h2 class="font-serif text-3xl md:text-5xl font-bold leading-tight mb-4 group-hover:text-[#3B5F82] transition-colors">${mainFeature.judul}</h2>
+                        <p class="text-lg text-[#394653] font-magazine italic leading-relaxed mb-6 line-clamp-4">${mainFeature.ringkasan || mainFeature.konten.substring(0, 200)+'...'}</p>
+                        <div class="text-xs font-mono text-[#748292]">By Dikya Abidullah</div>
+                    </article>
+                    <!-- Artikel Sekunder di Bawah Headline -->
+                    ${secondaryHtml}
+                </div>
+            `;
+
+            // HTML Kolom Kanan
+            const rightHtml = rightList.length > 0 ? `
+                <div class="ny-col-right space-y-6 hidden lg:block">
+                    <h3 class="font-serif text-xl font-bold italic border-b-2 border-[#263B50] pb-2 mb-6">Artikel Lainnya</h3>
+                    ${rightList.map(buildRightCard).join('')}
+                </div>
+            ` : `<div class="ny-col-right hidden lg:block"></div>`;
+
+            // Gabungkan semua
+            container.innerHTML = leftHtml + centerHtml + rightHtml;
+
+            // Daftarkan animasi reveal
+            container.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        let artikelIndex = {};
+        function buildArtikelIndex(articles) {
+            artikelIndex = {};
+            articles.forEach(item => {
+                const slug = item.slug || `artikel-${item.id}`;
+                artikelIndex[slug] = item;
             });
         }
 
-        async function fetchLensa() {
-            try {
-                const response = await fetch(`${BASE_URL}/lensa`);
-                const data = await response.json();
-                const container = document.getElementById('lensa-grid');
-                container.innerHTML = '';
-                if (data && data.length > 0) {
-                    container.className = "columns-1 md:columns-2 xl:columns-3 gap-8 space-y-8";
-                    data.forEach(item => {
-                        const wrapper = document.createElement('div');
-                        wrapper.className = "break-inside-avoid group cursor-pointer mb-8 reveal";
-                        if (item.url_gambar.includes('|')) {
-                            const pecah = item.url_gambar.split('|');
-                            wrapper.innerHTML = `
-                                <a href="${pecah[1]}" target="_blank" class="video-link rounded-sm overflow-hidden block bg-gray-100">
-                                    <img src="${pecah[0]}" alt="${item.caption}" loading="lazy" class="w-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700">
-                                    <div class="play-button">▶</div>
+        // RENDER HALAMAN BACA ARTIKEL PENUH
+        function renderHalamanArtikel(slug) {
+            const item = artikelIndex[slug];
+            if (!item) { 
+                document.getElementById('halaman-artikel-body').innerHTML = `
+                    <div class="py-20 text-center">
+                        <h2 class="text-2xl font-serif text-gray-500">Artikel tidak ditemukan.</h2>
+                        <button onclick="navigateTo('/artikel')" class="mt-4 text-blue-800 underline">Kembali</button>
+                    </div>`;
+                return; 
+            }
+
+            const pubDate = new Date(item.tanggal_publikasi);
+            const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+            const formattedDate = `${pubDate.getDate()} ${bulan[pubDate.getMonth()]} ${pubDate.getFullYear()}`;
+
+            const wordCount = (item.konten || '').split(/\s+/).length;
+            const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
+            const coverHtml = item.url_gambar
+                ? `<div class="w-full aspect-[16/9] overflow-hidden bg-[#E9EFF5] mb-10 border-y border-[#DFE5EB]">
+                       <img src="${item.url_gambar}" alt="${item.judul}" class="w-full h-full object-cover">
+                   </div>`
+                : '';
+
+            const lainnya = allArticles
+                .filter(a => (a.slug || `artikel-${a.id}`) !== slug)
+                .sort((a, b) => {
+                    const aSame = a.kategori === item.kategori ? 1 : 0;
+                    const bSame = b.kategori === item.kategori ? 1 : 0;
+                    if (aSame !== bSame) return bSame - aSame;
+                    return new Date(b.tanggal_publikasi) - new Date(a.tanggal_publikasi);
+                })
+                .slice(0, 3);
+
+            const etalaseHtml = lainnya.length > 0 ? `
+                <div class="border-t border-[#DFE5EB] mt-16 pt-10 pb-16">
+                    <span class="text-xs font-mono tracking-widest text-[#3B5F82] uppercase font-semibold block mb-6 text-center">Baca Juga</span>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        ${lainnya.map(a => {
+                            const aSlug = a.slug || `artikel-${a.id}`;
+                            const thumb = a.url_gambar
+                                ? `<div class="aspect-[4/3] overflow-hidden bg-[#E9EFF5] mb-3">
+                                       <img src="${a.url_gambar}" alt="${a.judul}" loading="lazy" class="w-full h-full object-cover">
+                                   </div>`
+                                : '';
+                            return `
+                                <a href="/artikel/${aSlug}" onclick="event.preventDefault(); navigateTo('/artikel/${aSlug}');"
+                                   class="group block border-t-2 border-[#3B5F82] pt-3 hover:opacity-80 transition-opacity">
+                                    ${thumb}
+                                    <div class="text-[10px] font-mono text-[#3B5F82] font-semibold uppercase tracking-wider mb-1">${a.kategori}</div>
+                                    <h4 class="font-serif text-base font-bold text-[#263B50] leading-snug">${a.judul}</h4>
                                 </a>
-                                <p class="mt-4 font-serif text-sm text-gray-600 italic">${item.caption}</p>
                             `;
-                        } else {
-                            wrapper.onclick = () => openLightbox(item.url_gambar);
-                            wrapper.innerHTML = `
-                                <div class="overflow-hidden bg-gray-100 rounded-sm">
-                                    <img src="${item.url_gambar}" alt="${item.caption}" loading="lazy" class="w-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700">
-                                </div>
-                                <p class="mt-4 font-serif text-sm text-gray-600 italic">${item.caption}</p>
-                            `;
-                        }
-                        container.appendChild(wrapper);
-                        observer.observe(wrapper);
-                    });
-                } else {
-                    container.className = "block text-center py-8";
-                    container.innerHTML = `<p class="font-serif text-sm text-gray-400 italic reveal">Arsip dokumentasi visual belum dibuka untuk publik.</p>`;
-                    observer.observe(container.querySelector('.reveal'));
-                }
-            } catch (error) { console.error("Gagal memuat lensa API", error); }
+                        }).join('')}
+                    </div>
+                </div>
+            ` : '';
+
+            document.getElementById('halaman-artikel-body').innerHTML = `
+                <div class="max-w-[760px] mx-auto pb-8">
+                    <div class="flex items-center justify-center space-x-3 text-xs font-mono text-[#3B5F82] font-semibold mb-6 uppercase tracking-widest">
+                        <span>${item.kategori}</span>
+                        <span>•</span>
+                        <span class="text-[#748292] font-normal">${formattedDate}</span>
+                        <span>•</span>
+                        <span class="text-[#748292] font-normal">${readTime} min read</span>
+                    </div>
+                    <h1 class="font-serif text-4xl md:text-5xl font-bold text-[#263B50] leading-tight text-center mb-10">${item.judul}</h1>
+                    ${item.ringkasan ? `<p class="font-magazine italic text-xl text-[#526273] leading-relaxed text-center mb-12">${item.ringkasan}</p>` : ''}
+                    
+                    ${coverHtml}
+                    
+                    <div class="article-body whitespace-pre-line text-justify">${item.konten}</div>
+                </div>
+                
+                ${etalaseHtml}
+            `;
+
+            document.getElementById('main-content').scrollTop = 0;
         }
 
+        // ==========================================
+        // FETCH PROJECTS
+        // ==========================================
+        let allProjects = [];
+        let selectedProjectCategories = new Set();
+
         async function fetchProjects() {
+            showSkeleton('project-grid', 'project');
             try {
                 const response = await fetch(`${BASE_URL}/projects`);
+                if (!response.ok) throw new Error("API Error");
                 const projects = await response.json();
-                const grid = document.getElementById('project-grid');
-                grid.innerHTML = '';
-                if (projects && projects.length > 0) {
-                    grid.className = "grid grid-cols-1 md:grid-cols-2 gap-8";
-                    projects.forEach(project => {
-                        const tagsHtml = project.tags.split(',').map(tag =>
-                            `<span class="text-xs font-mono px-2 py-1 bg-gray-100 text-gray-600 rounded">${tag.trim()}</span>`
-                        ).join('');
-                        const card = document.createElement('div');
-                        card.className = "border border-gray-200 rounded-sm p-8 bg-white space-y-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group reveal";
-                        card.onclick = () => openModal(`project-${project.id}`);
-                        card.innerHTML = `
-                            <div class="flex flex-wrap gap-2">${tagsHtml}</div>
-                            <h3 class="font-serif text-2xl font-bold group-hover:text-gray-600 transition-colors">${project.judul}</h3>
-                            <p class="text-sm text-gray-500 font-light leading-relaxed line-clamp-3">${project.deskripsi}</p>
-                        `;
-                        grid.appendChild(card);
-                        observer.observe(card);
-                        projectData[`project-${project.id}`] = {
-                            title: project.judul,
-                            tags: project.tags.split(',').map(t => t.trim()),
-                            content: `<p class="text-gray-600 font-light leading-relaxed whitespace-pre-line">${project.deskripsi}</p>`
-                        };
-                    });
-                } else {
-                    grid.className = "block";
-                    grid.innerHTML = `<div class="border border-dashed border-gray-200 rounded-sm p-12 text-center bg-white/50 reveal"><p class="text-sm text-gray-400 font-light">Implementasi sistem dan dokumentasi teknis sedang dipersiapkan.</p></div>`;
-                    observer.observe(grid.querySelector('.reveal'));
-                }
+                allProjects = Array.isArray(projects) ? projects : [];
+                
+                buildProjectFilters(allProjects);
+                renderProjects(allProjects);
             } catch (error) {
                 console.error("Gagal memuat project API", error);
-                const grid = document.getElementById('project-grid');
-                grid.className = "block";
-                grid.innerHTML = `<div class="py-12 text-center reveal"><p class="text-sm text-red-400">Gagal memuat data project.</p></div>`;
+                renderErrorUI('project-grid', 'Gagal memuat data project.', 'fetchProjects()');
             }
         }
 
-        const formPesan = document.getElementById('form-pesan');
-        if (formPesan) {
-            formPesan.addEventListener('submit', async function(e) {
-                e.preventDefault(); 
-                const statusPesan = document.getElementById('status-pesan');
-                const btnSubmit = formPesan.querySelector('button[type="submit"]');
-                const dataPesan = {
-                    nama: document.getElementById('input-nama').value,
-                    email: document.getElementById('input-email').value,
-                    konten: document.getElementById('input-konten').value 
-                };
-                btnSubmit.innerText = 'MENGIRIM...';
-                btnSubmit.disabled = true;
-                statusPesan.classList.add('hidden');
-                try {
-                    const response = await fetch(`${BASE_URL}/pesan`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(dataPesan)
-                    });
-                    if (response.ok) {
-                        statusPesan.textContent = "Pesan berhasil terkirim. Terima kasih!";
-                        statusPesan.className = "text-sm mt-4 text-green-600 block font-mono transition-all duration-300";
-                        formPesan.reset(); 
-                    } else {
-                        throw new Error('API menolak data');
+        function buildProjectFilters(projects) {
+            const container = document.getElementById('filter-project');
+            if (!container) return;
+            const categories = ['Semua Project', 'Research', 'Campaign', 'Community', 'Creative']; 
+            
+            container.innerHTML = categories.map((cat, idx) => `
+                <button class="filter-btn ${idx === 0 ? 'active' : ''}" data-category="${cat === 'Semua Project' ? 'all' : cat.toLowerCase()}">${cat}</button>
+            `).join('');
+
+            container.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const cat = this.dataset.category;
+                    
+                    if (cat === 'all') {
+                        selectedProjectCategories.clear();
+                        container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        renderProjects(allProjects);
+                        return;
                     }
-                } catch (error) {
-                    statusPesan.textContent = "Gagal mengirim pesan. Pastikan server API menyala.";
-                    statusPesan.className = "text-sm mt-4 text-red-600 block font-mono transition-all duration-300";
-                } finally {
-                    btnSubmit.innerText = 'Kirim Pesan';
-                    btnSubmit.disabled = false;
-                }
+                    
+                    container.querySelector('[data-category="all"]').classList.remove('active');
+                    
+                    if (selectedProjectCategories.has(cat)) {
+                        selectedProjectCategories.delete(cat);
+                        this.classList.remove('active');
+                    } else {
+                        selectedProjectCategories.add(cat);
+                        this.classList.add('active');
+                    }
+                    
+                    if (selectedProjectCategories.size === 0) {
+                        container.querySelector('[data-category="all"]').classList.add('active');
+                        renderProjects(allProjects);
+                    } else {
+                        renderProjects(allProjects.filter(p => {
+                            const pTags = (p.tags || '').toLowerCase();
+                            return Array.from(selectedProjectCategories).some(c => pTags.includes(c));
+                        }));
+                    }
+                });
             });
         }
 
+        function renderProjects(projects) {
+            const container = document.getElementById('project-grid');
+            container.innerHTML = '';
+            container.className = "space-y-16";
+
+            if (projects.length === 0) {
+                container.className = "";
+                container.innerHTML = `<div class="py-12 text-center reveal bg-white/60 rounded-lg backdrop-blur-sm"><p class="font-serif text-lg italic text-[#748292]">"Tidak ada project dalam kategori ini."</p></div>`;
+                return;
+            }
+
+            const featured = projects[0];
+            const others = projects.slice(1);
+
+            const featTags = featured.tags.split(',').map(t => `<span class="text-xs font-mono px-2 py-1 bg-white text-[#3B5F82] rounded border border-[#DFE5EB]">${t.trim()}</span>`).join('');
+            const featLinks = [];
+            if (featured.url_demo)   featLinks.push(`<a href="${featured.url_demo}" target="_blank" rel="noopener" class="inline-block px-5 py-2 border border-[#3B5F82] text-[#3B5F82] text-xs font-mono hover:bg-[#3B5F82] hover:text-white transition-all rounded">Demo ↗</a>`);
+            if (featured.url_github) featLinks.push(`<a href="${featured.url_github}" target="_blank" rel="noopener" class="inline-block px-5 py-2 border border-[#748292] text-[#394653] text-xs font-mono hover:bg-[#263B50] hover:text-white transition-all rounded">GitHub ↗</a>`);
+
+            projectData[`project-${featured.id}`] = {
+                title: featured.judul,
+                tags: featured.tags.split(',').map(t => t.trim()),
+                status: featured.status_pengerjaan,
+                deskripsi: featured.deskripsi,
+                links: featLinks,
+                number: "PROJECT / 001"
+            };
+
+            const featCard = document.createElement('div');
+            featCard.className = "project-featured reveal group cursor-pointer";
+            featCard.onclick = () => openProjectModal(`project-${featured.id}`);
+            
+            const featImg = featured.url_gambar 
+                ? `<img src="${featured.url_gambar}" alt="${featured.judul}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">`
+                : `<div class="w-full h-full min-h-[300px] bg-[#E9EFF5] flex items-center justify-center text-[#748292]">Sintesa Project</div>`;
+
+            featCard.innerHTML = `
+                <div class="project-featured-image overflow-hidden bg-[#E9EFF5] rounded-sm">
+                    ${featImg}
+                </div>
+                <div class="project-featured-content flex flex-col justify-center">
+                    <div class="project-number text-[#3B5F82] opacity-20">001</div>
+                    <div class="flex items-center gap-2 mb-3">
+                        ${featTags}
+                        ${renderStatusBadge(featured.status_pengerjaan)}
+                    </div>
+                    <h3 class="font-serif text-3xl md:text-5xl font-bold text-[#263B50] leading-tight mb-4 group-hover:text-[#3B5F82] transition-colors">${featured.judul}</h3>
+                    <p class="font-magazine text-[#394653] text-base leading-relaxed mb-8 line-clamp-3 md:line-clamp-none">${featured.deskripsi}</p>
+                    <span class="inline-block text-xs font-mono font-bold uppercase tracking-widest text-[#3B5F82] border-b-2 border-[#3B5F82] pb-1 group-hover:text-[#2E4F70] group-hover:border-[#2E4F70] transition-colors">Explore Project →</span>
+                </div>
+            `;
+            container.appendChild(featCard);
+            observer.observe(featCard);
+
+            if (others.length > 0) {
+                const sectionTitle = document.createElement('div');
+                sectionTitle.className = "border-b border-[#DFE5EB] pb-4 mt-12 mb-8";
+                sectionTitle.innerHTML = `<h3 class="font-serif text-2xl font-bold text-[#263B50]">All Projects</h3>`;
+                container.appendChild(sectionTitle);
+
+                const gridContainer = document.createElement('div');
+                gridContainer.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12";
+                container.appendChild(gridContainer);
+
+                others.forEach((project, index) => {
+                    const numStr = String(index + 2).padStart(3, '0');
+                    const tagsHtml = project.tags.split(',').map(t => `<span class="text-[10px] font-mono text-[#3B5F82] uppercase">${t.trim()}</span>`).join(' • ');
+                    
+                    const links = [];
+                    if (project.url_demo)   links.push(`<a href="${project.url_demo}" target="_blank" rel="noopener" class="inline-block px-4 py-2 border border-[#3B5F82] text-[#3B5F82] text-xs font-mono hover:bg-[#3B5F82] hover:text-white transition-all rounded">Demo ↗</a>`);
+                    if (project.url_github) links.push(`<a href="${project.url_github}" target="_blank" rel="noopener" class="inline-block px-4 py-2 border border-[#748292] text-[#394653] text-xs font-mono hover:bg-[#263B50] hover:text-white transition-all rounded">GitHub ↗</a>`);
+
+                    projectData[`project-${project.id}`] = {
+                        title: project.judul,
+                        tags: project.tags.split(',').map(t => t.trim()),
+                        status: project.status_pengerjaan,
+                        deskripsi: project.deskripsi,
+                        links: links,
+                        number: `PROJECT / ${numStr}`
+                    };
+
+                    const thumbHtml = project.url_gambar
+                        ? `<img src="${project.url_gambar}" alt="${project.judul}" loading="lazy" class="group-hover:scale-105 transition-transform duration-700">`
+                        : `<div class="aspect-[4/3] bg-[#E9EFF5] mb-5 flex items-center justify-center text-[#748292]">Sintesa</div>`;
+
+                    const card = document.createElement('div');
+                    card.className = "project-grid-card reveal group cursor-pointer";
+                    card.onclick = () => openProjectModal(`project-${project.id}`);
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="text-4xl font-bold text-[#DFE5EB] group-hover:text-[#3B5F82]/20 transition-colors">${numStr}</div>
+                            ${renderStatusBadge(project.status_pengerjaan)}
+                        </div>
+                        ${project.url_gambar ? `<div class="overflow-hidden mb-5">${thumbHtml}</div>` : thumbHtml}
+                        <div class="mb-2">${tagsHtml}</div>
+                        <h4 class="font-serif text-xl font-bold text-[#263B50] group-hover:text-[#3B5F82] transition-colors leading-snug mb-3">${project.judul}</h4>
+                        <p class="text-[#394653] font-light text-sm leading-relaxed line-clamp-3 mb-6">${project.deskripsi}</p>
+                        <span class="mt-auto text-xs font-mono font-bold uppercase tracking-widest text-[#3B5F82] group-hover:text-[#2E4F70] transition-colors">Explore →</span>
+                    `;
+                    gridContainer.appendChild(card);
+                    observer.observe(card);
+                });
+            }
+        }
+
+        // ==========================================
+        // FETCH LENSA
+        // ==========================================
+        let allLensa = [];
+        let selectedLensaCategories = new Set();
+        let currentViewerIndex = 0;
+        let activeViewerList = [];
+
+        async function fetchLensa() {
+            showSkeleton('lensa-grid', 'lensa');
+            try {
+                const response = await fetch(`${BASE_URL}/lensa`);
+                if (!response.ok) throw new Error("API Error");
+                const data = await response.json();
+                allLensa = Array.isArray(data) ? data : [];
+                
+                buildLensaFilters(allLensa);
+                renderLensa(allLensa);
+            } catch (error) { 
+                console.error("Gagal memuat lensa API", error); 
+                renderErrorUI('lensa-grid', 'Gagal memuat arsip dokumentasi.', 'fetchLensa()');
+            }
+        }
+
+        function buildLensaFilters(items) {
+            const container = document.getElementById('filter-lensa');
+            if (!container) return;
+            const categories = [...new Set(items.map(a => a.kategori).filter(Boolean))].sort();
+            
+            container.innerHTML = `
+                <button class="filter-btn active" data-category="all">All Photos</button>
+                ${categories.map(cat => `<button class="filter-btn" data-category="${cat}">${cat}</button>`).join('')}
+            `;
+            
+            container.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const cat = this.dataset.category;
+                    
+                    if (cat === 'all') {
+                        selectedLensaCategories.clear();
+                        container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        renderLensa(allLensa);
+                        return;
+                    }
+                    
+                    container.querySelector('[data-category="all"]').classList.remove('active');
+                    
+                    if (selectedLensaCategories.has(cat)) {
+                        selectedLensaCategories.delete(cat);
+                        this.classList.remove('active');
+                    } else {
+                        selectedLensaCategories.add(cat);
+                        this.classList.add('active');
+                    }
+                    
+                    if (selectedLensaCategories.size === 0) {
+                        container.querySelector('[data-category="all"]').classList.add('active');
+                        renderLensa(allLensa);
+                    } else {
+                        renderLensa(allLensa.filter(a => selectedLensaCategories.has(a.kategori)));
+                    }
+                });
+            });
+        }
+
+        function renderLensa(items) {
+            const container = document.getElementById('lensa-grid');
+            container.innerHTML = '';
+            container.className = "lensa-masonry";
+            activeViewerList = items;
+
+            if (items.length === 0) {
+                container.className = "block text-center py-8";
+                container.innerHTML = `<p class="font-serif text-sm text-[#748292] italic reveal bg-white/60 p-4 rounded-lg">Belum ada dokumentasi dalam kategori ini.</p>`;
+                observer.observe(container.querySelector('.reveal'));
+                return;
+            }
+
+            items.forEach((item, index) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = "lensa-item reveal group";
+                wrapper.onclick = () => openViewer(index, items);
+
+                const isVideo = item.url_gambar.includes('|');
+                const imgUrl = isVideo ? item.url_gambar.split('|')[0] : item.url_gambar;
+
+                wrapper.innerHTML = `
+                    <img src="${imgUrl}" alt="${item.judul || item.caption || 'Gambar'}" loading="lazy">
+                    <div class="lensa-item-overlay">
+                        <div class="text-[10px] font-mono text-white/70 uppercase tracking-wider mb-1">${item.kategori || 'Photography'}</div>
+                        <h4 class="font-serif text-white font-bold text-lg leading-tight">${item.judul || item.caption || 'Untitled'}</h4>
+                        ${isVideo ? '<div class="text-white/80 text-xs mt-2 font-mono flex items-center gap-1">▶ Video</div>' : ''}
+                    </div>
+                `;
+                container.appendChild(wrapper);
+                observer.observe(wrapper);
+            });
+        }
+
+        function openViewer(index, list) {
+            currentViewerIndex = index;
+            activeViewerList = list;
+            
+            const item = activeViewerList[currentViewerIndex];
+            const isVideo = item.url_gambar.includes('|');
+            
+            if (isVideo) {
+                window.open(item.url_gambar.split('|')[1], '_blank');
+                return;
+            }
+
+            document.getElementById('viewer-img').src = item.url_gambar;
+            document.getElementById('viewer-category').textContent = item.kategori || 'Photography';
+            document.getElementById('viewer-title').textContent = item.judul || item.caption || 'Untitled';
+            document.getElementById('viewer-caption').textContent = item.caption || '';
+            
+            const dateStr = item.tanggal ? new Date(item.tanggal).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : '';
+            document.getElementById('viewer-date').textContent = dateStr;
+            
+            document.getElementById('viewer-index').textContent = `${currentViewerIndex + 1} / ${activeViewerList.length}`;
+
+            const viewer = document.getElementById('image-viewer');
+            viewer.classList.remove('hidden');
+            setTimeout(() => {
+                viewer.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeViewer() {
+            const viewer = document.getElementById('image-viewer');
+            viewer.classList.add('opacity-0');
+            setTimeout(() => {
+                viewer.classList.add('hidden');
+                document.getElementById('viewer-img').src = '';
+            }, 300);
+        }
+
+        function navigateViewer(direction) {
+            currentViewerIndex += direction;
+            if (currentViewerIndex < 0) currentViewerIndex = activeViewerList.length - 1;
+            if (currentViewerIndex >= activeViewerList.length) currentViewerIndex = 0;
+            
+            openViewer(currentViewerIndex, activeViewerList);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (!document.getElementById('image-viewer').classList.contains('hidden')) {
+                if (e.key === 'ArrowRight') navigateViewer(1);
+                if (e.key === 'ArrowLeft') navigateViewer(-1);
+                if (e.key === 'Escape') closeViewer();
+            }
+        });
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
         const mainContent = document.getElementById('main-content');
         const progressBar = document.getElementById('scroll-progress');
         const backToTopBtn = document.getElementById('back-to-top');
@@ -733,13 +1449,16 @@
         });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        document.addEventListener('DOMContentLoaded', () => {
-            switchTab('beranda'); 
-            fetchProfil();
-            fetchRekamJejak();
-            fetchArtikel();
-            fetchProjects();
-            fetchLensa();
+        document.addEventListener('DOMContentLoaded', async () => {
+            await Promise.all([
+                fetchProfil(),
+                fetchJejak(),
+                fetchArtikel(),
+                fetchProjects(),
+                fetchLensa()
+            ]);
+            
+            handleRouting();
         });
     </script>
 </body>

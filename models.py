@@ -31,12 +31,16 @@ class Artikel(Base):
     konten = Column(Text)
     tanggal_publikasi = Column(DateTime, default=datetime.utcnow)
 
-# 4. TABEL LENSA (Bug #5 Fixed)
+# 4. TABEL LENSA (Bug #5 - Rich Feature)
 class Lensa(Base):
     __tablename__ = "lensa"
     id = Column(Integer, primary_key=True, index=True)
-    url_gambar = Column(String)
-    caption = Column(String)
+    url_gambar = Column(String, nullable=False)
+    judul = Column(String, nullable=True)
+    caption = Column(String, nullable=True)
+    kategori = Column(String, default="Fotografi", nullable=False)
+    tipe_media = Column(String, default="foto", nullable=False)  # "foto" | "video"
+    tanggal = Column(DateTime, default=datetime.utcnow)
 
 # 5. TABEL PROJECT (Fitur #17 Added)
 class Project(Base):
@@ -48,15 +52,6 @@ class Project(Base):
     status_pengerjaan = Column(String, default="Complete") # Complete / In Progress / Coming Soon
     url_demo = Column(String, nullable=True)     # <--- Tambahkan ini
     url_github = Column(String, nullable=True)
-
-# 6. TABEL PESAN (Bug #6 Data Aligned)
-class Pesan(Base):
-    __tablename__ = "pesan"
-    id = Column(Integer, primary_key=True, index=True)
-    nama = Column(String)
-    email = Column(String)
-    konten = Column(Text)
-    tanggal_dikirim = Column(DateTime, default=datetime.utcnow)
 
  # 7. TABEL DOKUMEN (Menyelesaikan Bug #1 - Tautan Dinamis)
 class Dokumen(Base):

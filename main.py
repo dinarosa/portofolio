@@ -1,9 +1,7 @@
 import os
 import secrets
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
+from typing import List, Optional
 
 # Memuat brankas .env
 load_dotenv()
@@ -23,6 +21,10 @@ from datetime import datetime
 from database import get_db
 import models
 import schemas
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from fastapi import Request
 
 app = FastAPI(
     title="Portfolio Core API",
@@ -30,22 +32,28 @@ app = FastAPI(
     version="2.0.0"
 )
 
+limiter = Limiter(key_func=get_remote_address, default_limits=["200/hour"])
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 # ==========================================================================
 # CORS – Izinkan semua asal (sesuaikan di produksi)
 # ==========================================================================
 origins = [
-    "http://localhost:3000",       # Untuk live server / pengujian lokal
-    "http://127.0.0.1:5500",       # Port alternatif lokal
-    "https://devaabidya.site",     # Domain produksi utama Anda
-    "https://bisnis.devaabidya.site" # Subdomain bisnis Anda
+    "http://localhost:3000",
+    "http://127.0.0.1:5500",
+    "https://devaabidya.site",
+    "https://www.devaabidya.site",
+    "https://bisnis.devaabidya.site",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,         # Hanya izinkan domain di atas
-    allow_credentials=True,        # Izinkan pengiriman kredensial/token
-    allow_methods=["*"],           # Izinkan semua metode (GET, POST, PUT, DELETE)
-    allow_headers=["*"],           # Izinkan semua jenis header data
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "X-API-Key"],
+    max_age=3600,
 )
 
 # ==========================================================================
@@ -67,40 +75,18 @@ async def get_api_key(api_key: str = Security(api_key_header)):
     )
 
 # ==========================================================================
-# FUNGSI NOTIFIKASI EMAIL (Bug #6)
-# ==========================================================================
-def kirim_notifikasi_email(nama: str, email_pengirim: str, pesan_konten: str):
-    sender_email = os.getenv("EMAIL_SENDER")
-    sender_password = os.getenv("EMAIL_PASSWORD")
-    receiver_email = os.getenv("EMAIL_RECEIVER")
-
-    if not sender_email or not sender_password:
-        print("SMTP Alert: Kredensial email di .env belum diatur.")
-        return
-
-    msg = MIMEMultipart()
-    msg['From'] = sender_email
-    msg['To'] = receiver_email
-    msg['Subject'] = f"💬 Pesan Portofolio: {nama}"
-
-    body = f"Anda menerima pesan baru!\n\nDari: {nama}\nEmail: {email_pengirim}\n\nIsi Pesan:\n{pesan_konten}"
-    msg.attach(MIMEText(body, 'plain'))
-
-    try:
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login(sender_email, sender_password)
-        server.send_message(msg)
-        server.quit()
-    except Exception as e:
-        print(f"SMTP Gagal: {e}")
-
-# ==========================================================================
 # ROOT – Pengecekan status API
 # ==========================================================================
 @app.get("/", tags=["Root"])
 def root():
     return {"status": "online", "message": "Portfolio Core API v2.0.0 siap digunakan."}
+@app.get("/api/v1/artikel", response_model=List[schemas.ArtikelResponse], tags=["Artikel"])
+@limiter.limit("60/minute")
+def read_artikel(request: Request, kategori: Optional[str] = None, skip: int = 0, limit: int = 50, db: Session = Depends(get_db)):
+    query = db.query(models.Artikel)
+    if kategori:
+        query = query.filter(models.Artikel.kategori == kategori)
+    return query.order_by(models.Artikel.tanggal_publikasi.desc()).offset(skip).limit(limit).all()
 
 
 # ==========================================================================
@@ -108,7 +94,10 @@ def root():
 # ==========================================================================
 @app.get("/api/v1/profil/{bagian}", response_model=schemas.ProfilResponse, tags=["Profil"])
 def read_profil(bagian: str, db: Session = Depends(get_db)):
-    return db.query(models.Profil).filter(models.Profil.bagian == bagian.upper()).first()
+    profil = db.query(models.Profil).filter(models.Profil.bagian == bagian.upper()).first()
+    if not profil:
+        raise HTTPException(status_code=404, detail="Profil tidak ditemukan")
+    return profil
 
 @app.post("/api/v1/profil", response_model=schemas.ProfilResponse, status_code=201, tags=["Profil"])
 def create_profil(profil: schemas.ProfilCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
@@ -152,6 +141,12 @@ def update_project(project_id: int, project_data: schemas.ProjectCreate, db: Ses
     db_project.judul = project_data.judul
     db_project.tags = project_data.tags
     db_project.deskripsi = project_data.deskripsi
+    db_project.status_pengerjaan = project_data.status_pengerjaan
+    db_project.url_demo = project_data.url_demo
+    db_project.url_github = project_data.url_github
+    db.commit()
+    db.refresh(db_project)
+    return db_project
     
     # Update Fitur #17
     if hasattr(project_data, 'status_pengerjaan'):
@@ -174,22 +169,59 @@ def delete_project(project_id: int, db: Session = Depends(get_db), api_key: str 
 # ==========================================
 # 3. RUTE ARTIKEL (Ruang Aksara)
 # ==========================================
-@app.put("/api/v1/artikel/{artikel_id}", response_model=schemas.ArtikelResponse)
+@app.get("/api/v1/artikel", response_model=List[schemas.ArtikelResponse], tags=["Artikel"])
+def read_artikel(
+    kategori: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(models.Artikel)
+    if kategori:
+        query = query.filter(models.Artikel.kategori == kategori)
+    return query.order_by(models.Artikel.tanggal_publikasi.desc()).all()
+
+@app.get("/api/v1/artikel/{artikel_id}", response_model=schemas.ArtikelResponse, tags=["Artikel"])
+def read_artikel_detail(artikel_id: int, db: Session = Depends(get_db)):
+    artikel = db.query(models.Artikel).filter(models.Artikel.id == artikel_id).first()
+    if not artikel:
+        raise HTTPException(status_code=404, detail="Artikel tidak ditemukan")
+    return artikel
+
+@app.post("/api/v1/artikel", response_model=schemas.ArtikelResponse, status_code=201, tags=["Artikel"])
+def create_artikel(artikel: schemas.ArtikelCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    # Cek slug unik jika diisi
+    if artikel.slug:
+        existing = db.query(models.Artikel).filter(models.Artikel.slug == artikel.slug).first()
+        if existing:
+            raise HTTPException(status_code=409, detail=f"Slug '{artikel.slug}' sudah dipakai")
+    db_artikel = models.Artikel(**artikel.model_dump())
+    db.add(db_artikel)
+    db.commit()
+    db.refresh(db_artikel)
+    return db_artikel
+
+@app.put("/api/v1/artikel/{artikel_id}", response_model=schemas.ArtikelResponse, tags=["Artikel"])
 def update_artikel(artikel_id: int, artikel_data: schemas.ArtikelCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
     db_artikel = db.query(models.Artikel).filter(models.Artikel.id == artikel_id).first()
-    if not db_artikel: raise HTTPException(status_code=404, detail="Artikel tidak ditemukan")
-    
+    if not db_artikel:
+        raise HTTPException(status_code=404, detail="Artikel tidak ditemukan")
     db_artikel.kategori = artikel_data.kategori
     db_artikel.judul = artikel_data.judul
     db_artikel.slug = artikel_data.slug
     db_artikel.url_gambar = artikel_data.url_gambar
     db_artikel.ringkasan = artikel_data.ringkasan
     db_artikel.konten = artikel_data.konten
-    
     db.commit()
     db.refresh(db_artikel)
     return db_artikel
 
+@app.delete("/api/v1/artikel/{artikel_id}", tags=["Artikel"])
+def delete_artikel(artikel_id: int, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    artikel = db.query(models.Artikel).filter(models.Artikel.id == artikel_id).first()
+    if not artikel:
+        raise HTTPException(status_code=404, detail="Artikel tidak ditemukan")
+    db.delete(artikel)
+    db.commit()
+    return {"message": f"Artikel dengan ID {artikel_id} berhasil dihapus"}
 
 # ==========================================
 # 4. RUTE REKAM JEJAK
@@ -231,16 +263,43 @@ def delete_rekam_jejak(rekam_id: int, db: Session = Depends(get_db), api_key: st
 
 
 # ==========================================
-# 5. RUTE LENSA (Galeri Fotografi)
+# 5. RUTE LENSA (Bug #5 - Rich Feature)
 # ==========================================
 @app.get("/api/v1/lensa", response_model=List[schemas.LensaResponse], tags=["Lensa"])
-def read_lensa(db: Session = Depends(get_db)):
-    return db.query(models.Lensa).all()
+def read_lensa(
+    kategori: Optional[str] = None,
+    tipe_media: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(models.Lensa)
+    if kategori:
+        query = query.filter(models.Lensa.kategori == kategori)
+    if tipe_media:
+        query = query.filter(models.Lensa.tipe_media == tipe_media)
+    return query.order_by(models.Lensa.tanggal.desc()).all()
+
+@app.get("/api/v1/lensa/{lensa_id}", response_model=schemas.LensaResponse, tags=["Lensa"])
+def read_lensa_detail(lensa_id: int, db: Session = Depends(get_db)):
+    lensa = db.query(models.Lensa).filter(models.Lensa.id == lensa_id).first()
+    if not lensa:
+        raise HTTPException(status_code=404, detail="Foto tidak ditemukan")
+    return lensa
 
 @app.post("/api/v1/lensa", response_model=schemas.LensaResponse, status_code=201, tags=["Lensa"])
 def create_lensa(lensa: schemas.LensaCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
     db_lensa = models.Lensa(**lensa.model_dump())
     db.add(db_lensa)
+    db.commit()
+    db.refresh(db_lensa)
+    return db_lensa
+
+@app.put("/api/v1/lensa/{lensa_id}", response_model=schemas.LensaResponse, tags=["Lensa"])
+def update_lensa(lensa_id: int, lensa_data: schemas.LensaUpdate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    db_lensa = db.query(models.Lensa).filter(models.Lensa.id == lensa_id).first()
+    if not db_lensa:
+        raise HTTPException(status_code=404, detail="Foto tidak ditemukan")
+    for field, value in lensa_data.model_dump(exclude_unset=True).items():
+        setattr(db_lensa, field, value)
     db.commit()
     db.refresh(db_lensa)
     return db_lensa
@@ -253,40 +312,6 @@ def delete_lensa(lensa_id: int, db: Session = Depends(get_db), api_key: str = De
     db.delete(lensa)
     db.commit()
     return {"message": f"Foto lensa dengan ID {lensa_id} berhasil dihapus"}
-
-
-# ==========================================
-# 6. RUTE KONTAK (Pesan Masuk)
-# ==========================================
-@app.get("/api/v1/pesan", response_model=List[schemas.PesanResponse], tags=["Kontak"])
-def read_pesan(db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
-    return db.query(models.Pesan).all()
-
-@app.post("/api/v1/pesan", response_model=schemas.PesanResponse, status_code=201, tags=["Kontak"])
-def create_pesan(pesan: schemas.PesanCreate, db: Session = Depends(get_db)):
-    db_pesan = models.Pesan(**pesan.model_dump())
-    db.add(db_pesan)
-    db.commit()
-    db.refresh(db_pesan)
-    
-    # Trigger Email Notifikasi
-    kirim_notifikasi_email(
-        nama=db_pesan.nama, 
-        email_pengirim=db_pesan.email, 
-        pesan_konten=db_pesan.konten
-    )
-    
-    return db_pesan
-
-@app.delete("/api/v1/pesan/{pesan_id}", tags=["Kontak"])
-def delete_pesan(pesan_id: int, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
-    pesan = db.query(models.Pesan).filter(models.Pesan.id == pesan_id).first()
-    if not pesan:
-        raise HTTPException(status_code=404, detail="Pesan tidak ditemukan")
-    db.delete(pesan)
-    db.commit()
-    return {"message": f"Pesan dengan ID {pesan_id} berhasil dihapus"}
-
 
 # ==========================================
 # 7. RUTE DOKUMEN (Bug #1 - Tautan Dinamis)
@@ -311,3 +336,33 @@ def create_atau_update_dokumen(dokumen: schemas.DokumenCreate, db: Session = Dep
     db.commit()
     db.refresh(db_dokumen)
     return db_dokumen
+
+from fastapi.responses import FileResponse
+
+# Tangkap semua rute yang BUKAN diawali /api
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    # Jika request ke /api tapi tidak ketemu, biarkan 404
+    if full_path.startswith("api/"):
+        raise HTTPException(status_code=404, detail="API route not found")
+    
+    # Kembalikan index.html untuk semua rute web lainnya
+    return FileResponse("index.html") 
+from fastapi.responses import FileResponse
+
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    if full_path.startswith("api/"):
+        raise HTTPException(status_code=404, detail="API route not found")
+    return FileResponse("index.html")
+
+from fastapi.responses import FileResponse
+
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    # Jika rute berawalan 'api/', biarkan 404 agar tidak menutupi error API
+    if full_path.startswith("api/"):
+        raise HTTPException(status_code=404, detail="API route not found")
+    
+    # Kembalikan index.html untuk rute halaman web apa pun (beranda, artikel, dll)
+    return FileResponse("index.html")

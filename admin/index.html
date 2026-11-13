@@ -84,7 +84,7 @@
                 <div>
                     <h3 class="font-serif text-3xl font-bold border-b border-gray-100 pb-4 mb-6">Tombol Dokumen</h3>
                     <form id="form-dokumen-dinamis" class="space-y-6 max-w-3xl">
-                        <div class="grid grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="text-xs font-mono text-gray-500 uppercase">Nama Tombol</label>
                                 <input type="text" id="dok-nama" placeholder="Misal: UNDUH CV" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
@@ -108,28 +108,28 @@
                 <div>
                     <h3 class="font-serif text-3xl font-bold border-b border-gray-100 pb-4 mb-6">Tambah / Edit Jejak</h3>
                     <form onsubmit="submitData(event, '/rekam-jejak', 'btn-rj', 'status-rj', { peran: document.getElementById('rj-peran').value, institusi: document.getElementById('rj-inst').value, periode_mulai: document.getElementById('rj-mulai').value, periode_selesai: document.getElementById('rj-selesai').value, deskripsi: document.getElementById('rj-desk').value }, 'rekam-jejak')">
-                        <div class="grid grid-cols-2 gap-6 max-w-3xl">
-                            <div class="col-span-2 md:col-span-1">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl">
+                            <div>
                                 <label class="text-xs font-mono text-gray-500 uppercase">Peran / Jabatan</label>
                                 <input type="text" id="rj-peran" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
                             </div>
-                            <div class="col-span-2 md:col-span-1">
+                            <div>
                                 <label class="text-xs font-mono text-gray-500 uppercase">Institusi</label>
                                 <input type="text" id="rj-inst" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
                             </div>
-                            <div class="col-span-2 md:col-span-1">
+                            <div>
                                 <label class="text-xs font-mono text-gray-500 uppercase">Tahun Mulai</label>
                                 <input type="text" id="rj-mulai" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
                             </div>
-                            <div class="col-span-2 md:col-span-1">
+                            <div>
                                 <label class="text-xs font-mono text-gray-500 uppercase">Tahun Selesai</label>
                                 <input type="text" id="rj-selesai" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
                             </div>
-                            <div class="col-span-2">
+                            <div class="md:col-span-2">
                                 <label class="text-xs font-mono text-gray-500 uppercase">Deskripsi</label>
                                 <textarea id="rj-desk" rows="3" class="w-full border p-3 mt-1 focus:outline-none focus:border-black" required></textarea>
                             </div>
-                            <div class="col-span-2 flex flex-wrap items-center gap-4">
+                            <div class="md:col-span-2 flex flex-wrap items-center gap-4 pt-4 border-t border-gray-100">
                                 <button type="submit" id="btn-rj" class="bg-black text-white px-6 py-2 text-sm font-mono hover:bg-gray-800">SIMPAN JEJAK</button>
                                 <button type="button" id="btn-cancel-rj" onclick="cancelEdit('rekam-jejak')" class="hidden bg-gray-200 text-gray-700 px-6 py-2 text-sm font-mono hover:bg-gray-300">BATAL</button>
                                 <div id="status-rj" class="hidden text-sm font-mono mt-4 p-3 w-full"></div>
@@ -153,47 +153,58 @@
                         kategori: document.getElementById('art-kategori').value, 
                         url_gambar: document.getElementById('art-gambar').value,
                         ringkasan: document.getElementById('art-ringkasan').value,
-                        penulis: document.getElementById('art-penulis').value, // <--- TAMBAHKAN INI
+                        penulis: document.getElementById('art-penulis').value,
                         konten: document.getElementById('art-konten').value 
                     }, 'artikel')">
-                        <div class="space-y-6 max-w-3xl">
+                        <div class="space-y-6 max-w-4xl">
+                            
+                            <!-- Judul -->
                             <div>
                                 <label class="text-xs font-mono text-gray-500 uppercase">Judul Tulisan</label>
                                 <input type="text" id="art-judul" class="w-full border-b py-2 focus:outline-none focus:border-black" oninput="autoSlug()" required>
                             </div>
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="col-span-2 md:col-span-1">
+
+                            <!-- Grid 3 Kolom: Slug, Penulis, Kategori -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
                                     <label class="text-xs font-mono text-gray-500 uppercase">Slug URL (Unik)</label>
                                     <input type="text" id="art-slug" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="judul-artikel" required>
                                 </div>
-                                 <div class="col-span-2 md:col-span-1">
-        <label class="text-xs font-mono text-gray-500 uppercase">Nama Penulis</label>
-        <input type="text" id="art-penulis" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="Dikya Abidullah" required>
-    </div>
-                                <div class="col-span-2 md:col-span-1">
+                                <div>
+                                    <label class="text-xs font-mono text-gray-500 uppercase">Nama Penulis</label>
+                                    <input type="text" id="art-penulis" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="Dikya Abidullah" value="Dikya Abidullah" required>
+                                </div>
+                                <div>
                                     <label class="text-xs font-mono text-gray-500 uppercase">Kategori</label>
                                     <input type="text" id="art-kategori" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="Mis: Esai Pemikiran" required>
                                 </div>
                             </div>
+
+                            <!-- URL Gambar -->
                             <div>
                                 <label class="text-xs font-mono text-gray-500 uppercase">URL Cover / Thumbnail (Opsional)</label>
                                 <input type="url" id="art-gambar" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="https://...">
                             </div>
+
+                            <!-- Ringkasan -->
                             <div>
                                 <label class="text-xs font-mono text-gray-500 uppercase">Ringkasan Singkat (Opsional)</label>
                                 <textarea id="art-ringkasan" rows="2" class="w-full border p-3 mt-1 focus:outline-none focus:border-black" placeholder="Deskripsi 1-2 kalimat untuk halaman depan..."></textarea>
                             </div>
+
+                            <!-- Konten Penuh -->
                             <div>
                                 <label class="text-xs font-mono text-gray-500 uppercase">Isi Tulisan Penuh</label>
                                 <textarea id="art-konten" rows="10" class="w-full border p-3 mt-1 focus:outline-none focus:border-black" required></textarea>
                             </div>
-                              <div class="col-span-2 md:col-span-1">
-      
-                            <div class="flex flex-wrap items-center gap-4">
+
+                            <!-- Tombol Aksi -->
+                            <div class="flex flex-wrap items-center gap-4 pt-4 border-t border-gray-100">
                                 <button type="submit" id="btn-art" class="bg-black text-white px-6 py-2 text-sm font-mono hover:bg-gray-800">PUBLIKASIKAN</button>
                                 <button type="button" id="btn-cancel-art" onclick="cancelEdit('artikel')" class="hidden bg-gray-200 text-gray-700 px-6 py-2 text-sm font-mono hover:bg-gray-300">BATAL</button>
                                 <div id="status-art" class="hidden text-sm font-mono mt-4 p-3 w-full"></div>
                             </div>
+
                         </div>
                     </form>
                 </div>
@@ -225,12 +236,12 @@
                                 <label class="text-xs font-mono text-gray-500 uppercase">URL Thumbnail Project (Opsional)</label>
                                 <input type="url" id="proj-gambar" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="https://...">
                             </div>
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="col-span-2 md:col-span-1">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
                                     <label class="text-xs font-mono text-gray-500 uppercase">Tags (Pisahkan koma)</label>
                                     <input type="text" id="proj-tags" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="Mis: Python, Data Analytics" required>
                                 </div>
-                                <div class="col-span-2 md:col-span-1">
+                                <div>
                                     <label class="text-xs font-mono text-gray-500 uppercase">Status Project</label>
                                     <select id="proj-status" class="w-full border-b py-2 bg-white focus:outline-none focus:border-black" required>
                                         <option value="Complete">Selesai</option>
@@ -239,12 +250,12 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="col-span-2 md:col-span-1">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
                                     <label class="text-xs font-mono text-gray-500 uppercase">URL Live (Opsional)</label>
                                     <input type="url" id="proj-demo" class="w-full border-b py-2 focus:outline-none focus:border-black">
                                 </div>
-                                <div class="col-span-2 md:col-span-1">
+                                <div>
                                     <label class="text-xs font-mono text-gray-500 uppercase">URL Repositori (Opsional)</label>
                                     <input type="url" id="proj-git" class="w-full border-b py-2 focus:outline-none focus:border-black">
                                 </div>
@@ -253,7 +264,7 @@
                                 <label class="text-xs font-mono text-gray-500 uppercase">Deskripsi Detail</label>
                                 <textarea id="proj-desk" rows="4" class="w-full border p-3 mt-1 focus:outline-none focus:border-black" required></textarea>
                             </div>
-                            <div class="flex flex-wrap items-center gap-4">
+                            <div class="flex flex-wrap items-center gap-4 pt-4 border-t border-gray-100">
                                 <button type="submit" id="btn-proj" class="bg-black text-white px-6 py-2 text-sm font-mono hover:bg-gray-800">UNGGAH PROJECT</button>
                                 <button type="button" id="btn-cancel-proj" onclick="cancelEdit('projects')" class="hidden bg-gray-200 text-gray-700 px-6 py-2 text-sm font-mono hover:bg-gray-300">BATAL</button>
                                 <div id="status-proj" class="hidden text-sm font-mono mt-4 p-3 w-full"></div>
@@ -279,25 +290,25 @@
                         url_gambar: document.getElementById('len-url').value 
                     }, 'lensa')">
                         <div class="space-y-6 max-w-3xl">
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="col-span-2 md:col-span-1">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
                                     <label class="text-xs font-mono text-gray-500 uppercase">Judul Visual</label>
                                     <input type="text" id="len-judul" class="w-full border-b py-2 focus:outline-none focus:border-black" required>
                                 </div>
-                                <div class="col-span-2 md:col-span-1">
+                                <div>
                                     <label class="text-xs font-mono text-gray-500 uppercase">Kategori</label>
                                     <input type="text" id="len-kategori" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="Mis: Fotografi, Potret, Video" required>
                                 </div>
                             </div>
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="col-span-2 md:col-span-1">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
                                     <label class="text-xs font-mono text-gray-500 uppercase">Tipe Media</label>
                                     <select id="len-tipe" class="w-full border-b py-2 bg-white focus:outline-none focus:border-black" required>
                                         <option value="foto">Foto (Gambar Saja)</option>
                                         <option value="video">Video (Gambar | Link Video)</option>
                                     </select>
                                 </div>
-                                <div class="col-span-2 md:col-span-1">
+                                <div>
                                     <label class="text-xs font-mono text-gray-500 uppercase">Tautan Aset (URL)</label>
                                     <input type="text" id="len-url" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="Gunakan | untuk video" required>
                                 </div>
@@ -306,7 +317,7 @@
                                 <label class="text-xs font-mono text-gray-500 uppercase">Caption / Deskripsi</label>
                                 <textarea id="len-cap" rows="3" class="w-full border p-3 mt-1 focus:outline-none focus:border-black" required></textarea>
                             </div>
-                            <div class="flex flex-wrap items-center gap-4">
+                            <div class="flex flex-wrap items-center gap-4 pt-4 border-t border-gray-100">
                                 <button type="submit" id="btn-lensa" class="bg-black text-white px-6 py-2 text-sm font-mono hover:bg-gray-800">PAJANG DI LENSA</button>
                                 <button type="button" id="btn-cancel-lensa" onclick="cancelEdit('lensa')" class="hidden bg-gray-200 text-gray-700 px-6 py-2 text-sm font-mono hover:bg-gray-300">BATAL</button>
                                 <div id="status-lensa" class="hidden text-sm font-mono mt-4 p-3 w-full"></div>
@@ -652,7 +663,7 @@
                     document.getElementById('art-kategori').value = item.kategori || '';
                     document.getElementById('art-gambar').value = item.url_gambar || '';
                     document.getElementById('art-ringkasan').value = item.ringkasan || '';
-                    document.getElementById('art-penulis').value = item.penulis || '';
+                    document.getElementById('art-penulis').value = item.penulis || 'Dikya Abidullah';
                     document.getElementById('art-konten').value = item.konten || '';
                     document.getElementById('btn-art').innerText = 'SIMPAN PERUBAHAN';
                     document.getElementById('btn-cancel-art').classList.remove('hidden');
@@ -687,7 +698,7 @@
         function cancelEdit(type) {
             const fields = {
                 'rekam-jejak': ['rj-peran', 'rj-inst', 'rj-mulai', 'rj-selesai', 'rj-desk'],
-                'artikel': ['art-judul', 'art-slug', 'art-kategori', 'art-gambar', 'art-ringkasan', 'art-konten'],
+                'artikel': ['art-judul', 'art-slug', 'art-kategori', 'art-gambar', 'art-ringkasan', 'art-penulis', 'art-konten'],
                 'projects': ['proj-judul', 'proj-desk', 'proj-tags', 'proj-demo', 'proj-git', 'proj-gambar', 'proj-status'],
                 'lensa': ['len-judul', 'len-kategori', 'len-tipe', 'len-url', 'len-cap']
             };
@@ -698,6 +709,7 @@
                     if (el) {
                         if (id === 'proj-status') el.value = 'Complete';
                         else if (id === 'len-tipe') el.value = 'foto';
+                        else if (id === 'art-penulis') el.value = 'Dikya Abidullah';
                         else el.value = '';
                     }
                 });

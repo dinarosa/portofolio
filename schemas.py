@@ -156,6 +156,7 @@ class ProjectBase(BaseModel):
     status_pengerjaan: str = Field("Complete", pattern=r'^(Complete|In Progress|Coming Soon)$')
     url_demo: Optional[str] = Field(None, max_length=500)
     url_github: Optional[str] = Field(None, max_length=500)
+    url_gambar: Optional[str] = Field(None, max_length=500)
 
     @field_validator('url_demo', 'url_github')
     @classmethod
@@ -173,4 +174,5 @@ class ProjectResponse(BaseModel):
     status_pengerjaan: Optional[str] = None  # <--- Tambahkan Optional dan = None
     url_demo: Optional[str] = None
     url_github: Optional[str] = None
+    url_gambar: Optional[str] = None # <--- TAMBAHKAN INI
     class Config: from_attributes = True

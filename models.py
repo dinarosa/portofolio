@@ -54,6 +54,7 @@ class Project(Base):
     status_pengerjaan = Column(String, default="Complete") # Complete / In Progress / Coming Soon
     url_demo = Column(String, nullable=True)     # <--- Tambahkan ini
     url_github = Column(String, nullable=True)
+    url_gambar = Column(String, nullable=True) # <--- TAMBAHKAN INI
 
  # 7. TABEL DOKUMEN (Menyelesaikan Bug #1 - Tautan Dinamis)
 class Dokumen(Base):

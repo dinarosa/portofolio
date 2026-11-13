@@ -3,21 +3,19 @@ import secrets
 from dotenv import load_dotenv
 from typing import List, Optional
 from bs4 import BeautifulSoup
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
+from fastapi import FastAPI, Depends, HTTPException, Security, status, Request
 
 # Memuat brankas .env
 load_dotenv()
 
-# Kunci server (wajib ada, jika tidak ada beri peringatan)
 SERVER_PASSWORD = os.getenv("SERVER_PASSWORD")
 if not SERVER_PASSWORD:
     raise RuntimeError("SERVER_PASSWORD tidak ditemukan di file .env! Aplikasi tidak dapat berjalan.")
 
-from fastapi import FastAPI, Depends, HTTPException, Security, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security.api_key import APIKeyHeader
 from sqlalchemy.orm import Session
-from typing import List
 from datetime import datetime
 
 from database import get_db
@@ -26,7 +24,6 @@ import schemas
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from fastapi import Request
 
 app = FastAPI(
     title="Portfolio Core API",
@@ -39,7 +36,7 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # ==========================================================================
-# CORS – Izinkan semua asal (sesuaikan di produksi)
+# CORS
 # ==========================================================================
 origins = [
     "http://localhost:3000",
@@ -59,16 +56,12 @@ app.add_middleware(
 )
 
 # ==========================================================================
-# KEAMANAN – API Key (SATPAM VIRTUAL)
+# KEAMANAN – API Key
 # ==========================================================================
 API_KEY_NAME = "X-API-Key"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 
 async def get_api_key(api_key: str = Security(api_key_header)):
-    """
-    Memeriksa API Key yang dikirim melalui header X-API-Key.
-    Menggunakan perbandingan aman (timing-attack safe).
-    """
     if api_key and secrets.compare_digest(api_key, SERVER_PASSWORD):
         return api_key
     raise HTTPException(
@@ -77,22 +70,14 @@ async def get_api_key(api_key: str = Security(api_key_header)):
     )
 
 # ==========================================================================
-# ROOT – Pengecekan status API
+# ROOT
 # ==========================================================================
 @app.get("/", tags=["Root"])
 def root():
     return {"status": "online", "message": "Portfolio Core API v2.0.0 siap digunakan."}
-@app.get("/api/v1/artikel", response_model=List[schemas.ArtikelResponse], tags=["Artikel"])
-@limiter.limit("60/minute")
-def read_artikel(request: Request, kategori: Optional[str] = None, skip: int = 0, limit: int = 50, db: Session = Depends(get_db)):
-    query = db.query(models.Artikel)
-    if kategori:
-        query = query.filter(models.Artikel.kategori == kategori)
-    return query.order_by(models.Artikel.tanggal_publikasi.desc()).offset(skip).limit(limit).all()
-
 
 # ==========================================================================
-# 1. RUTE PROFIL (Beranda & Visi)
+# 1. RUTE PROFIL
 # ==========================================================================
 @app.get("/api/v1/profil/{bagian}", response_model=schemas.ProfilResponse, tags=["Profil"])
 def read_profil(bagian: str, db: Session = Depends(get_db)):
@@ -119,9 +104,8 @@ def update_profil(bagian: str, profil_data: schemas.ProfilCreate, db: Session = 
     db.refresh(db_profil)
     return db_profil
 
-
 # ==========================================
-# 2. RUTE PROJECT (Portofolio Teknis)
+# 2. RUTE PROJECT
 # ==========================================
 @app.get("/api/v1/projects", response_model=List[schemas.ProjectResponse], tags=["Project"])
 def read_projects(db: Session = Depends(get_db)):
@@ -140,20 +124,15 @@ def update_project(project_id: int, project_data: schemas.ProjectCreate, db: Ses
     db_project = db.query(models.Project).filter(models.Project.id == project_id).first()
     if not db_project:
         raise HTTPException(status_code=404, detail="Project tidak ditemukan")
+    
     db_project.judul = project_data.judul
     db_project.tags = project_data.tags
     db_project.deskripsi = project_data.deskripsi
     db_project.status_pengerjaan = project_data.status_pengerjaan
     db_project.url_demo = project_data.url_demo
     db_project.url_github = project_data.url_github
-    db.commit()
-    db.refresh(db_project)
-    return db_project
+    db_project.url_gambar = project_data.url_gambar # Tambahan
     
-    # Update Fitur #17
-    if hasattr(project_data, 'status_pengerjaan'):
-        db_project.status_pengerjaan = project_data.status_pengerjaan
-        
     db.commit()
     db.refresh(db_project)
     return db_project
@@ -167,19 +146,16 @@ def delete_project(project_id: int, db: Session = Depends(get_db), api_key: str 
     db.commit()
     return {"message": f"Project dengan ID {project_id} berhasil dihapus"}
 
-
 # ==========================================
-# 3. RUTE ARTIKEL (Ruang Aksara)
+# 3. RUTE ARTIKEL
 # ==========================================
 @app.get("/api/v1/artikel", response_model=List[schemas.ArtikelResponse], tags=["Artikel"])
-def read_artikel(
-    kategori: Optional[str] = None,
-    db: Session = Depends(get_db)
-):
+@limiter.limit("60/minute")
+def read_artikel(request: Request, kategori: Optional[str] = None, skip: int = 0, limit: int = 50, db: Session = Depends(get_db)):
     query = db.query(models.Artikel)
     if kategori:
         query = query.filter(models.Artikel.kategori == kategori)
-    return query.order_by(models.Artikel.tanggal_publikasi.desc()).all()
+    return query.order_by(models.Artikel.tanggal_publikasi.desc()).offset(skip).limit(limit).all()
 
 @app.get("/api/v1/artikel/{artikel_id}", response_model=schemas.ArtikelResponse, tags=["Artikel"])
 def read_artikel_detail(artikel_id: int, db: Session = Depends(get_db)):
@@ -190,7 +166,6 @@ def read_artikel_detail(artikel_id: int, db: Session = Depends(get_db)):
 
 @app.post("/api/v1/artikel", response_model=schemas.ArtikelResponse, status_code=201, tags=["Artikel"])
 def create_artikel(artikel: schemas.ArtikelCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
-    # Cek slug unik jika diisi
     if artikel.slug:
         existing = db.query(models.Artikel).filter(models.Artikel.slug == artikel.slug).first()
         if existing:
@@ -206,12 +181,15 @@ def update_artikel(artikel_id: int, artikel_data: schemas.ArtikelCreate, db: Ses
     db_artikel = db.query(models.Artikel).filter(models.Artikel.id == artikel_id).first()
     if not db_artikel:
         raise HTTPException(status_code=404, detail="Artikel tidak ditemukan")
+    
     db_artikel.kategori = artikel_data.kategori
     db_artikel.judul = artikel_data.judul
     db_artikel.slug = artikel_data.slug
     db_artikel.url_gambar = artikel_data.url_gambar
     db_artikel.ringkasan = artikel_data.ringkasan
     db_artikel.konten = artikel_data.konten
+    db_artikel.penulis = artikel_data.penulis # Tambahan
+    
     db.commit()
     db.refresh(db_artikel)
     return db_artikel
@@ -263,16 +241,11 @@ def delete_rekam_jejak(rekam_id: int, db: Session = Depends(get_db), api_key: st
     db.commit()
     return {"message": f"Rekam jejak dengan ID {rekam_id} berhasil dihapus"}
 
-
 # ==========================================
-# 5. RUTE LENSA (Bug #5 - Rich Feature)
+# 5. RUTE LENSA
 # ==========================================
 @app.get("/api/v1/lensa", response_model=List[schemas.LensaResponse], tags=["Lensa"])
-def read_lensa(
-    kategori: Optional[str] = None,
-    tipe_media: Optional[str] = None,
-    db: Session = Depends(get_db)
-):
+def read_lensa(kategori: Optional[str] = None, tipe_media: Optional[str] = None, db: Session = Depends(get_db)):
     query = db.query(models.Lensa)
     if kategori:
         query = query.filter(models.Lensa.kategori == kategori)
@@ -316,18 +289,17 @@ def delete_lensa(lensa_id: int, db: Session = Depends(get_db), api_key: str = De
     return {"message": f"Foto lensa dengan ID {lensa_id} berhasil dihapus"}
 
 # ==========================================
-# 7. RUTE DOKUMEN (Bug #1 - Tautan Dinamis)
+# 7. RUTE DOKUMEN
 # ==========================================
 @app.get("/api/v1/dokumen", response_model=List[schemas.DokumenResponse], tags=["Dokumen"])
 def read_dokumen(db: Session = Depends(get_db)):
-    # TERBUKA: Publik bisa melihat tautan untuk mendownload CV/Resume
     return db.query(models.Dokumen).all()
 
 @app.post("/api/v1/dokumen", response_model=schemas.DokumenResponse, status_code=201, tags=["Dokumen"])
 def create_atau_update_dokumen(dokumen: schemas.DokumenCreate, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
-    # DIGEMBOK: Hanya Admin yang bisa memperbarui tautan
     db_dokumen = db.query(models.Dokumen).filter(models.Dokumen.nama_dokumen == dokumen.nama_dokumen).first()
     
+    # Perbaikan: Melengkapi fungsi yang sebelumnya terpotong
     if db_dokumen:
         db_dokumen.url_tautan = dokumen.url_tautan
         db_dokumen.terakhir_diperbarui = datetime.utcnow()
@@ -339,68 +311,41 @@ def create_atau_update_dokumen(dokumen: schemas.DokumenCreate, db: Session = Dep
     db.refresh(db_dokumen)
     return db_dokumen
 
-from fastapi.responses import FileResponse
-
-# Tangkap semua rute yang BUKAN diawali /api
-@app.get("/{full_path:path}")
-async def serve_frontend(full_path: str):
-    # Jika request ke /api tapi tidak ketemu, biarkan 404
-    if full_path.startswith("api/"):
-        raise HTTPException(status_code=404, detail="API route not found")
-    
-    # Kembalikan index.html untuk semua rute web lainnya
-    return FileResponse("index.html") 
-from fastapi.responses import FileResponse
-
-@app.get("/{full_path:path}")
-async def serve_frontend(full_path: str):
-    if full_path.startswith("api/"):
-        raise HTTPException(status_code=404, detail="API route not found")
-    return FileResponse("index.html")
-
-from fastapi.responses import FileResponse
-
-@app.get("/{full_path:path}")
-async def serve_frontend(full_path: str):
-    # Jika rute berawalan 'api/', biarkan 404 agar tidak menutupi error API
-    if full_path.startswith("api/"):
-        raise HTTPException(status_code=404, detail="API route not found")
-    
-    # Kembalikan index.html untuk rute halaman web apa pun (beranda, artikel, dll)
-    return FileResponse("index.html")
-
-# ... (rute API lainnya) ...
+@app.delete("/api/v1/dokumen/{dokumen_id}", tags=["Dokumen"])
+def delete_dokumen(dokumen_id: int, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    dokumen = db.query(models.Dokumen).filter(models.Dokumen.id == dokumen_id).first()
+    if not dokumen:
+        raise HTTPException(status_code=404, detail="Dokumen tidak ditemukan")
+    db.delete(dokumen)
+    db.commit()
+    return {"message": f"Dokumen dengan ID {dokumen_id} berhasil dihapus"}
 
 # ==========================================
-# RUTE OPEN GRAPH (UNTUK THUMBNAIL SOSMED & SEO)
+# RUTE OPEN GRAPH (HARUS DI ATAS CATCH-ALL)
 # ==========================================
 @app.get("/artikel/{slug}", response_class=HTMLResponse, tags=["Frontend"])
 def serve_artikel_og(slug: str, db: Session = Depends(get_db)):
-    # 1. Cari artikel di database
     artikel = db.query(models.Artikel).filter(models.Artikel.slug == slug).first()
     
-    # 2. Baca file index.html
-    with open("index.html", "r", encoding="utf-8") as f:
-        html_content = f.read()
+    try:
+        with open("index.html", "r", encoding="utf-8") as f:
+            html_content = f.read()
+    except FileNotFoundError:
+        raise HTTPException(status_code=500, detail="index.html tidak ditemukan di server")
     
-    # 3. Jika artikel ditemukan, suntikkan data ke HTML
     if artikel:
         soup = BeautifulSoup(html_content, 'html.parser')
         
-        # Siapkan data
         judul = artikel.judul
         deskripsi = artikel.ringkasan or (artikel.konten[:150] + "...")
         gambar = artikel.url_gambar or "https://devaabidya.site/thumbnail.jpeg"
         url_halaman = f"https://devaabidya.site/artikel/{slug}"
         
-        # Ubah <title>
         soup.title.string = f"{judul} | Sintesa"
         
-        # Ubah Meta Description
         meta_desc = soup.find("meta", attrs={"name": "description"})
         if meta_desc: meta_desc["content"] = deskripsi
 
-        # Ubah Open Graph (OG) Tags
         og_title = soup.find("meta", property="og:title")
         if og_title: og_title["content"] = judul
         
@@ -413,7 +358,6 @@ def serve_artikel_og(slug: str, db: Session = Depends(get_db)):
         og_url = soup.find("meta", property="og:url")
         if og_url: og_url["content"] = url_halaman
 
-        # Ubah Twitter Card
         tw_title = soup.find("meta", attrs={"name": "twitter:title"})
         if tw_title: tw_title["content"] = judul
         
@@ -423,22 +367,18 @@ def serve_artikel_og(slug: str, db: Session = Depends(get_db)):
         tw_img = soup.find("meta", attrs={"name": "twitter:image"})
         if tw_img: tw_img["content"] = gambar
 
-        # Kembalikan HTML yang sudah dimodifikasi
         return HTMLResponse(content=str(soup))
     
-    # 4. Jika artikel tidak ditemukan, kembalikan index.html biasa (biarkan JS yang handle 404)
     return HTMLResponse(content=html_content)
 
-
 # ==========================================
-# CATCH-ALL ROUTE (UNTUK HALAMAN LAIN)
+# CATCH-ALL ROUTE (PALING BAWAH SEKALI)
 # ==========================================
 @app.get("/{full_path:path}")
 async def serve_frontend(full_path: str):
     if full_path.startswith("api/") or full_path.startswith("docs") or full_path.startswith("openapi.json"):
         raise HTTPException(status_code=404, detail="Not found")
     
-    import os
     if os.path.exists(full_path) and os.path.isfile(full_path):
         return FileResponse(full_path)
         

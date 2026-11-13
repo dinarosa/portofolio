@@ -211,7 +211,6 @@
         .lensa-item:hover .lensa-item-overlay { opacity: 1; }
 
         /* --- VIEWER (LIGHTBOX) --- */
-              /* --- VIEWER (LIGHTBOX) --- */
         #image-viewer {
             background-color: var(--viewer-bg);
             backdrop-filter: blur(5px);
@@ -220,18 +219,19 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            height: 100dvh; /* Dynamic viewport height untuk browser HP */
-            overflow: hidden;
+            height: 100dvh;
+            overflow-y: auto; /* Ubah hidden ke auto agar bisa di-scroll di HP */
+            background-color: var(--viewer-bg);
         }
         
         .viewer-image-container { 
-            flex: 1; /* Mengambil sisa ruang yang ada */
+            flex-shrink: 0; /* Jangan biarkan gambar terhimpit */
+            height: 50vh; /* Setengah layar untuk gambar di HP */
             display: flex; 
             align-items: center; 
             justify-content: center; 
             position: relative;
             padding: 1rem;
-            min-height: 0; /* Penting untuk flexbox */
         }
 
         #viewer-img {
@@ -246,23 +246,22 @@
             background-color: var(--viewer-bg);
             padding: 2rem 1.5rem; 
             border-top: 1px solid rgba(255,255,255,0.1);
-            max-height: 40vh; /* Batasi tinggi teks di HP agar tidak menutupi gambar */
-            overflow-y: auto;
+            flex-grow: 1; /* Biarkan teks mengisi sisa ruang */
         }
 
         /* Untuk layar komputer/tablet (lebar > 768px) */
         @media (min-width: 768px) {
-            .viewer-content { flex-direction: row; }
-            .viewer-image-container { width: 70%; padding: 2rem; }
+            .viewer-content { flex-direction: row; overflow: hidden; }
+            .viewer-image-container { width: 70%; height: auto; padding: 2rem; }
             .viewer-sidebar { 
                 width: 30%; 
-                max-height: 100vh; 
                 padding: 3rem; 
                 border-top: none;
                 border-left: 1px solid rgba(255,255,255,0.1); 
                 display: flex; 
                 flex-direction: column; 
                 justify-content: center;
+                overflow-y: auto;
             }
         }
 
@@ -412,7 +411,6 @@
                 <div id="halaman-artikel-body" class="w-full">
                     <!-- Isi artikel penuh dimuat di sini -->
                 </div>
-                <div class="grid grid-cols-2 gap-6">
             </section>
 
             <!-- PROJECT -->
@@ -475,7 +473,6 @@
             </div>
 
             <!-- Image Viewer (Lensa Fullscreen) -->
-                        <!-- Image Viewer (Lensa Fullscreen) -->
             <div id="image-viewer" class="fixed inset-0 z-[70] hidden opacity-0 transition-opacity duration-300">
                 <div class="viewer-content">
                     <!-- Tombol Close -->
@@ -979,7 +976,7 @@ const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
                         <div class="text-[10px] font-mono text-[#3B5F82] uppercase tracking-wider mb-2 font-bold">${item.kategori}</div>
                         <h3 class="font-serif text-xl font-bold leading-tight mb-2 group-hover:text-[#3B5F82] transition-colors">${item.judul}</h3>
                         <p class="text-sm text-[#394653] font-light line-clamp-3 mb-4">${item.ringkasan || item.konten.substring(0, 100)+'...'}</p>
-                        <div class="text-xs font-mono text-[#748292]">By Dikya Abidullah</div>
+                        <div class="text-xs font-mono text-[#748292]">By ${item.penulis || 'Dikya Abidullah'}</div>
                     </article>
                 `;
             };
@@ -991,7 +988,7 @@ const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
                     <article class="group cursor-pointer reveal flex gap-4 border-b border-[#DFE5EB] pb-6 last:border-0" onclick="navigateTo('/artikel/${slug}')">
                         <div class="flex-1">
                             <h4 class="font-serif text-base font-bold leading-tight mb-2 group-hover:text-[#3B5F82] transition-colors">${item.judul}</h4>
-                            <div class="text-[11px] font-mono text-[#748292]">By Dikya Abidullah</div>
+                            <div class="text-[11px] font-mono text-[#748292]">By ${item.penulis || 'Dikya Abidullah'}</div>
                         </div>
                         ${img}
                     </article>
@@ -1019,7 +1016,7 @@ const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
                             <div class="text-[10px] font-mono text-[#3B5F82] uppercase tracking-wider mb-2 font-bold">${centerSecondary.kategori}</div>
                             <h3 class="font-serif text-2xl font-bold leading-tight mb-3 group-hover:text-[#3B5F82] transition-colors">${centerSecondary.judul}</h3>
                             <p class="text-sm text-[#394653] font-light line-clamp-3 mb-4">${centerSecondary.ringkasan || centerSecondary.konten.substring(0, 120)+'...'}</p>
-                            <div class="text-xs font-mono text-[#748292]">By Dikya Abidullah</div>
+                            <div class="text-xs font-mono text-[#748292]">By ${centerSecondary.penulis || 'Dikya Abidullah'}</div>
                         </div>
                         <div class="w-full md:w-2/5 shrink-0 order-1 md:order-2">${secImg}</div>
                     </article>
@@ -1034,7 +1031,7 @@ const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
                         <div class="text-xs font-mono text-[#3B5F82] uppercase tracking-wider mb-3 font-bold">${mainFeature.kategori}</div>
                         <h2 class="font-serif text-3xl md:text-5xl font-bold leading-tight mb-4 group-hover:text-[#3B5F82] transition-colors">${mainFeature.judul}</h2>
                         <p class="text-lg text-[#394653] font-magazine italic leading-relaxed mb-6 line-clamp-4">${mainFeature.ringkasan || mainFeature.konten.substring(0, 200)+'...'}</p>
-                        <div class="text-xs font-mono text-[#748292]">By Dikya Abidullah</div>
+                        <div class="text-xs font-mono text-[#748292]">By ${mainFeature.penulis || 'Dikya Abidullah'}</div>
                     </article>
                     <!-- Artikel Sekunder di Bawah Headline -->
                     ${secondaryHtml}
@@ -1065,6 +1062,19 @@ const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
             });
         }
 
+        // Fungsi Open Graph (Dipindahkan ke sini agar bisa diakses halaman artikel)
+        function updateOpenGraph(item) {
+            const setMeta = (property, content) => {
+                let el = document.querySelector(`meta[property="${property}"]`);
+                if (!el) { el = document.createElement('meta'); el.setAttribute('property', property); document.head.appendChild(el); }
+                el.setAttribute('content', content);
+            };
+            setMeta('og:title', item.judul);
+            setMeta('og:description', item.ringkasan || '');
+            setMeta('og:image', item.url_gambar || 'https://devaabidya.site/thumbnail.jpeg');
+            setMeta('og:url', window.location.href);
+        }
+
         // RENDER HALAMAN BACA ARTIKEL PENUH
         function renderHalamanArtikel(slug) {
             const item = artikelIndex[slug];
@@ -1076,10 +1086,13 @@ const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
                     </div>`;
                 return; 
             }
-            // Di dalam renderHalamanArtikel setelah data artikel didapat
-document.title = `${item.judul} | Sintesa`;
-const metaDesc = document.querySelector('meta[name="description"]');
-if (metaDesc) metaDesc.setAttribute('content', item.ringkasan || '');
+            // Ubah Title & Meta
+            document.title = `${item.judul} | Sintesa`;
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) metaDesc.setAttribute('content', item.ringkasan || '');
+
+            // Panggil Fungsi OG
+            updateOpenGraph(item);
 
             const pubDate = new Date(item.tanggal_publikasi);
             const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -1434,18 +1447,6 @@ if (metaDesc) metaDesc.setAttribute('content', item.ringkasan || '');
                 window.open(item.url_gambar.split('|')[1], '_blank');
                 return;
             }
-            function updateOpenGraph(item) {
-    const setMeta = (property, content) => {
-        let el = document.querySelector(`meta[property="${property}"]`);
-        if (!el) { el = document.createElement('meta'); el.setAttribute('property', property); document.head.appendChild(el); }
-        el.setAttribute('content', content);
-    };
-    setMeta('og:title', item.judul);
-    setMeta('og:description', item.ringkasan || '');
-    setMeta('og:image', item.url_gambar || 'https://devaabidya.site/thumbnail.jpeg');
-    setMeta('og:url', window.location.href);
-}
-// Panggil updateOpenGraph(item) di dalam renderHalamanArtikel(slug)
 
             document.getElementById('viewer-img').src = item.url_gambar;
             document.getElementById('viewer-category').textContent = item.kategori || 'Photography';

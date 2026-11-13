@@ -211,12 +211,59 @@
         .lensa-item:hover .lensa-item-overlay { opacity: 1; }
 
         /* --- VIEWER (LIGHTBOX) --- */
-        #image-viewer { background-color: var(--viewer-bg); }
-        .viewer-content { display: flex; flex-direction: column; height: 100vh; }
-        @media (min-width: 1024px) {
+              /* --- VIEWER (LIGHTBOX) --- */
+        #image-viewer {
+            background-color: var(--viewer-bg);
+            backdrop-filter: blur(5px);
+        }
+        .viewer-content {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: 100dvh; /* Dynamic viewport height untuk browser HP */
+            overflow: hidden;
+        }
+        
+        .viewer-image-container { 
+            flex: 1; /* Mengambil sisa ruang yang ada */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative;
+            padding: 1rem;
+            min-height: 0; /* Penting untuk flexbox */
+        }
+
+        #viewer-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Menjaga proporsi gambar agar tidak gepeng */
+            border-radius: 4px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .viewer-sidebar { 
+            background-color: var(--viewer-bg);
+            padding: 2rem 1.5rem; 
+            border-top: 1px solid rgba(255,255,255,0.1);
+            max-height: 40vh; /* Batasi tinggi teks di HP agar tidak menutupi gambar */
+            overflow-y: auto;
+        }
+
+        /* Untuk layar komputer/tablet (lebar > 768px) */
+        @media (min-width: 768px) {
             .viewer-content { flex-direction: row; }
-            .viewer-image-container { width: 75%; display: flex; align-items: center; justify-content: center; padding: 2rem; }
-            .viewer-sidebar { width: 25%; padding: 3rem; border-left: 1px solid rgba(255,255,255,0.1); }
+            .viewer-image-container { width: 70%; padding: 2rem; }
+            .viewer-sidebar { 
+                width: 30%; 
+                max-height: 100vh; 
+                padding: 3rem; 
+                border-top: none;
+                border-left: 1px solid rgba(255,255,255,0.1); 
+                display: flex; 
+                flex-direction: column; 
+                justify-content: center;
+            }
         }
 
         /* --- ARTICLE READING PAGE --- */
@@ -365,6 +412,7 @@
                 <div id="halaman-artikel-body" class="w-full">
                     <!-- Isi artikel penuh dimuat di sini -->
                 </div>
+                <div class="grid grid-cols-2 gap-6">
             </section>
 
             <!-- PROJECT -->
@@ -427,37 +475,42 @@
             </div>
 
             <!-- Image Viewer (Lensa Fullscreen) -->
+                        <!-- Image Viewer (Lensa Fullscreen) -->
             <div id="image-viewer" class="fixed inset-0 z-[70] hidden opacity-0 transition-opacity duration-300">
                 <div class="viewer-content">
-                    <button onclick="closeViewer()" class="absolute top-6 right-6 z-50 text-white/50 hover:text-white transition-colors bg-black/20 p-2 rounded-full backdrop-blur-md">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <!-- Tombol Close -->
+                    <button onclick="closeViewer()" class="absolute top-4 right-4 z-50 text-white/70 hover:text-white transition-colors bg-black/50 p-2 rounded-full backdrop-blur-md">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
 
-                    <div class="viewer-image-container relative">
-                        <button onclick="navigateViewer(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors bg-black/20 p-3 rounded-full backdrop-blur-md">
+                    <!-- Area Gambar & Navigasi -->
+                    <div class="viewer-image-container">
+                        <button onclick="navigateViewer(-1)" class="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors bg-black/50 p-2 md:p-3 rounded-full backdrop-blur-md z-10">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                         </button>
                         
-                        <img id="viewer-img" src="" class="max-w-full max-h-[85vh] object-contain shadow-2xl">
+                        <img id="viewer-img" src="" alt="Foto Lensa">
 
-                        <button onclick="navigateViewer(1)" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors bg-black/20 p-3 rounded-full backdrop-blur-md">
+                        <button onclick="navigateViewer(1)" class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors bg-black/50 p-2 md:p-3 rounded-full backdrop-blur-md z-10">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </button>
                     </div>
 
-                    <div class="viewer-sidebar flex flex-col justify-center text-white">
-                        <span id="viewer-category" class="text-xs font-mono uppercase tracking-widest text-gray-400 mb-2">Category</span>
-                        <h3 id="viewer-title" class="font-serif text-3xl font-bold mb-4">Title</h3>
-                        <div id="viewer-date" class="text-sm text-gray-400 font-mono mb-6">Date</div>
-                        <p id="viewer-caption" class="text-sm text-gray-300 font-light leading-relaxed mb-8">Caption</p>
-                        <div class="text-xs text-gray-500 font-mono flex justify-between border-t border-gray-700 pt-4">
+                    <!-- Sidebar Metadata -->
+                    <div class="viewer-sidebar text-white">
+                        <span id="viewer-category" class="text-[10px] md:text-xs font-mono uppercase tracking-widest text-gray-400 mb-1 md:mb-2 block">Category</span>
+                        <h3 id="viewer-title" class="font-serif text-2xl md:text-3xl font-bold mb-2 md:mb-4 leading-tight">Title</h3>
+                        <div id="viewer-date" class="text-xs md:text-sm text-gray-400 font-mono mb-3 md:mb-6">Date</div>
+                        <p id="viewer-caption" class="text-sm text-gray-300 font-light leading-relaxed mb-6 line-clamp-4 md:line-clamp-none">Caption</p>
+                        
+                        <div class="text-[10px] md:text-xs text-gray-500 font-mono flex justify-between border-t border-gray-700/50 pt-4 mt-auto">
                             <span id="viewer-index">1 / 1</span>
-                            <span>Gunakan panah kiri/kanan</span>
+                            <span class="hidden md:inline">Gunakan panah kiri/kanan</span>
+                            <span class="md:hidden">Geser / Panah</span>
                         </div>
                     </div>
                 </div>
             </div>
-
             <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top: 0, behavior: 'smooth'})" class="p-3 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-[#DFE5EB] hover:bg-white transition-all duration-300">
                 <svg class="w-5 h-5 text-[#3B5F82]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
             </button>
@@ -1023,6 +1076,10 @@ const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
                     </div>`;
                 return; 
             }
+            // Di dalam renderHalamanArtikel setelah data artikel didapat
+document.title = `${item.judul} | Sintesa`;
+const metaDesc = document.querySelector('meta[name="description"]');
+if (metaDesc) metaDesc.setAttribute('content', item.ringkasan || '');
 
             const pubDate = new Date(item.tanggal_publikasi);
             const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -1081,6 +1138,7 @@ const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
                         <span class="text-[#748292] font-normal">${readTime} min read</span>
                     </div>
                     <h1 class="font-serif text-4xl md:text-5xl font-bold text-[#263B50] leading-tight text-center mb-10">${item.judul}</h1>
+                    <div class="text-center text-sm font-mono text-[#748292] mb-10">Oleh: ${item.penulis || 'Dikya Abidullah'}</div>
                     ${item.ringkasan ? `<p class="font-magazine italic text-xl text-[#526273] leading-relaxed text-center mb-12">${item.ringkasan}</p>` : ''}
                     
                     ${coverHtml}
@@ -1376,6 +1434,18 @@ const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
                 window.open(item.url_gambar.split('|')[1], '_blank');
                 return;
             }
+            function updateOpenGraph(item) {
+    const setMeta = (property, content) => {
+        let el = document.querySelector(`meta[property="${property}"]`);
+        if (!el) { el = document.createElement('meta'); el.setAttribute('property', property); document.head.appendChild(el); }
+        el.setAttribute('content', content);
+    };
+    setMeta('og:title', item.judul);
+    setMeta('og:description', item.ringkasan || '');
+    setMeta('og:image', item.url_gambar || 'https://devaabidya.site/thumbnail.jpeg');
+    setMeta('og:url', window.location.href);
+}
+// Panggil updateOpenGraph(item) di dalam renderHalamanArtikel(slug)
 
             document.getElementById('viewer-img').src = item.url_gambar;
             document.getElementById('viewer-category').textContent = item.kategori || 'Photography';

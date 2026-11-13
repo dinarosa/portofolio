@@ -2,6 +2,8 @@ import os
 import secrets
 from dotenv import load_dotenv
 from typing import List, Optional
+from bs4 import BeautifulSoup
+from fastapi.responses import HTMLResponse
 
 # Memuat brankas .env
 load_dotenv()
@@ -365,4 +367,79 @@ async def serve_frontend(full_path: str):
         raise HTTPException(status_code=404, detail="API route not found")
     
     # Kembalikan index.html untuk rute halaman web apa pun (beranda, artikel, dll)
+    return FileResponse("index.html")
+
+# ... (rute API lainnya) ...
+
+# ==========================================
+# RUTE OPEN GRAPH (UNTUK THUMBNAIL SOSMED & SEO)
+# ==========================================
+@app.get("/artikel/{slug}", response_class=HTMLResponse, tags=["Frontend"])
+def serve_artikel_og(slug: str, db: Session = Depends(get_db)):
+    # 1. Cari artikel di database
+    artikel = db.query(models.Artikel).filter(models.Artikel.slug == slug).first()
+    
+    # 2. Baca file index.html
+    with open("index.html", "r", encoding="utf-8") as f:
+        html_content = f.read()
+    
+    # 3. Jika artikel ditemukan, suntikkan data ke HTML
+    if artikel:
+        soup = BeautifulSoup(html_content, 'html.parser')
+        
+        # Siapkan data
+        judul = artikel.judul
+        deskripsi = artikel.ringkasan or (artikel.konten[:150] + "...")
+        gambar = artikel.url_gambar or "https://devaabidya.site/thumbnail.jpeg"
+        url_halaman = f"https://devaabidya.site/artikel/{slug}"
+        
+        # Ubah <title>
+        soup.title.string = f"{judul} | Sintesa"
+        
+        # Ubah Meta Description
+        meta_desc = soup.find("meta", attrs={"name": "description"})
+        if meta_desc: meta_desc["content"] = deskripsi
+
+        # Ubah Open Graph (OG) Tags
+        og_title = soup.find("meta", property="og:title")
+        if og_title: og_title["content"] = judul
+        
+        og_desc = soup.find("meta", property="og:description")
+        if og_desc: og_desc["content"] = deskripsi
+        
+        og_img = soup.find("meta", property="og:image")
+        if og_img: og_img["content"] = gambar
+        
+        og_url = soup.find("meta", property="og:url")
+        if og_url: og_url["content"] = url_halaman
+
+        # Ubah Twitter Card
+        tw_title = soup.find("meta", attrs={"name": "twitter:title"})
+        if tw_title: tw_title["content"] = judul
+        
+        tw_desc = soup.find("meta", attrs={"name": "twitter:description"})
+        if tw_desc: tw_desc["content"] = deskripsi
+        
+        tw_img = soup.find("meta", attrs={"name": "twitter:image"})
+        if tw_img: tw_img["content"] = gambar
+
+        # Kembalikan HTML yang sudah dimodifikasi
+        return HTMLResponse(content=str(soup))
+    
+    # 4. Jika artikel tidak ditemukan, kembalikan index.html biasa (biarkan JS yang handle 404)
+    return HTMLResponse(content=html_content)
+
+
+# ==========================================
+# CATCH-ALL ROUTE (UNTUK HALAMAN LAIN)
+# ==========================================
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    if full_path.startswith("api/") or full_path.startswith("docs") or full_path.startswith("openapi.json"):
+        raise HTTPException(status_code=404, detail="Not found")
+    
+    import os
+    if os.path.exists(full_path) and os.path.isfile(full_path):
+        return FileResponse(full_path)
+        
     return FileResponse("index.html")

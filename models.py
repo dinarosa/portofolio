@@ -29,7 +29,9 @@ class Artikel(Base):
     url_gambar = Column(String, nullable=True)                     # Foto kover/thumbnail
     ringkasan = Column(String, nullable=True)                      # Teks preview singkat
     konten = Column(Text)
+    penulis = Column(String, default="Dikya Abidullah")
     tanggal_publikasi = Column(DateTime, default=datetime.utcnow)
+    
 
 # 4. TABEL LENSA (Bug #5 - Rich Feature)
 class Lensa(Base):

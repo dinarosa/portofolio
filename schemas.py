@@ -85,6 +85,7 @@ class ArtikelBase(BaseModel):
     url_gambar: Optional[str] = Field(None, max_length=500)
     ringkasan: Optional[str] = Field(None, max_length=500)
     konten: str = Field(..., min_length=10, max_length=50000)
+    penulis: Optional[str] = Field("Dikya Abidullah", max_length=100) # <--- TAMBAHKAN INI
 
     @field_validator('url_gambar')
     @classmethod
@@ -102,6 +103,7 @@ class ArtikelResponse(BaseModel):
     url_gambar: Optional[str] = None
     ringkasan: Optional[str] = None
     konten: str
+    penulis: Optional[str] = None # <--- TAMBAHKAN INI
     tanggal_publikasi: datetime
     class Config: from_attributes = True
 

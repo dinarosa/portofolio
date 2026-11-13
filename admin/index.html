@@ -153,6 +153,7 @@
                         kategori: document.getElementById('art-kategori').value, 
                         url_gambar: document.getElementById('art-gambar').value,
                         ringkasan: document.getElementById('art-ringkasan').value,
+                        penulis: document.getElementById('art-penulis').value, // <--- TAMBAHKAN INI
                         konten: document.getElementById('art-konten').value 
                     }, 'artikel')">
                         <div class="space-y-6 max-w-3xl">
@@ -165,6 +166,10 @@
                                     <label class="text-xs font-mono text-gray-500 uppercase">Slug URL (Unik)</label>
                                     <input type="text" id="art-slug" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="judul-artikel" required>
                                 </div>
+                                 <div class="col-span-2 md:col-span-1">
+        <label class="text-xs font-mono text-gray-500 uppercase">Nama Penulis</label>
+        <input type="text" id="art-penulis" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="Dikya Abidullah" required>
+    </div>
                                 <div class="col-span-2 md:col-span-1">
                                     <label class="text-xs font-mono text-gray-500 uppercase">Kategori</label>
                                     <input type="text" id="art-kategori" class="w-full border-b py-2 focus:outline-none focus:border-black" placeholder="Mis: Esai Pemikiran" required>
@@ -182,6 +187,8 @@
                                 <label class="text-xs font-mono text-gray-500 uppercase">Isi Tulisan Penuh</label>
                                 <textarea id="art-konten" rows="10" class="w-full border p-3 mt-1 focus:outline-none focus:border-black" required></textarea>
                             </div>
+                              <div class="col-span-2 md:col-span-1">
+      
                             <div class="flex flex-wrap items-center gap-4">
                                 <button type="submit" id="btn-art" class="bg-black text-white px-6 py-2 text-sm font-mono hover:bg-gray-800">PUBLIKASIKAN</button>
                                 <button type="button" id="btn-cancel-art" onclick="cancelEdit('artikel')" class="hidden bg-gray-200 text-gray-700 px-6 py-2 text-sm font-mono hover:bg-gray-300">BATAL</button>
@@ -645,6 +652,7 @@
                     document.getElementById('art-kategori').value = item.kategori || '';
                     document.getElementById('art-gambar').value = item.url_gambar || '';
                     document.getElementById('art-ringkasan').value = item.ringkasan || '';
+                    document.getElementById('art-penulis').value = item.penulis || '';
                     document.getElementById('art-konten').value = item.konten || '';
                     document.getElementById('btn-art').innerText = 'SIMPAN PERUBAHAN';
                     document.getElementById('btn-cancel-art').classList.remove('hidden');

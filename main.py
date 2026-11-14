@@ -325,14 +325,17 @@ def delete_dokumen(dokumen_id: int, db: Session = Depends(get_db), api_key: str 
 # ==========================================
 @app.get("/artikel/{slug}", response_class=HTMLResponse, tags=["Frontend"])
 def serve_artikel_og(slug: str, db: Session = Depends(get_db)):
+    # 1. Cari artikel di database
     artikel = db.query(models.Artikel).filter(models.Artikel.slug == slug).first()
     
+    # 2. Baca file index.html
     try:
         with open("index.html", "r", encoding="utf-8") as f:
             html_content = f.read()
     except FileNotFoundError:
         raise HTTPException(status_code=500, detail="index.html tidak ditemukan di server")
     
+    # 3. Jika artikel ditemukan, suntikkan data ke HTML
     if artikel:
         soup = BeautifulSoup(html_content, 'html.parser')
         
@@ -341,31 +344,35 @@ def serve_artikel_og(slug: str, db: Session = Depends(get_db)):
         gambar = artikel.url_gambar or "https://devaabidya.site/thumbnail.jpeg"
         url_halaman = f"https://devaabidya.site/artikel/{slug}"
         
-        soup.title.string = f"{judul} | Sintesa"
+        # Ubah <title>
+        if soup.title:
+            soup.title.string = f"{judul} | Sintesa"
         
-        meta_desc = soup.find("meta", attrs={"name": "description"})
-        if meta_desc: meta_desc["content"] = deskripsi
+        # Fungsi Pembantu: Memaksa Tag Meta untuk dibuat/diperbarui
+        def set_meta(property_or_name, content, is_name=False):
+            attr = "name" if is_name else "property"
+            tag = soup.find("meta", attrs={attr: property_or_name})
+            if not tag:
+                tag = soup.new_tag("meta")
+                tag[attr] = property_or_name
+                soup.head.append(tag)
+            tag["content"] = content
 
-        og_title = soup.find("meta", property="og:title")
-        if og_title: og_title["content"] = judul
+        # Standard Meta Description
+        set_meta("description", deskripsi, is_name=True)
         
-        og_desc = soup.find("meta", property="og:description")
-        if og_desc: og_desc["content"] = deskripsi
-        
-        og_img = soup.find("meta", property="og:image")
-        if og_img: og_img["content"] = gambar
-        
-        og_url = soup.find("meta", property="og:url")
-        if og_url: og_url["content"] = url_halaman
+        # Open Graph (Wajib untuk Facebook/WhatsApp)
+        set_meta("og:title", judul)
+        set_meta("og:description", deskripsi)
+        set_meta("og:image", gambar)
+        set_meta("og:url", url_halaman)
+        set_meta("og:type", "article")
 
-        tw_title = soup.find("meta", attrs={"name": "twitter:title"})
-        if tw_title: tw_title["content"] = judul
-        
-        tw_desc = soup.find("meta", attrs={"name": "twitter:description"})
-        if tw_desc: tw_desc["content"] = deskripsi
-        
-        tw_img = soup.find("meta", attrs={"name": "twitter:image"})
-        if tw_img: tw_img["content"] = gambar
+        # Twitter Card
+        set_meta("twitter:card", "summary_large_image", is_name=True)
+        set_meta("twitter:title", judul, is_name=True)
+        set_meta("twitter:description", deskripsi, is_name=True)
+        set_meta("twitter:image", gambar, is_name=True)
 
         return HTMLResponse(content=str(soup))
     
@@ -383,3 +390,26 @@ async def serve_frontend(full_path: str):
         return FileResponse(full_path)
         
     return FileResponse("index.html")
+
+from fastapi import Response
+
+@app.get("/sitemap.xml", include_in_schema=False)
+def sitemap(db: Session = Depends(get_db)):
+    base_url = "https://devaabidya.site"
+    # Mengambil semua artikel dari database
+    articles = db.query(models.Artikel).all()
+    
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    
+    # Tambahkan Halaman Utama
+    xml += f'  <url>\n    <loc>{base_url}/</loc>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n'
+    
+    # Tambahkan Semua Link Artikel
+    for art in articles:
+        if art.slug:
+            xml += f'  <url>\n    <loc>{base_url}/artikel/{art.slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n'
+            
+    xml += '</urlset>'
+    
+    return Response(content=xml, media_type="application/xml")

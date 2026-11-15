@@ -381,15 +381,7 @@ def serve_artikel_og(slug: str, db: Session = Depends(get_db)):
 # ==========================================
 # CATCH-ALL ROUTE (PALING BAWAH SEKALI)
 # ==========================================
-@app.get("/{full_path:path}")
-async def serve_frontend(full_path: str):
-    if full_path.startswith("api/") or full_path.startswith("docs") or full_path.startswith("openapi.json"):
-        raise HTTPException(status_code=404, detail="Not found")
-    
-    if os.path.exists(full_path) and os.path.isfile(full_path):
-        return FileResponse(full_path)
-        
-    return FileResponse("index.html")
+
 
 from fastapi import Response
 
@@ -413,3 +405,13 @@ def sitemap(db: Session = Depends(get_db)):
     xml += '</urlset>'
     
     return Response(content=xml, media_type="application/xml")
+
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    if full_path.startswith("api/") or full_path.startswith("docs") or full_path.startswith("openapi.json"):
+        raise HTTPException(status_code=404, detail="Not found")
+    
+    if os.path.exists(full_path) and os.path.isfile(full_path):
+        return FileResponse(full_path)
+        
+    return FileResponse("index.html")

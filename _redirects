@@ -1,2 +1,3 @@
-/artikel/*  https://portofolio-k74o.onrender.com/artikel/:splat  200
-/*    /index.html   200
+/sitemap.xml  https://portofolio-k74o.onrender.com/sitemap.xml  200
+/artikel/*    https://portofolio-k74o.onrender.com/artikel/:splat  200
+/*            /index.html  200

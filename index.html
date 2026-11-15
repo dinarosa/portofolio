@@ -776,7 +776,7 @@ const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
         // ==========================================
         // FETCH DATA DARI API
         // ==========================================
-        async function fetchProfil() {
+               async function fetchProfil() {
             try {
                 const daftarTeks = [
                     { kode: 'JUDUL_UTAMA', id: 'judul-utama' },
@@ -787,7 +787,8 @@ const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
                     { kode: 'SUB_2_TEKS', id: 'sub-2-teks' }
                 ];
 
-                for (const item of daftarTeks) {
+                // Jalankan semua request secara PARALEL, bukan berurutan
+                await Promise.all(daftarTeks.map(async (item) => {
                     try {
                         const res = await fetch(`${BASE_URL}/profil/${item.kode}`);
                         if (res.ok) {
@@ -806,8 +807,9 @@ const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
                     } catch (err) {
                         console.warn(`Gagal memuat profil ${item.kode}`, err);
                     }
-                }
+                }));
 
+                // Ambil Dokumen secara paralel dengan profil
                 const wadah = document.getElementById('wadah-dokumen');
                 if (wadah) {
                     try {
@@ -1543,17 +1545,18 @@ const BASE_URL = 'https://portofolio-k74o.onrender.com/api/v1';
         });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            await Promise.all([
-                fetchProfil(),
-                fetchJejak(),
-                fetchArtikel(),
-                fetchProjects(),
-                fetchLensa()
-            ]);
-            
+            document.addEventListener('DOMContentLoaded', () => {
+            // Jalankan routing dulu agar halaman langsung tampil
             handleRouting();
+            
+            // Panggil API di latar belakang (tanpa await)
+            fetchProfil();
+            fetchJejak();
+            fetchArtikel();
+            fetchProjects();
+            fetchLensa();
         });
+            
     </script>
 </body>
 </html>

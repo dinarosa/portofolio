@@ -55,6 +55,22 @@ app.add_middleware(
     max_age=3600,
 )
 
+from fastapi import Request, Response
+
+@app.middleware("http")
+async def handle_head_requests(request: Request, call_next):
+    # Jika Googlebot datang dengan metode HEAD, ubah sebentar menjadi GET
+    # agar rute FastAPI mau memprosesnya.
+    if request.method == "HEAD":
+        request.scope["method"] = "GET"
+    
+    response = await call_next(request)
+    
+    # Kembalikan respons kosong untuk HEAD, tapi bawa status code yang benar (200 OK)
+    if request.method == "HEAD":
+        return Response(status_code=response.status_code, headers=response.headers)
+    return response
+
 # ==========================================================================
 # KEAMANAN – API Key
 # ==========================================================================
